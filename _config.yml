@@ -102,7 +102,7 @@ theme: Anatolo
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: 'git'
-  repo: https://github.com/Livinfly/Livinfly.github.io
-  branch: gh-pages
-  
+  type: git
+  repo: git@github.com:Livinfly/Livinfly.github.io
+  # example, https://github.com/hexojs/hexojs.github.io
+  branch: master
