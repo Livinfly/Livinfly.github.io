@@ -1,3 +1,6 @@
-/*
-    You can add your own custom styles here.
-*/
+@import "partials/friends.scss";
+
+// Do not use uppercase in article-lastmod
+.main-article .article-footer section.article-lastmod{
+    text-transform: none;
+}

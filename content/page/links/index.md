@@ -1,10 +1,7 @@
 ---
 title: 友链
-links:
-  - title: GitHub
-    description: GitHub is the world's largest software development platform.
-    website: https://github.com
-    image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+slug: links
+layout: friends
 menu:
     main: 
         weight: 99998
@@ -14,20 +11,10 @@ menu:
 comments: false
 ---
 
-To use this feature, add `links` section to frontmatter.
-
-This page's frontmatter:
-
+若想添加本站为友链，您可以参考以下信息（或者用您熟悉的信息）：
 ```yaml
-links:
-  - title: GitHub
-    description: GitHub is the world's largest software development platform.
-    website: https://github.com
-    image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-  - title: TypeScript
-    description: TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.
-    website: https://www.typescriptlang.org
-    image: ts-logo-128.jpg
+name:   残城三梦 / Livinfly / Mengmm
+url:    https://livinfly.github.io
+avatar: https://avatars.githubusercontent.com/u/65482183
+disc:   只是尽量沿着自己认同的稳定抖动的价值方向，随机游走 / Swing but follow, Random and go.
 ```
-
-`image` field accepts both local and external images.
