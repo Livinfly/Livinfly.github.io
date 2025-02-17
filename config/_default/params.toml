@@ -5,7 +5,7 @@ rssFullContent = true
 favicon = "https://avatars.githubusercontent.com/u/65482183"
 
 [footer]
-since = 2025
+since = 2022
 customText = ""
 
 [dateFormat]
@@ -14,7 +14,7 @@ lastUpdated = "Jan 02, 2006 15:04 MST"
 
 [sidebar]
 emoji = "🤣"
-subtitle = "在这里留一点温暖"
+subtitle = "想要留下点温暖的地方"
 
 [sidebar.avatar]
 enabled = true
