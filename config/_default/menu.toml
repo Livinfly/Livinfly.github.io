@@ -10,15 +10,20 @@
 [[social]]
 identifier = "github"
 name = "GitHub"
-url = "https://github.com/CaiJimmy/hugo-theme-stack"
-
-[social.params]
-icon = "brand-github"
+url = "https://github.com/Livinfly"
+    [social.params]
+    icon = "brand-github"
 
 [[social]]
 identifier = "twitter"
 name = "Twitter"
-url = "https://twitter.com"
+url = "https://twitter.com/Mengmm_JhaiL"
+    [social.params]
+    icon = "brand-twitter"
 
-[social.params]
-icon = "brand-twitter"
+[[social]]
+identifier = "Email"
+name = "Email"
+url = "mailto:luojie3m@163.com"
+    [social.params]
+    icon = "email"
