@@ -22,7 +22,8 @@ menu:
 - 生于浙江，西安电子科技大学（XDU）-人工智能-22级，大概是退役2=OIer和抱住金牌队友大腿的口糊XCPCer
 - ID: Livinfly，~~但由于普遍不会读~~，另有ID: Mengmm、残城三梦、三梦、萌梦梦、梦梦等，不过貌似还是更习惯直接被叫真名啊（
 - ~~发癫标签~~：INXX，幼稚，伪重，伪ADHD，伪双相情感障碍，非执着型点亮式地球online玩家，自闭状态机，过量信息麻醉受用者
-- Dota2传奇选手😆 | 空洞骑士、蔚蓝玩家😎 | maimaiDX 1w萌新🥺 | [OSU!](https://osu.ppy.sh/users/21104270)休闲键鼠🤔 | 白色相簿2冬马党😭 | Steam好友ID:482497236
+- Dota2传奇选手😆 | 立直麻将业余一段😅 | 空洞骑士、蔚蓝玩家😎 | maimaiDX 1w萌新🥺 | [OSU!](https://osu.ppy.sh/users/21104270)休闲键鼠🤔 | 白色相簿2冬马党😭
+- Steam好友ID:482497236
 
 #### Codeforces
 
@@ -60,10 +61,13 @@ menu:
 - 除非注明，本博客所有文章皆为原创。
 - 除非另有声明，本博客之原创文章采用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh) 进行许可。
 - 转载请同时需要注明原文链接和作者名字。
-- 本博客运行于Github Page，源代码位于 [Github 仓库](https://github.com/Livinfly/Livinfly.github.io)
+- 本博客运行于Github Page，源代码位于[Github 仓库](https://github.com/Livinfly/Livinfly.github.io)。
 
 ## 赞赏
 
 如果你觉得我写的东西对你有所帮助，可以考虑请我喝一杯奶茶🤪
 
-~~然而入口未开放~~
+~~然而入口未开放~~，建议多一步到[Github 仓库](https://github.com/Livinfly/Livinfly.github.io/tree/master/content/page/about)的对应图片进行扫描，以防网站出现预料之外的情况。
+
+<img src="./zfb.jpg" width = "400" height = "400" alt="zfb" align=center />
+<img src="./vx.jpg" width = "400" height = "400" alt="vx" align=center />
