@@ -2,6 +2,8 @@
 
 Hugo-theme-stack Blog
 
+添加了 image-action 来自动压缩图片。
+
 若想添加本站为友链，您可以参考以下信息（或者用您熟悉的信息）：
 
 ```yaml
