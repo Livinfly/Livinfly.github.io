@@ -31,9 +31,9 @@ draft: false # 发布设为 false
 关闭谷歌浏览器「平滑滚动」。
 
 1.   打开 Chrome 谷歌浏览器，在地址栏中执行如下指令： **Chrome://flags/#enable-smooth-scrolling**
-2.   找到「**平滑滚动**」选项，**smooth-scrolling** 选项，选择「关闭」，**Disabled**。![image-20250309152015073](HS_problems_fun_to_see.assets/image-20250309152015073.png)
+2.   找到「**平滑滚动**」选项，**smooth-scrolling** 选项，选择「关闭」，**Disabled**。
 
-
+![smooth-scrolling 选项](HS_problems_fun_to_see.assets/image-20250309152015073.png)
 
 ## 鼠标滚轮停顿、延迟、回滚、乱跳等
 
