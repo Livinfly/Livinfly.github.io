@@ -10,8 +10,8 @@ math: true
 # keywords: ["keyword1"] # SEO
 # summary: "A short summary of the page content."
 
-aliases: ["/算法竞赛/分块入门九题"]
-categories: ["算法竞赛"]
+aliases: ["/xcpc/分块入门九题"]
+categories: ["xcpc"]
 tags: ["分块", "数据结构", "题解"]
 description: "（旧文）做hzwer大佬的分块入门九题题单的记录"
 image: "cover.png" # "https://www.dmoe.cc/random.php"

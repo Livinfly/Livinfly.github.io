@@ -1,5 +1,5 @@
 ---
-title: "使用 ssh 远控 Windows"
+title: "ssh 远控 Windows"
 slug: "Windows_ssh"
 authors: ["Livinfly(Mengmm)"]
 date: 2025-03-25T05:35:39Z
