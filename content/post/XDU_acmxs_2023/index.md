@@ -10,8 +10,8 @@ math: true
 # keywords: ["keyword1"] # SEO
 # summary: "A short summary of the page content."
 
-aliases: ["/算法竞赛/XDU_acmxs_2023"]
-categories: ["算法竞赛"]
+aliases: ["/xcpc/XDU_acmxs_2023"]
+categories: ["xcpc"]
 tags: ["算法竞赛", "XDU校赛", "题解"]
 description: "（旧文）2023XDU-ACM校赛个人题解 DEFGIJ部分"
 image: "cover.jpg" # "https://www.dmoe.cc/random.php"

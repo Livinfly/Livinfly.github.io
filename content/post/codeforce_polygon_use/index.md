@@ -10,8 +10,8 @@ math: true
 # keywords: ["keyword1"] # SEO
 # summary: "A short summary of the page content."
 
-aliases: ["/算法竞赛/codeforce_polygon_use"]
-categories: ["算法竞赛"]
+aliases: ["/xcpc/codeforce_polygon_use"]
+categories: ["xcpc"]
 tags: ["codeforces", "polygon", "出题"]
 description: "（旧文）介绍了些polygon平台的基础使用"
 image: "cover.jpg" # "https://www.dmoe.cc/random.php"
