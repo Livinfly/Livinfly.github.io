@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Codeforces on Livinfly's Blog</title><link>https://livinfly.github.io/tags/codeforces/</link><description>Recent content in Codeforces on Livinfly's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 04 Apr 2025 19:37:05 +0800</lastBuildDate><atom:link href="https://livinfly.github.io/tags/codeforces/index.xml" rel="self" type="application/rss+xml"/><item><title>如何用codeforces的polygon平台进行出题</title><link>https://livinfly.github.io/p/codeforce_polygon_use/</link><pubDate>Wed, 05 Jul 2023 00:00:00 +0800</pubDate><guid>https://livinfly.github.io/p/codeforce_polygon_use/</guid><description>&lt;img src="https://livinfly.github.io/p/codeforce_polygon_use/cover.jpg" alt="Featured image of post 如何用codeforces的polygon平台进行出题" />&lt;blockquote>
+&lt;p>旧文&lt;/p>&lt;/blockquote>
+&lt;h2 id="背景">背景
+&lt;/h2>&lt;p>前几天刚刚完成人生第一次出题~~（其实就是魔改题面，重造数据）~~。&lt;/p>
+&lt;p>虽然，能略微找到相关博文，但好像还是不太够，所以还是写一下。&lt;/p>
+&lt;p>本文就按照出题的顺序好了。&lt;/p>
+&lt;p>ps. 本文指涉及传统题目的过程，不涉及交互题等方式。&lt;/p>
+&lt;p>同时推一下看到的挺全的文章&lt;a class="link" href="https://blog.csdn.net/jokerwyt/article/details/100145318" target="_blank" rel="noopener"
+>codeforces的polygon平台使用指北&lt;/a>
+&lt;sup>
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound">
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z">&lt;/path>
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9">&lt;/polygon>
+&lt;/svg>
+&lt;/sup>
+。&lt;/p>
+&lt;h2 id="注册">注册
+&lt;/h2>&lt;p>找到&lt;a class="link" href="https://polygon.codeforces.com/" target="_blank" rel="noopener"
+>polygon&lt;/a>
+&lt;sup>
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound">
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z">&lt;/path>
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9">&lt;/polygon>
+&lt;/svg>
+&lt;/sup>
+的网站，要重新注册一个号，这个和&lt;code>codeforces&lt;/code>主站不是同一个账号系统。&lt;/p>
+&lt;h2 id="建立题目">建立题目
+&lt;/h2>&lt;p>点击上方的&lt;code>New Problem&lt;/code>。&lt;/p>
+&lt;p>填写题目名字。&lt;/p>
+&lt;p>自动跳转到&lt;code>View Problems&lt;/code>界面，找到刚刚创建的文件，点击&lt;code>Start&lt;/code>。&lt;/p>
+&lt;h2 id="general-info">General info
+&lt;/h2>&lt;p>由于要出的是传统题，根据要求改&lt;code>Time limit&lt;/code>和&lt;code>Memory limit&lt;/code>即可。&lt;/p>
+&lt;p>方便的话，在&lt;code>Tags&lt;/code>一栏加上题目涉及的知识点，或是否隐藏评测的提示（由于我没用，就不讨论这个）。&lt;/p>
+&lt;h2 id="statement">Statement
+&lt;/h2>&lt;p>题面。&lt;/p>
+&lt;p>选择好语言，然后填写题面，具体的效果可以用&lt;code>In HTML&lt;/code>等预览，多语言就&lt;code>Create New&lt;/code>即可。&lt;/p>
+&lt;p>具体每一栏要写成什么样子，可以参考&lt;code>codeforces&lt;/code>官方比赛或已存在的题目的题面。&lt;/p>
+&lt;h2 id="files">Files
+&lt;/h2>&lt;p>可以在直接一次把我们写好的标程&lt;code>std.cpp&lt;/code>，数据生成的程序&lt;code>gen.cpp&lt;/code>和生成的数据是否合法的程序&lt;code>vaild.cpp&lt;/code>，答案检验的程序&lt;code>checker.cpp&lt;/code>传上来。（&lt;code>vaild.cpp&lt;/code>和&lt;code>checker.cpp&lt;/code>不必须）&lt;/p>
+&lt;p>这里的名称不一定一致，只是代表它的作用。&lt;/p>
+&lt;p>这些程序怎么写我这里不展开，可以自己去看&lt;code>codeforces&lt;/code>自己写的关于&lt;code>testlib.h&lt;/code>库的使用。&lt;/p>
+&lt;h2 id="checker">Checker
+&lt;/h2>&lt;p>答案（格式等）的检验器。&lt;/p>
+&lt;p>上面虽然说&lt;code>checker.cpp&lt;/code>不必须，但是这里是要选的，不然后面&lt;code>Tests&lt;/code>生成的时候会出错。&lt;/p>
+&lt;p>一般选忽略空格&lt;code>lcmp.cpp&lt;/code>或不忽略空格&lt;code>fcmp.cpp&lt;/code>，如果要&lt;code>special judge&lt;/code>就需要自己写&lt;code>checker.cpp&lt;/code>了。&lt;/p>
+&lt;p>具体效果可以使用下面的&lt;code>Checker tests&lt;/code>来看。&lt;/p>
+&lt;p>自己设置输入、输出、答案和是否合法，然后看实际评判结果。&lt;/p>
+&lt;h2 id="validator">Validator
+&lt;/h2>&lt;p>生成数据是否合法的检验器。&lt;/p>
+&lt;p>感觉一般还是用于后面&lt;code>hack&lt;/code>阶段的造数据的合法性。&lt;/p>
+&lt;p>所以，其实也可以没有，但是会在提示有&lt;code>warning&lt;/code>。&lt;/p>
+&lt;p>还是建议写一下，写法也是看&lt;code>codeforces&lt;/code>的官方教程。&lt;/p>
+&lt;p>同样也可以在下面进行测试是否达到自己预期。&lt;/p>
+&lt;p>建议在&lt;code>Files&lt;/code>上传，在那边是可以直接编辑的。&lt;/p>
+&lt;h2 id="tests">Tests
+&lt;/h2>&lt;p>数据生成的设置参数的地方。&lt;/p>
+&lt;p>有两种方式设置数据。&lt;/p>
+&lt;p>第一种是中间的&lt;code>Add Test &lt;/code>，本地生成后，手动输入。&lt;/p>
+&lt;p>第二种是推荐的写法，需要用到之前上传的&lt;code>gen.cpp&lt;/code>，在&lt;code>Script&lt;/code>输入框内输入脚本命令。&lt;/p>
+&lt;p>具体脚本使用方式，右边比较清楚。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[你的数据生成文件名（不带后缀）] 参数1 参数2 ... &amp;gt; [输出到的地方，这里为数字，或者直接 $ 自动识别]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>写好保存，中间就会出现一条条命令。&lt;/p>
+&lt;p>点击&lt;code>Preview Tests&lt;/code>就可以生成数据了，如果已经在&lt;code>Solution files&lt;/code>中设置好了标程，是可以直接也显示对应答案的。&lt;/p>
+&lt;h2 id="stress">Stress
+&lt;/h2>&lt;p>在线对拍。&lt;/p>
+&lt;p>大概是选择其他上传来的程序，然后和&lt;code>main correct solution&lt;/code>标程对拍。&lt;/p>
+&lt;p>我的出题中没有用到。&lt;/p>
+&lt;h2 id="solution-files">Solution files
+&lt;/h2>&lt;p>解决文件。&lt;/p>
+&lt;p>这里是上传标程、正解等程序的地方，当然还有用来&lt;code>Stress&lt;/code>对拍的程序。&lt;/p>
+&lt;p>注意&lt;code>main correct solution&lt;/code>是标程，且必须要有，别的有没有都无所谓。&lt;/p>
+&lt;h2 id="invocations">Invocations
+&lt;/h2>&lt;p>用生成的数据来测程序的地方。&lt;/p>
+&lt;p>相当于&lt;code>custom test&lt;/code>。&lt;/p>
+&lt;p>可以帮助知道在OJ上跑大概是什么速度，会不会有什么环境不同导致的不一样等等。&lt;/p>
+&lt;h2 id="issues">Issues
+&lt;/h2>&lt;p>团队交流的地方。&lt;/p>
+&lt;p>我的过程没有用到。&lt;/p>
+&lt;h2 id="packages">Packages
+&lt;/h2>&lt;p>打包题目的地方。&lt;/p>
+&lt;p>根据自己需要选&lt;code>Standard&lt;/code>或者&lt;code>Full&lt;/code>，方便搬到本地或者别的OJ。&lt;/p>
+&lt;h2 id="manage-access">Manage access
+&lt;/h2>&lt;p>管理题目权限的地方。&lt;/p>
+&lt;p>一方面是加出题团队成员。&lt;/p>
+&lt;p>另一方面是把题目放到&lt;code>codeforces&lt;/code>上，要点击&lt;code>Add User&lt;/code>，添加&lt;code>codeforces&lt;/code>为管理，后面复制右边的&lt;code>url&lt;/code>填入&lt;code>codeforces&lt;/code>的&lt;code>mashup&lt;/code>里，就可以实现题目导入了。&lt;/p>
+&lt;h2 id="verification">Verification
+&lt;/h2>&lt;p>在右半边框里。&lt;/p>
+&lt;p>点击可以查看题目有什么显性的问题。&lt;/p></description></item></channel></rss>

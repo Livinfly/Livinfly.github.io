@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>爬虫 on Livinfly's Blog</title><link>https://livinfly.github.io/tags/%E7%88%AC%E8%99%AB/</link><description>Recent content in 爬虫 on Livinfly's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 20 Feb 2025 10:26:24 +0000</lastBuildDate><atom:link href="https://livinfly.github.io/tags/%E7%88%AC%E8%99%AB/index.xml" rel="self" type="application/rss+xml"/><item><title>Python实现东方Project图片爬虫</title><link>https://livinfly.github.io/p/touhou_pic_spider/</link><pubDate>Fri, 15 Jul 2022 00:00:00 +0800</pubDate><guid>https://livinfly.github.io/p/touhou_pic_spider/</guid><description>&lt;img src="https://livinfly.github.io/p/touhou_pic_spider/cover.jpg" alt="Featured image of post Python实现东方Project图片爬虫" />&lt;blockquote>
+&lt;p>本篇文章为旧文&lt;/p>&lt;/blockquote>
+&lt;h2 id="视频流程讲解">视频流程讲解
+&lt;/h2>&lt;p>（咕咕咕中）&lt;/p>
+&lt;h2 id="背景">背景
+&lt;/h2>&lt;p>当时，在&lt;del>乱搞&lt;/del>网站时候，它的默认随机图比较少，心生一念，我自己爬虫爬点下来不就有了？&lt;/p>
+&lt;p>昨日，爬了ewt后，思绪继续随着时间线向前延伸，想起来要爬图片了！（虽然我现在发现，我大部分文章都会自己发的时候找好配图，随机图好像没大用处？？）&lt;/p>
+&lt;p>另外，因本人技术力有限，无法标明作者，十分抱歉。&lt;/p>
+&lt;p>ps.只是爬了30页，懒得爬更多了，同时也为了避免不必要的影响。&lt;/p>
+&lt;h2 id="运行结果预览">运行结果预览
+&lt;/h2>&lt;p>贴一下爬下来的图片吧（不能保证质量哦QnQ）&lt;/p>
+&lt;p>&lt;code>小咕一手&lt;/code>
+upd. 被迫咕，度娘云链接秒挂……&lt;/p>
+&lt;p>&lt;img src="https://livinfly.github.io/p/touhou_pic_spider/TouhouPicSpider.assets/653074884.png"
+width="1216"
+height="797"
+srcset="https://livinfly.github.io/p/touhou_pic_spider/TouhouPicSpider.assets/653074884_hu_fbb43a6bc784dcb4.png 480w, https://livinfly.github.io/p/touhou_pic_spider/TouhouPicSpider.assets/653074884_hu_4dd431fbef72b0fa.png 1024w"
+loading="lazy"
+alt="爬下来的图片文件"
+class="gallery-image"
+data-flex-grow="152"
+data-flex-basis="366px"
+>&lt;/p>
+&lt;p>&lt;img src="https://livinfly.github.io/p/touhou_pic_spider/TouhouPicSpider.assets/702231711.jpg"
+width="3977"
+height="2806"
+srcset="https://livinfly.github.io/p/touhou_pic_spider/TouhouPicSpider.assets/702231711_hu_f6c580b99841e378.jpg 480w, https://livinfly.github.io/p/touhou_pic_spider/TouhouPicSpider.assets/702231711_hu_939710addd895b27.jpg 1024w"
+loading="lazy"
+alt="经典名图『早苗看鱼』"
+class="gallery-image"
+data-flex-grow="141"
+data-flex-basis="340px"
+>&lt;/p>
+&lt;h2 id="运行要求">运行要求
+&lt;/h2>&lt;ol>
+&lt;li>本代码编写在python3.10版本（不确定低版本会不会有问题）&lt;/li>
+&lt;li>requests&lt;/li>
+&lt;li>xpath - lxml库&lt;/li>
+&lt;/ol>
+&lt;h2 id="代码">代码
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-py" data-lang="py">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">requests&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">lxml&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">etree&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># https://wall.alphacoders.com/by_sub_category.php?id=174892&amp;amp;name=%E4%B8%9C%E6%96%B9+%E5%A3%81%E7%BA%B8&amp;amp;filter=4K+Ultra+HD&amp;amp;lang=Chinese&amp;amp;quickload=880+&amp;amp;page=1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">base_url&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;https://wall.alphacoders.com/by_sub_category.php?id=174892&amp;amp;name=&lt;/span>&lt;span class="si">%E&lt;/span>&lt;span class="s1">4%B8%9C&lt;/span>&lt;span class="si">%E&lt;/span>&lt;span class="s1">6&lt;/span>&lt;span class="si">%96%&lt;/span>&lt;span class="s1">B9+&lt;/span>&lt;span class="si">%E&lt;/span>&lt;span class="s1">5%A3&lt;/span>&lt;span class="si">%81%&lt;/span>&lt;span class="s1">E7%BA%B8&amp;amp;filter=4K+Ultra+HD&amp;amp;lang=Chinese&amp;amp;quickload=880+&amp;amp;page=&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">index&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">page&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">31&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;正在爬取第&amp;#39;&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="nb">str&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">page&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="s1">&amp;#39;页&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">url&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">base_url&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="nb">str&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">page&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># //img[@class=&amp;#34;img-responsive big-thumb thumb-desktop&amp;#34;]/@src&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">response&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">requests&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">url&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">url&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">content&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">response&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">text&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># print(content)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tree&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">etree&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">HTML&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">content&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">img_li&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tree&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">xpath&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;//img[@class=&amp;#34;img-responsive big-thumb thumb-desktop&amp;#34;]/@src&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">img_url&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">img_li&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;正在爬取第&amp;#39;&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="nb">str&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">index&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="s1">&amp;#39;张&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">img_response&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">requests&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">url&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">img_url&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">img_content&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">img_response&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">content&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">index&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># print(img_url)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">extension&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;.&amp;#39;&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">img_url&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">split&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;.&amp;#39;&lt;/span>&lt;span class="p">)[&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">with&lt;/span> &lt;span class="nb">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;.&lt;/span>&lt;span class="se">\\&lt;/span>&lt;span class="s1">touhou_pic&lt;/span>&lt;span class="se">\\&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="nb">str&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">index&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">extension&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="s1">&amp;#39;wb&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="k">as&lt;/span> &lt;span class="n">fp&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">write&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">img_content&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="经验教训">经验教训
+&lt;/h2>&lt;p>爬虫的过程还是要输出的，不知道爬到哪里而不敢轻举妄动的感觉不好受诶。TnT&lt;/p>
+&lt;p>因为网站随机图加载的速度还是蛮重要的，在合理范围内应当小一点图片大小。&lt;/p></description></item></channel></rss>
