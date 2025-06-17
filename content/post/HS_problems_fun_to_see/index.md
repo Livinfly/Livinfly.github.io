@@ -4,8 +4,8 @@ slug: "HS_problems_fun_to_see"
 authors: ["Livinfly(Mengmm)"]
 date: 2025-03-09T07:35:00Z
 # 定时发布
-# publishDate: 2023-10-01T00:00:00+08:00
-# lastmod: 2023-10-01T00:00:00+08:00
+# publishDate: 2025-03-09T07:35:00Z
+# lastmod: 2025-06-17T23:34:00+08:00
 # expiryDate: 2023-12-31T23:59:59+08:00
 math: true
 # keywords: ["keyword1"] # SEO
@@ -43,3 +43,23 @@ draft: false # 发布设为 false
 
 拆开鼠标，往滚轮和编码器处喷些 WD-40 即可，注意量不用太多。
 
+## Windows 系统对文件路径的最长长度限制导致的问题
+
+如安装 Python 的 vLLM 库时，遇到 `error: could not create 'build\bdist.win-amd64\wheel\.\vllm\model_executor\layers\quantization\utils\configs\N=1536,K=1536,device_name=AMD_Instinct_MI300X,dtype=fp8_w8a8,block_shape=[128,128].json': No such file or directory`错误。
+
+这实际是由安装过程中需要创建的某个文件的完整路径超过**长度限制**导致的。
+
+虽然安装 Python 时好像是会提示**是否禁用文件名长度限制**，但是在 conda 环境安装 Python 时是没有的。
+
+这里只介绍一种方法，修改注册表。
+1. 打开注册表编辑器
+    - 按下 Win + R 键打开“运行”对话框。
+    - 输入 regedit 然后按回车键。
+2. 导航到指定路径
+    - 在注册表编辑器的地址栏中，复制并粘贴以下路径，然后按回车键：`HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem`。
+3. 修改键值
+    - 在右侧的窗口中，找到一个名为 LongPathsEnabled 的值。
+    - 如果找不到，可以右键点击空白处，选择 “新建” -> “DWORD (32 位) 值”，并将其命名为 LongPathsEnabled。
+    - 双击 LongPathsEnabled，将它的“数值数据”从 0 修改为 1。
+4. 重启电脑
+    - 确保设置生效。
