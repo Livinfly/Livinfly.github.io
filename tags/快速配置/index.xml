@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>快速配置 on Livinfly's Blog</title><link>https://livinfly.github.io/tags/%E5%BF%AB%E9%80%9F%E9%85%8D%E7%BD%AE/</link><description>Recent content in 快速配置 on Livinfly's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 24 Jul 2025 20:50:39 +0800</lastBuildDate><atom:link href="https://livinfly.github.io/tags/%E5%BF%AB%E9%80%9F%E9%85%8D%E7%BD%AE/index.xml" rel="self" type="application/rss+xml"/><item><title>WSL2 快速配置</title><link>https://livinfly.github.io/p/wsl2_quick_buildup/</link><pubDate>Tue, 22 Jul 2025 07:29:46 +0000</pubDate><guid>https://livinfly.github.io/p/wsl2_quick_buildup/</guid><description>&lt;img src="https://livinfly.github.io/p/wsl2_quick_buildup/cover.jpg" alt="Featured image of post WSL2 快速配置" />&lt;h1 id="wsl2-快速配置">WSL2 快速配置
+&lt;/h1>&lt;blockquote>
+&lt;p>封面来源：&lt;a class="link" href="https://x.com/sasamik_/status/1947222609059606971" target="_blank" rel="noopener"
+>@sasamik_&lt;/a>
+&lt;sup>
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound">
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z">&lt;/path>
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9">&lt;/polygon>
+&lt;/svg>
+&lt;/sup>
+&lt;/p>&lt;/blockquote>
+&lt;p>因为近期又重复配 wsl2，干脆自己给自己列一下常见操作。&lt;/p>
+&lt;h2 id="windows功能">Windows功能
+&lt;/h2>&lt;p>开启虚拟化相关设置：Hyper-V, 适用于 Linux 的 Windows 子系统等，BIOS 打开虚拟化的设置。&lt;/p>
+&lt;p>重启生效。&lt;/p>
+&lt;p>注：如果遇到和虚拟化相关的报错（具体报错信息没有留），可能需要更新 wsl 版本，&lt;code>wsl --update&lt;/code>。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># （以管理员打开 powershell 等）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 启用适用于 Linux 的 Windows 子系统&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 启用虚拟化&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装-linux-内核">安装 Linux 内核
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看本机有的 Linux 发行版&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wsl --list
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看可安装的发行版&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wsl.exe --list --online
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 安装，如 Ubuntu-22.04&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wsl --install &amp;lt;DistributionName&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 设置默认发行版&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wsl --set-default &amp;lt;DistributionName&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看 wsl 发行版本&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wsl -l --all -v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 卸载发行版&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wsl --unregister &amp;lt;DistributionName&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># wsl 默认版本设置成 wsl2（可选）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 注意：wsl2 读取挂载 /mnt 的文件，是通过网络通信的（smb协议）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 不是 wsl1 的 IO，建议运行先转移到 wsl2 运行下&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wsl --set-default-version &lt;span class="m">2&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="更改-wsl-的存储位置">更改 wsl 的存储位置
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看 wsl 发行版本，后续的 Ubuntu-22.04 替换成你的发行版&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wsl -l --all -v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 导出发行版为 tar 到存储位置&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 注意：如果需要像我一样，放在某个文件夹下，需要先自己手动建立文件夹（在此命令下就是 wsl2 文件夹）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wsl --export Ubuntu-22.04 d:&lt;span class="se">\w&lt;/span>sl2&lt;span class="se">\u&lt;/span>buntu22.04.tar
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 注销当前分发版&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wsl --unregister Ubuntu-22.04
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 重新导入，刚刚导出的发行版，并且安装在xxx目录，这里是 d:\wsl2\ubuntu22.04，可以更改&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 如果前面正常设置了，这时遇到导入失败的问题，可以尝试更新 wsl&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wsl --import Ubuntu-22.04 d:&lt;span class="se">\w&lt;/span>sl2&lt;span class="se">\u&lt;/span>buntu22.04 d:&lt;span class="se">\w&lt;/span>sl2&lt;span class="se">\u&lt;/span>buntu22.04.tar --version &lt;span class="m">2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 设置默认登录用户名 sername 自选&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ubuntu2204 config --default-user &amp;lt;username&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 删除导出的 tar 文件（可选）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">del d:&lt;span class="se">\w&lt;/span>sl2&lt;span class="se">\u&lt;/span>buntu22.04.tar
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 设置默认发行版&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wsl --set-default &amp;lt;DistributionName&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 此时，d:\wsl2\ubuntu22.04 就是 wsl 的根目录了&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="建立网络位置访问">建立网络位置访问
+&lt;/h2>&lt;p>右键此电脑&lt;/p>
+&lt;p>&lt;img src="https://livinfly.github.io/p/wsl2_quick_buildup/wsl.assets/image-20250722143026619.png"
+width="551"
+height="436"
+srcset="https://livinfly.github.io/p/wsl2_quick_buildup/wsl.assets/image-20250722143026619_hu_b386ff1d272c1c1.png 480w, https://livinfly.github.io/p/wsl2_quick_buildup/wsl.assets/image-20250722143026619_hu_9f0d7fefa21ff640.png 1024w"
+loading="lazy"
+alt="右键此电脑"
+class="gallery-image"
+data-flex-grow="126"
+data-flex-basis="303px"
+>&lt;/p>
+&lt;p>添加类似于&lt;code>\\wsl.localhost\Ubuntu-22.04\home\luo&lt;/code>的地址，具体可以在&lt;strong>资源管理器&lt;/strong>界面的，Linux下访问 &lt;strong>wsl&lt;/strong> 的文件目录，复制下来。&lt;/p>
+&lt;p>&lt;img src="https://livinfly.github.io/p/wsl2_quick_buildup/wsl.assets/image-20250722143248402.png"
+width="269"
+height="742"
+srcset="https://livinfly.github.io/p/wsl2_quick_buildup/wsl.assets/image-20250722143248402_hu_8ec017a2fd1bacfc.png 480w, https://livinfly.github.io/p/wsl2_quick_buildup/wsl.assets/image-20250722143248402_hu_b45db4156e8d9508.png 1024w"
+loading="lazy"
+alt="wsl 的文件目录"
+class="gallery-image"
+data-flex-grow="36"
+data-flex-basis="87px"
+>&lt;/p>
+&lt;p>添加后的效果&lt;/p>
+&lt;p>&lt;img src="https://livinfly.github.io/p/wsl2_quick_buildup/wsl.assets/image-20250722143342198.png"
+width="741"
+height="358"
+srcset="https://livinfly.github.io/p/wsl2_quick_buildup/wsl.assets/image-20250722143342198_hu_722db4740cbef3fd.png 480w, https://livinfly.github.io/p/wsl2_quick_buildup/wsl.assets/image-20250722143342198_hu_a479329593da2274.png 1024w"
+loading="lazy"
+alt="添加后的效果"
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="496px"
+>&lt;/p>
+&lt;h2 id="设置代理">设置代理
+&lt;/h2>&lt;p>进入 wsl setting 设置 mirror（？）&lt;/p>
+&lt;p>允许本地局域网请求 Allow LAN 好像就行了&lt;/p>
+&lt;p>后面的可能不需要（？）&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">http_proxy&lt;/span>&lt;span class="o">=&lt;/span>http://127.0.0.1:7890
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">https_proxy&lt;/span>&lt;span class="o">=&lt;/span>http://127.0.0.1:7890
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># git&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config --global http.proxy http://127.0.0.1:7890
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config --global https.proxy http://127.0.0.1:7890
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装常用环境">安装常用环境
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span> &lt;span class="n">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="n">gcc&lt;/span> &lt;span class="n">g&lt;/span>&lt;span class="o">++&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>
+&lt;p>本地 vscode 需要安装 wsl 插件，否则 vscode 上的文件列表更新不及时。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>CUDA 根据&lt;a class="link" href="https://docs.nvidia.com/cuda/wsl-user-guide/index.html" target="_blank" rel="noopener"
+>官方教程&lt;/a>
+&lt;sup>
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound">
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z">&lt;/path>
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9">&lt;/polygon>
+&lt;/svg>
+&lt;/sup>
+安装 &lt;a class="link" href="https://developer.nvidia.com/cuda-downloads?target_os=Linux&amp;amp;target_arch=x86_64&amp;amp;Distribution=WSL-Ubuntu&amp;amp;target_version=2.0&amp;amp;target_type=deb_local" target="_blank" rel="noopener"
+>CUDA&lt;/a>
+&lt;sup>
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound">
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z">&lt;/path>
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9">&lt;/polygon>
+&lt;/svg>
+&lt;/sup>
+（windows 下 Nvidia 显卡驱动）&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-wsl-ubuntu.pin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo mv cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget https://developer.download.nvidia.com/compute/cuda/12.9.1/local_installers/cuda-repo-wsl-ubuntu-12-9-local_12.9.1-1_amd64.deb
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo dpkg -i cuda-repo-wsl-ubuntu-12-9-local_12.9.1-1_amd64.deb
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo cp /var/cuda-repo-wsl-ubuntu-12-9-local/cuda-*-keyring.gpg /usr/share/keyrings/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt-get update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt-get -y install cuda-toolkit-12-9
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;h2 id="给bash换皮肤可选">给bash换皮肤（可选）
+&lt;/h2>&lt;p>在 cmd 下的显示效果好像有问题，Powershell 还ok，vscode 的终端部分显示效果较好。&lt;/p>
+&lt;p>Starship 的 &lt;a class="link" href="https://starship.rs/zh-CN/presets/pastel-powerline" target="_blank" rel="noopener"
+>Pastel Powerline Preset&lt;/a>
+&lt;sup>
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound">
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z">&lt;/path>
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9">&lt;/polygon>
+&lt;/svg>
+&lt;/sup>
+皮肤，字体网站 &lt;a class="link" href="https://www.nerdfonts.com/font-downloads" target="_blank" rel="noopener"
+>Nerd fonts&lt;/a>
+&lt;sup>
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound">
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z">&lt;/path>
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9">&lt;/polygon>
+&lt;/svg>
+&lt;/sup>
+个人是用 &lt;strong>Cascadia Mono&lt;/strong>。&lt;/p>
+&lt;p>按照 &lt;a class="link" href="https://starship.rs/zh-CN/guide/" target="_blank" rel="noopener"
+>Starship&lt;/a>
+&lt;sup>
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound">
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z">&lt;/path>
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9">&lt;/polygon>
+&lt;/svg>
+&lt;/sup>
+安装 Starship，下面以 Linux 上的安装方式为例&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 下载 TOML 配置文件（也可以在上面网站上，点击 TOML 的下载链接 或 复制下来创建文件）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget https://starship.rs/presets/toml/pastel-powerline.toml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 若没有目标路径，先创建路径，-p 参数用于递归创建，这里可以省略&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mkdir -p ~/.config
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 移动到指定路径并改名&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mv pastel-powerline.toml ~/.config/starship.toml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 安装 Starship，这步失败大概率是网络代理配置没配好&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">curl -sS https://starship.rs/install.sh &lt;span class="p">|&lt;/span> sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 按照安装成功后，显示的命令行方法，应用，这里给出 bash 的版本&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">eval&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="k">$(&lt;/span>starship init bash&lt;span class="k">)&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://livinfly.github.io/p/wsl2_quick_buildup/wsl.assets/image-20250724180332428.png"
+width="2063"
+height="397"
+srcset="https://livinfly.github.io/p/wsl2_quick_buildup/wsl.assets/image-20250724180332428_hu_22142dfdc5d1fa6f.png 480w, https://livinfly.github.io/p/wsl2_quick_buildup/wsl.assets/image-20250724180332428_hu_8a4356100460919f.png 1024w"
+loading="lazy"
+alt="最终效果"
+class="gallery-image"
+data-flex-grow="519"
+data-flex-basis="1247px"
+>&lt;/p>
+&lt;h2 id="参考文章">参考文章
+&lt;/h2>&lt;p>&lt;a class="link" href="https://zhuanlan.zhihu.com/p/682583573" target="_blank" rel="noopener"
+>WSL入门到入土 - 知乎&lt;/a>
+&lt;sup>
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound">
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z">&lt;/path>
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9">&lt;/polygon>
+&lt;/svg>
+&lt;/sup>
+&lt;/p>
+&lt;p>&lt;a class="link" href="https://blog.csdn.net/farer_yyh/article/details/133934904" target="_blank" rel="noopener"
+>Win10/11下安装WSL并修改WSL默认安装目录到其他盘_wsl 设置目录-CSDN博客&lt;/a>
+&lt;sup>
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound">
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z">&lt;/path>
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9">&lt;/polygon>
+&lt;/svg>
+&lt;/sup>
+&lt;/p></description></item></channel></rss>
