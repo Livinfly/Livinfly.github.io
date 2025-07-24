@@ -105,6 +105,10 @@ wsl --set-default <DistributionName>
 
 进入 wsl setting 设置 mirror（？）
 
+允许本地局域网请求 Allow LAN 好像就行了
+
+后面的可能不需要（？）
+
 ```bash
 export http_proxy=http://127.0.0.1:7890
 export https_proxy=http://127.0.0.1:7890
@@ -135,6 +139,29 @@ sudo apt install gcc g++
     sudo apt-get update
     sudo apt-get -y install cuda-toolkit-12-9
     ```
+
+## 给bash换皮肤（可选）
+
+在 cmd 下的显示效果好像有问题，Powershell 还ok，vscode 的终端部分显示效果较好。
+
+Starship 的 [Pastel Powerline Preset](https://starship.rs/zh-CN/presets/pastel-powerline) 皮肤，字体网站 [Nerd fonts](https://www.nerdfonts.com/font-downloads) 个人是用 **Cascadia Mono**。
+
+按照 [Starship](https://starship.rs/zh-CN/guide/) 安装 Starship，下面以 Linux 上的安装方式为例
+
+```bash
+# 下载 TOML 配置文件（也可以在上面网站上，点击 TOML 的下载链接 或 复制下来创建文件）
+wget https://starship.rs/presets/toml/pastel-powerline.toml
+# 若没有目标路径，先创建路径，-p 参数用于递归创建，这里可以省略
+mkdir -p ~/.config
+# 移动到指定路径并改名
+mv pastel-powerline.toml ~/.config/starship.toml
+# 安装 Starship，这步失败大概率是网络代理配置没配好
+curl -sS https://starship.rs/install.sh | sh
+# 按照安装成功后，显示的命令行方法，应用，这里给出 bash 的版本
+eval "$(starship init bash)"
+```
+
+![最终效果](wsl.assets/image-20250724180332428.png)
 
 ## 参考文章
 
