@@ -163,8 +163,103 @@ eval "$(starship init bash)"
 
 ![最终效果](wsl.assets/image-20250724180332428.png)
 
+## 安装 zsh （可选）
+
+```bash
+# 安装 zsh
+sudo apt install zsh
+# 设置默认终端为 zsh，不要用 sudo
+chsh -s /bin/zsh
+# 安装 oh-my-zsh
+# curl	sh -c "$(curl -fsSL https://install.ohmyz.sh/)"
+# wget	sh -c "$(wget -O- https://install.ohmyz.sh/)" # 1
+# fetch	sh -c "$(fetch -o - https://install.ohmyz.sh/)"
+# 国内curl镜像	sh -c "$(curl -fsSL https://gitee.com/pocmon/ohmyzsh/raw/master/tools/install.sh)"
+# 国内wget镜像	sh -c "$(wget -O- https://gitee.com/pocmon/ohmyzsh/raw/master/tools/install.sh)"
+
+# 主题 powerlevel10k
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+# 中国用户可以使用 gitee.com 上的官方镜像加速下载
+git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+
+vim ~/.zshrc
+ZSH_THEME="powerlevel10k/powerlevel10k"
+source ~/.zshrc
+# 配置
+yyy1y1112211111n1
+# 内置插件
+ls ~/.oh-my-zsh/plugins
+
+# autosuggestions 补全
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+# 中国用户可以使用下面任意一个加速下载
+# 加速1
+git clone https://github.moeyy.xyz/https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+# 加速2
+git clone https://gh.xmly.dev/https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+# 加速3
+git clone https://gh.api.99988866.xyz/https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+# zsh-syntax-highlighting 语法校验
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+# 中国用户可以使用下面任意一个加速下载
+# 加速1
+git clone https://github.moeyy.xyz/https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+# 加速2
+git clone https://gh.xmly.dev/https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+# 加速3
+git clone https://gh.api.99988866.xyz/https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+# z 文件夹快捷跳转
+z xxx
+# extract 解压任何压缩文件
+x xx.tar
+# web-search 搜索引擎关键字+搜索内容 google baidu bing
+
+# 启用插件
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting z extract web-search jsontools)
+```
+
+## 
+
+## vim 配置 （可选）
+```bash
+# ~/.vimrc
+" basic
+
+syntax on
+set showmode
+set showcmd
+set mouse=a
+set encoding=utf-8
+filetype indent on
+
+" indent
+
+set autoindent
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set softtabstop=4
+
+" view
+
+set number
+set relativenumber
+set cursorline
+set textwidth=80
+set laststatus=2
+set ruler
+
+" search
+
+set hlsearch
+```
+
 ## 参考文章
 
 [WSL入门到入土 - 知乎](https://zhuanlan.zhihu.com/p/682583573)
 
 [Win10/11下安装WSL并修改WSL默认安装目录到其他盘_wsl 设置目录-CSDN博客](https://blog.csdn.net/farer_yyh/article/details/133934904)
+
+[zsh 安装与配置，使用 oh-my-zsh 美化终端 | Leehow的小站](https://www.haoyep.com/posts/zsh-config-oh-my-zsh/)
