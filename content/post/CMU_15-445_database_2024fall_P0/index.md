@@ -13,7 +13,7 @@ math: true
 
 aliases: ["/note/CMU_15-445_database_2024fall_P0"]
 categories: ["note"]
-tags: ["CMU_15-445", "数据库"]
+tags: ["学习笔记", "CMU_15-445", "数据库"]
 description: "CMU 15-445 (2024 fall) Project #0 - C++ Primer."
 image: "cover.jpeg" # "https://www.dmoe.cc/random.php"
 

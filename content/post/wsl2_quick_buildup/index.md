@@ -220,8 +220,6 @@ x xx.tar
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting z extract web-search jsontools)
 ```
 
-## 
-
 ## vim 配置 （可选）
 ```bash
 # ~/.vimrc
@@ -255,6 +253,18 @@ set ruler
 
 set hlsearch
 ```
+
+## miniconda（可选）
+
+https://www.anaconda.com/download/success 找到对应的安装包
+
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+# chmod 777 ./Miniconda3-latest-Linux-x86_64.sh
+./Miniconda3-latest-Linux-x86_64.sh
+```
+
+
 
 ## 参考文章
 
