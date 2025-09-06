@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>远程控制 on Livinfly's Blog</title><link>https://livinfly.github.io/tags/%E8%BF%9C%E7%A8%8B%E6%8E%A7%E5%88%B6/</link><description>Recent content in 远程控制 on Livinfly's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 04 Apr 2025 19:37:05 +0800</lastBuildDate><atom:link href="https://livinfly.github.io/tags/%E8%BF%9C%E7%A8%8B%E6%8E%A7%E5%88%B6/index.xml" rel="self" type="application/rss+xml"/><item><title>ssh 远控 Windows</title><link>https://livinfly.github.io/p/windows_ssh/</link><pubDate>Tue, 25 Mar 2025 05:35:39 +0000</pubDate><guid>https://livinfly.github.io/p/windows_ssh/</guid><description>&lt;img src="https://livinfly.github.io/p/windows_ssh/cover.png" alt="Featured image of post ssh 远控 Windows" /&gt;&lt;h2 id="背景"&gt;背景
+&lt;/h2&gt;&lt;p&gt;在外上学，家里的台式机本来是要用到的话，使用&lt;code&gt;小米智能插座&lt;/code&gt;+&lt;code&gt;台式机通电启动&lt;/code&gt;+&lt;code&gt;远程控制软件ToDesk&lt;/code&gt;&lt;del&gt;来逃课&lt;/del&gt;，完全不涉及更深的技术，满足轻度外出调用电脑的需求。&lt;/p&gt;
+&lt;p&gt;最近又想折腾下&lt;code&gt;ssh&lt;/code&gt;连接，一方面，&lt;code&gt;ToDesk&lt;/code&gt;白嫖，有时候还是会卡几下，另一方面的话，可能就是随性想要搞一下了。&lt;/p&gt;
+&lt;h2 id="windows-开启-ssh"&gt;Windows 开启 ssh
+&lt;/h2&gt;&lt;h3 id="安装-openssh"&gt;安装 OpenSSH
+&lt;/h3&gt;&lt;p&gt;先到下载&lt;a class="link" href="https://github.com/PowerShell/Win32-OpenSSH/releases" target="_blank" rel="noopener"
+&gt;OpenSSH&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+，选择自己对应的版本，我是64位，就选了圈出来的&lt;code&gt;zip&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/windows_ssh/windows_ssh.assets/image-20250325123701077.png"
+width="2560"
+height="1398"
+srcset="https://livinfly.github.io/p/windows_ssh/windows_ssh.assets/image-20250325123701077_hu_aa6875cf55abe403.png 480w, https://livinfly.github.io/p/windows_ssh/windows_ssh.assets/image-20250325123701077_hu_952a3e7b6f7d1805.png 1024w"
+loading="lazy"
+alt="OpenSSH releases"
+class="gallery-image"
+data-flex-grow="183"
+data-flex-basis="439px"
+&gt;&lt;/p&gt;
+&lt;p&gt;下载好后，解压在&lt;code&gt;C:\OpenSSH&lt;/code&gt;，以&lt;code&gt;管理员身份&lt;/code&gt;打开&lt;code&gt;终端&lt;/code&gt;（PowerShell 和 CMD 应该都行）运行&lt;code&gt;install-sshd.ps1&lt;/code&gt;，若已经手动把&lt;code&gt;OpenSSH&lt;/code&gt;的路径添加到&lt;code&gt;环境变量&lt;/code&gt;中的话，可以直接运行，否则请先移动到&lt;code&gt;OpenSSH&lt;/code&gt;或用绝对路径运行&lt;code&gt;install-sshd.ps1&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;如果是&lt;code&gt;msi&lt;/code&gt; 文件的话，应该也是类似的安装流程。&lt;/p&gt;
+&lt;h3 id="启动-ssh-并自动生成初始配置文件"&gt;启动 ssh 并自动生成初始配置文件
+&lt;/h3&gt;&lt;p&gt;在&lt;code&gt;终端&lt;/code&gt;启动服务&lt;code&gt;Start-Service sshd&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;注意，在此之前不要在&lt;code&gt;C:\ProgramData\ssh\&lt;/code&gt;下去创建修改&lt;code&gt;sshd_config&lt;/code&gt;，否则，初始配置文件不会覆盖你创建的文件。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;启动服务：Start-Service sshd
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;查看状态：Get-Service sshd
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;关闭服务：Stop-Service sshd
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;重启服务：Restart-Service sshd
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="防火墙开放-ssh-所用的端口"&gt;防火墙开放 ssh 所用的端口
+&lt;/h3&gt;&lt;p&gt;开放防火墙指定端口，比如默认的 22&lt;/p&gt;
+&lt;p&gt;具体参数，可按自己的需求配置&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 以`管理员身份`打开`终端`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;netsh advfirewall firewall add rule &lt;span class="nv"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;sshport&amp;#34;&lt;/span&gt; &lt;span class="nv"&gt;dir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;in &lt;span class="nv"&gt;protocol&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;tcp &lt;span class="nv"&gt;localport&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;22&lt;/span&gt; &lt;span class="nv"&gt;action&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;allow
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="ssh-服务自启动设置"&gt;ssh 服务自启动设置
+&lt;/h3&gt;&lt;p&gt;进入&lt;code&gt;Windows&lt;/code&gt;的&lt;code&gt;服务&lt;/code&gt;页面，找到&lt;code&gt;OpenSSH SSH Server&lt;/code&gt;，可按需要设置&lt;code&gt;启动类型&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/windows_ssh/windows_ssh.assets/image-20250325125958504.png"
+width="1685"
+height="722"
+srcset="https://livinfly.github.io/p/windows_ssh/windows_ssh.assets/image-20250325125958504_hu_7d949ac53575018c.png 480w, https://livinfly.github.io/p/windows_ssh/windows_ssh.assets/image-20250325125958504_hu_53085d49c4812b3b.png 1024w"
+loading="lazy"
+alt="OpenSSH SSH Server"
+class="gallery-image"
+data-flex-grow="233"
+data-flex-basis="560px"
+&gt;&lt;/p&gt;
+&lt;h3 id="配置-ssh_config"&gt;配置 ssh_config
+&lt;/h3&gt;&lt;h4 id="密码登录"&gt;密码登录
+&lt;/h4&gt;&lt;p&gt;在&lt;code&gt;C:\ProgramData\ssh\sshd_config&lt;/code&gt;，我们可以看到自动生成的初始配置文件。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 支持密码登录，把对应注释去掉，没有的话或者新添一行&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;PasswordAuthentication yes
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="免密登录"&gt;免密登录
+&lt;/h4&gt;&lt;p&gt;但是，我的电脑账户是没有密码的，所以这里也介绍一下免密登录的设置。&lt;/p&gt;
+&lt;p&gt;我们先约定电脑 B 是我们想要 ssh 到的&lt;strong&gt;服务端&lt;/strong&gt;电脑，电脑 A 是想要 ssh 到 电脑 B 的本地&lt;strong&gt;客户端&lt;/strong&gt;电脑。&lt;/p&gt;
+&lt;p&gt;在电脑 A 先生成密钥（同样要先安装OpenSSH）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh-keygen -t rsa
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;生成密钥后，我们到&lt;code&gt;C:\Users\[your_userName]\.ssh&lt;/code&gt; 下，找到公钥&lt;code&gt;id_rsa.pub&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;复制里面的内容，到电脑 B 的&lt;code&gt;C:\Users\[your_userName]\.ssh&lt;/code&gt;创建&lt;code&gt;authorized_keys&lt;/code&gt;（无后缀），并把前面复制的公钥内容，粘贴到里面。&lt;/p&gt;
+&lt;p&gt;再修改文件&lt;code&gt;C:\ProgramData\ssh\sshd_config&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 下面这三行没有被注释&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;PubkeyAuthentication yes
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;AuthorizedKeysFile .ssh/authorized_keys
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 若想要没有公钥，输入密码也可以访问的效果，可以设为 yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;PasswordAuthentication no
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 注释掉，不过看评论区，遇到相关问题的解决方案&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 可以把刚刚authorized_keys的内容，放到C:\ProgramData\ssh的administrators_authorized_keys里&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# （同样新建文件，无文件后缀）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 此时应该下面量化就不用注释了&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;#Match Group administrators&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="重启服务配置生效"&gt;重启服务配置生效
+&lt;/h4&gt;&lt;p&gt;每次修改完配置后，记得重启服务，使得配置生效，&lt;code&gt;Restart-Service sshd&lt;/code&gt;。&lt;/p&gt;
+&lt;h4 id="其他"&gt;其他
+&lt;/h4&gt;&lt;p&gt;如过&lt;code&gt;ssh&lt;/code&gt;时遇到&lt;code&gt;Permission denied (publickey,keyboard-interactive)&lt;/code&gt;，可以尝试在&lt;code&gt;authorized_keys&lt;/code&gt;文件的&lt;code&gt;属性&lt;/code&gt;的&lt;code&gt;安全&lt;/code&gt;中取消&lt;code&gt;继承&lt;/code&gt;并只保留&lt;code&gt;system&lt;/code&gt;与&lt;code&gt;administrator&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/windows_ssh/windows_ssh.assets/image-20250325131846292.png"
+width="1562"
+height="859"
+srcset="https://livinfly.github.io/p/windows_ssh/windows_ssh.assets/image-20250325131846292_hu_cffabe90906a402.png 480w, https://livinfly.github.io/p/windows_ssh/windows_ssh.assets/image-20250325131846292_hu_f81781168aa235bb.png 1024w"
+loading="lazy"
+alt="文件属性 - 安全 - 高级"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="436px"
+&gt;&lt;/p&gt;
+&lt;h3 id="测试登录"&gt;测试登录
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# your_userName是登录在电脑 B的用户名&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh your_userName@your_IP_Address
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 如果不指定用户名，默认是电脑 A登录的用户的用户名，若没有增加其他配置，不能登录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh your_IP_Address
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="路由器端口转发"&gt;路由器端口转发
+&lt;/h2&gt;&lt;p&gt;因为我的电脑 B 是连接路由器上网的，所以要访问到电脑 B 的话，只能发送给路由器。&lt;/p&gt;
+&lt;p&gt;以小米路由器为例，在路由器的&lt;code&gt;高级设置&lt;/code&gt;中的&lt;code&gt;端口转发&lt;/code&gt;，添加规则，内外端口映射根据自己需要修改，协议应该TCP就行（？），我偷懒直接都选了，内部 IP 地址，可以通过路由器的连接状况等方式查看。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/windows_ssh/windows_ssh.assets/image-20250325132508763.png"
+width="1729"
+height="1089"
+srcset="https://livinfly.github.io/p/windows_ssh/windows_ssh.assets/image-20250325132508763_hu_be648b9830f92ea3.png 480w, https://livinfly.github.io/p/windows_ssh/windows_ssh.assets/image-20250325132508763_hu_962c73dcb7dae57a.png 1024w"
+loading="lazy"
+alt="小米路由器 - 端口转发"
+class="gallery-image"
+data-flex-grow="158"
+data-flex-basis="381px"
+&gt;&lt;/p&gt;
+&lt;p&gt;设置完后，我们就向路由器的 IP 的对应端口发起 &lt;code&gt;ssh&lt;/code&gt; 就行了。&lt;/p&gt;
+&lt;h2 id="总结"&gt;总结
+&lt;/h2&gt;&lt;p&gt;一股脑做完之后，想想还是有点用的，虽然因为没有静态 IP，需要先用&lt;code&gt;ToDesk&lt;/code&gt;查看下现在的&lt;code&gt;IP&lt;/code&gt;（当然，搞个自动化的启动后把路由器 IP 发送给我也不是不行，且确实有个类似的&lt;a class="link" href="https://github.com/hzhu212/ip-reporter" target="_blank" rel="noopener"
+&gt;项目&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+，&lt;del&gt;但是咕咕&lt;/del&gt;），不过，后面的使用就是直接对应着的了，稳定性高一点。&lt;/p&gt;
+&lt;p&gt;包括，其实顺便做了个挺抽象的事情，&lt;code&gt;ssh&lt;/code&gt;到电脑 B 后，调用 &lt;code&gt;wsl&lt;/code&gt;，逃课双系统（x&lt;/p&gt;
+&lt;h2 id="参考文献"&gt;参考文献
+&lt;/h2&gt;&lt;p&gt;&lt;a class="link" href="https://zhuanlan.zhihu.com/p/111812831" target="_blank" rel="noopener"
+&gt;多台WIN10之间的SSH免密登录 - 余生&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://blog.csdn.net/cddchina/article/details/122567824" target="_blank" rel="noopener"
+&gt;windows配置openssh server 支持Ipv4 Ipv6 - cddchina&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;</description></item></channel></rss>
