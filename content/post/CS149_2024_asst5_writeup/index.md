@@ -13,7 +13,7 @@ math: true
 
 aliases: ["/note/CS149_2024_asst5_writeup"]
 categories: ["note"]
-tags: ["学习笔记", "CS149"]
+tags: ["学习笔记", "CS149", "并行计算"]
 description: "Stanford CS149 (2024): Assignment 5 writeup."
 image: "cover.jpeg" # "https://www.dmoe.cc/random.php"
 
