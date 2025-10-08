@@ -116,6 +116,11 @@ export https_proxy=http://127.0.0.1:7890
 # git
 git config --global http.proxy http://127.0.0.1:7890
 git config --global https.proxy http://127.0.0.1:7890
+
+# windows 端 crlf
+git config core.autocrlf false
+git config --global core.autocrlf false
+git config --system core.autocrlf false
 ```
 
 ## 安装常用环境
