@@ -98,4 +98,4 @@ rm -rf [dest]
 
 可以通过双击左侧「资源管理器」栏的文件 / 处于预览状态下的上方的文件窗口，固定住文件！
 
-![vsc_editor_preview](vsc_editor_preview.png)
+![vsc_editor_preview](HS_problems_fun_to_see.assets/vsc_editor_preview.png)
