@@ -1,0 +1,1863 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>数据库 on Livinfly's Blog</title><link>https://livinfly.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</link><description>Recent content in 数据库 on Livinfly's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 13 Nov 2025 14:53:18 +0800</lastBuildDate><atom:link href="https://livinfly.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml"/><item><title>『学习笔记』CMU 15-445 (2024 fall) Note</title><link>https://livinfly.github.io/p/cmu_15-445_database_2024fall_note/</link><pubDate>Thu, 13 Nov 2025 06:46:14 +0000</pubDate><guid>https://livinfly.github.io/p/cmu_15-445_database_2024fall_note/</guid><description>&lt;img src="https://livinfly.github.io/p/cmu_15-445_database_2024fall_note/cover.jpg" alt="Featured image of post 『学习笔记』CMU 15-445 (2024 fall) Note" /&gt;&lt;blockquote&gt;
+&lt;p&gt;封面来源：&lt;a class="link" href="https://x.com/wusem0108/status/1988053389478134218" target="_blank" rel="noopener"
+&gt;@wusem0108&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id="00-course-overview--logistics"&gt;#00: Course Overview &amp;amp; Logistics
+&lt;/h2&gt;&lt;p&gt;C++ 17 编写 / 调试 &lt;a class="link" href="https://github.com/cmu-db/15445-bootcamp" target="_blank" rel="noopener"
+&gt;bootcamp 熟悉 C++ 11 的特性&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;p&gt;C++ 前置要求，见 P12，同时 P0 页面也有进一步给出一些资料。&lt;/p&gt;
+&lt;h2 id="lecture-01-relational-model--algebra"&gt;Lecture #01: Relational Model &amp;amp; Algebra
+&lt;/h2&gt;&lt;p&gt;数据库 database 是相互关联的&lt;strong&gt;数据&lt;/strong&gt;的有组织的&lt;strong&gt;集合&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;数据库管理系统 DBMS (database management systems)，是管理数据库的软件。&lt;/p&gt;
+&lt;h3 id="扁平文件-flat-file-strawman"&gt;扁平文件 Flat File Strawman
+&lt;/h3&gt;&lt;p&gt;扁平文件。&lt;/p&gt;
+&lt;p&gt;逗号分隔值 comma-separated value (csv)&lt;/p&gt;
+&lt;p&gt;实体文件 entity file (artists.csv, albums.csv)。&lt;/p&gt;
+&lt;p&gt;不同的&lt;strong&gt;行&lt;/strong&gt;分隔不同的&lt;strong&gt;记录&lt;/strong&gt;，同一行内用逗号 comma 来分隔不同的属性 attributes。&lt;/p&gt;
+&lt;p&gt;schema (attribute 1, attribute 2, &amp;hellip;)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;需要考虑的问题&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;数据完整性 Data Integrity&lt;/li&gt;
+&lt;li&gt;实现 Implementation&lt;/li&gt;
+&lt;li&gt;持续性 Durability&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="数据库管理系统-database-management-system"&gt;数据库管理系统 Database Management System
+&lt;/h3&gt;&lt;p&gt;数据模型 data model 是描述数据库的数据的概念集合。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Relational (most common)&lt;/li&gt;
+&lt;li&gt;NoSQL (key/value, document, graph)&lt;/li&gt;
+&lt;li&gt;Array / Matrix / Vector (for machine learning)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="关系模型-relational-model"&gt;关系模型 Relational Model
+&lt;/h3&gt;&lt;p&gt;由 Ted Codd (at IBM Research) in the late 1960s 提出，用于解决早期DBMS中逻辑层与物理层紧密耦合。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;以简单数据结构（关系）存储数据库&lt;/li&gt;
+&lt;li&gt;物理存储由DBMS实现决定&lt;/li&gt;
+&lt;li&gt;通过高级语言访问数据，DBMS 确定最佳执行策略&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;关系模型三要素&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;结构 Structure&lt;/strong&gt;：关系定义及其内容，独立于物理表示&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;完整性 Integrity&lt;/strong&gt;：确保数据库内容满足特定约束&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;操作 Manipulation&lt;/strong&gt;：访问和修改数据库内容的编程接口&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;一些术语&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;关系 (Relation)&lt;/strong&gt;：无序的属性关系集合（等同于表 table）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;元组 (Tuple)&lt;/strong&gt;：关系中属性值的集合（也称为域 domain）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;n元关系 (n-ary)&lt;/strong&gt;：具有n个属性的关系（等同于 n 列的表 table）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;主键 (Primary Key)&lt;/strong&gt;：唯一标识表中单个元组的属性&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;外键 (Foreign Key)&lt;/strong&gt;：指定一个关系中的属性映射到另一个关系的元组&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;约束 (Constraint)&lt;/strong&gt;：用户定义的必须满足的条件（如唯一键、外键约束）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="数据操作语言-data-manipulation-languages-dmls"&gt;数据操作语言 Data Manipulation Languages (DMLs)
+&lt;/h3&gt;&lt;p&gt;存储和便利数据库的方法。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;过程式 Procedural&lt;/p&gt;
+&lt;p&gt;明确指定数据库管理系统应该如何获取数据，需要写 how，如 for 等逻辑&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;非过程式 Non-procedural （声明式 Declarative）&lt;/p&gt;
+&lt;p&gt;只指定需要什么数据，而不指定如何获取，需要写 what，由 DBMS 来选定逻辑。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="关系代数-relational-algebra"&gt;关系代数 Relational Algebra
+&lt;/h3&gt;&lt;p&gt;关系代数 Relational Algebra 是遍历、操作关系元组集合的基础操作集合，可以构建一个链 chain 的 query。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Selection&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;$\sigma_{predicate}(R)$，SQL: SELECT * FROM R WHERE &amp;lt;predicate&amp;gt;&lt;/p&gt;
+&lt;p&gt;输入一个关系 Relation，指定谓词 predicate（充当过滤器 filter 的角色），输出满足谓词的元组 tuple 的集合（关系 Relation）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Projection&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;$\pi_{A_1,A_2,. . . ,A_n}(R)$，SQL: SELECT b_id-100, a_id FROM R WHERE a_id = &amp;lsquo;a2&amp;rsquo;&lt;/p&gt;
+&lt;p&gt;输入一个关系 Relation，指定一些属性 attribute，输出一个关系 Relation，元组 tuples 包含指定属性 attribute。&lt;/p&gt;
+&lt;p&gt;可以改变属性 attribute 顺序与属性的值。&lt;/p&gt;
+&lt;p&gt;注意：&lt;/p&gt;
+&lt;p&gt;attribute 通常可以包含字母(a-z, A-Z)、数字(0-9)和下划线(_)，所以 b_id-100 是取 b_id 的值再减 100。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Union&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;$(R \cup S)$，SQL: (SELECT * FROM R) UNION ALL (SELECT * FROM S)&lt;/p&gt;
+&lt;p&gt;输入两个关系 Relation，输出一个关系 Relation 包含所有（至少出现在其中一个关系 Relation 中）的元组 tuple。&lt;/p&gt;
+&lt;p&gt;注意：&lt;/p&gt;
+&lt;p&gt;输入的两个关系 Relation 必须有相同的属性 attribute；&lt;/p&gt;
+&lt;p&gt;SQL 中 UNION 对重复行只保留一份，UNION ALL 都保留。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Intersection&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;$(R \cap S)$，SQL: (SELECT * FROM R) INTERSECT (SELECT * FROM S)&lt;/p&gt;
+&lt;p&gt;输入两个关系 Relation，输出一个关系 Relation 包含所有（同时出现在两个关系 Relation 中）的元组 tuple。&lt;/p&gt;
+&lt;p&gt;注意：&lt;/p&gt;
+&lt;p&gt;输入的两个关系 Relation 必须有相同的属性 attribute。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Difference&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;$(R - S)$，SQL: (SELECT * FROM R) EXCEPT (SELECT * FROM S)&lt;/p&gt;
+&lt;p&gt;输入两个关系 Relation，输出一个关系 Relation 包含所有（在 R 且不在 S 中）的元组 tuple。&lt;/p&gt;
+&lt;p&gt;注意：&lt;/p&gt;
+&lt;p&gt;输入的两个关系 Relation 必须有相同的属性 attribute。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Product&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;$(R \cross S)$，SQL: (SELECT * FROM R) CROSS JOIN (SELECT * FROM S) 或 SELECT * FROM R, S&lt;/p&gt;
+&lt;p&gt;输入两个关系 Relation，输出一个关系 Relation 包含所有（可能的笛卡尔积组合，产生 |R| * |S| 个）的元组 tuple。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Join&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;$(R \bowtie S)$，SQL: SELECT * FROM R JOIN S USING (ATTRIBUTE1, ATTRIBUTE2&amp;hellip;)&lt;/p&gt;
+&lt;p&gt;输入两个关系 Relation，输出一个关系 Relation 包含所有（连接两个关系 Relation 中相同的 attribute，合并不同的 attribute 到同一个个 tuple，组合复制）的元组 tuple。&lt;/p&gt;
+&lt;p&gt;注意：&lt;/p&gt;
+&lt;p&gt;关于不匹配，即相同属性 attribute，属性值没有同时出现的情况。&lt;/p&gt;
+&lt;p&gt;还有其他的 Join&lt;/p&gt;
+&lt;p&gt;Theta Join：基于任意条件的连接（如R.a &amp;gt; S.b）；&lt;/p&gt;
+&lt;p&gt;Outer Join：保留不匹配的行；&lt;/p&gt;
+&lt;p&gt;Cross Join：等同于Product操作&lt;/p&gt;
+&lt;p&gt;效率区别：$(R \bowtie (\sigma_{b_id=102}(S)))$，$\sigma_{b_id=102}(R \bowtie S)$&lt;/p&gt;
+&lt;p&gt;给定 SQL (Structured Query Language) 这样的高级的声明式表示，能够让 DBMS 去决定处理逻辑。&lt;/p&gt;
+&lt;h3 id="其他数据模型-other-data-models"&gt;其他数据模型 Other Data Models
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Document Data Model&lt;/strong&gt; 文档数据模型&lt;/p&gt;
+&lt;p&gt;记录文档的集合，包含 命名字段 / 值对 field / value的层次结构。&lt;/p&gt;
+&lt;p&gt;value 包括标量 scalar、数组 array、指向其他文档的指针 pointer。&lt;/p&gt;
+&lt;p&gt;现代实现使用 JSON，之前包括 XML 等对象 object 表示。&lt;/p&gt;
+&lt;p&gt;通过耦合对象 object 和数据库，避免&amp;quot;关系-对象阻抗不匹配&amp;quot;。&lt;/p&gt;
+&lt;p&gt;有优点，但也有前面 flat file 提到的一些缺点。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Vector Data Model&lt;/strong&gt; 向量数据模型&lt;/p&gt;
+&lt;p&gt;表示用于最近邻搜索 nearest-neighbor search （准确 / 估计）的一维数组&lt;/p&gt;
+&lt;p&gt;用于基于 ML 模型生成的嵌入 embedding 的语义搜索 semantic search&lt;/p&gt;
+&lt;p&gt;许多关系型DBMS已添加向量索引功能（如 pgvector）&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Databases are ubiquitous.&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id="lecture-02-modern-sql"&gt;Lecture #02: Modern SQL
+&lt;/h2&gt;&lt;p&gt;声明式的 query，起源于 IBM &lt;strong&gt;System R&lt;/strong&gt; in the 1970s。&lt;/p&gt;
+&lt;p&gt;SQL 是在关系型数据库管理系统上，与关系型数据库交互的标准语言。&lt;/p&gt;
+&lt;h3 id="关系语言-relational-languages"&gt;关系语言 Relational Languages
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;数据操作语言(DML)&lt;/strong&gt;：SELECT, INSERT, UPDATE, DELETE&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据定义语言(DDL)&lt;/strong&gt;：定义表 tables、索引 indexes、视图 views 等对象的结构&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据控制语言(DCL)&lt;/strong&gt;：管理安全性 Security 和访问控制&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;其他&lt;/strong&gt;：视图定义、完整性约束、事务管理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;关键区别&lt;/strong&gt;：关系代数基于&lt;strong&gt;集合&lt;/strong&gt; set (无序，无重复)，而SQL基于&lt;strong&gt;包&lt;/strong&gt; bag (无序，允许重复)&lt;/p&gt;
+&lt;p&gt;后面都是些语法说明，就散记写查的。&lt;/p&gt;
+&lt;p&gt;GROUP BY，聚合默认是整个结果集为一个组，如果要按某一字段划分，组内分别聚合，则需要 GROUP BY。&lt;/p&gt;
+&lt;p&gt;WHERE 在 GROUP BY 前，原始数据行；HAVING 在 GROUP BY 后，过滤分组结果。&lt;/p&gt;
+&lt;p&gt;ON用于连接条件，WHERE用于过滤。&lt;/p&gt;
+&lt;p&gt;SQL 查询的执行顺序是：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;FROM/JOIN（确定数据源）&lt;/li&gt;
+&lt;li&gt;WHERE（过滤原始行）&lt;/li&gt;
+&lt;li&gt;GROUP BY（分组）&lt;/li&gt;
+&lt;li&gt;HAVING（过滤分组结果）&lt;/li&gt;
+&lt;li&gt;SELECT（选择输出列）&lt;/li&gt;
+&lt;li&gt;ORDER BY（排序结果）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;HAVING 阶段 SELECT 还不存在。&lt;/p&gt;
+&lt;p&gt;字符串大小写敏感 case sensitive，只允许单引号。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;%&lt;/code&gt; 匹配任意子串，&lt;code&gt;_&lt;/code&gt; 匹配任一字母。&lt;/li&gt;
+&lt;li&gt;函数 SUBSTRING(S, B, E) and UPPER(S)&amp;hellip;&lt;/li&gt;
+&lt;li&gt;连接符 &lt;code&gt;||&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;INTO 输出重定向&lt;/p&gt;
+&lt;p&gt;输出控制。&lt;/p&gt;
+&lt;h2 id="lecture-03-database-storage-part-i"&gt;Lecture #03: Database Storage (Part I)
+&lt;/h2&gt;&lt;h3 id="存储-storage"&gt;存储 Storage
+&lt;/h3&gt;&lt;p&gt;易失性设备 Volatile Device，byte-addressable，memory 内存&lt;/p&gt;
+&lt;p&gt;非易失性设备 Non-Volatile Device，block/page addressable，better at sequential access，disk 磁盘，SSD HDD&lt;/p&gt;
+&lt;p&gt;persistent memory&lt;/p&gt;
+&lt;p&gt;NVMe (non-volatile memory express)&lt;/p&gt;
+&lt;p&gt;缓存池 buffer pool 来控制 disk 和 memory 之间的数据移动。&lt;/p&gt;
+&lt;h3 id="dbms-vs-os"&gt;DBMS vs. OS
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;顶层设计目标&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;支持超过可用内存的数据库。&lt;/p&gt;
+&lt;p&gt;像是虚拟内存 virtual memory 的顶层设计目标，&lt;/p&gt;
+&lt;p&gt;其中的一个实现方式是把文件内容 mmap 到进程中，但如果 mmap 发生 page fault，进程会堵塞。&lt;/p&gt;
+&lt;p&gt;所以永远不在 DBMS 中使用 mmap。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The operating system is not your friend.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;使用以下的指令来使用 OS。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;madvise&lt;/code&gt; 告诉 OS 什么时候想读某 page&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mlock&lt;/code&gt; 不要换出某范围的内存&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;msync&lt;/code&gt; 刷新某范围的内存&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;虽然 OS 有不少可以提供的函数功能，但为了&lt;strong&gt;可控&lt;/strong&gt;和&lt;strong&gt;性能&lt;/strong&gt;，DBMS 自己实现。&lt;/p&gt;
+&lt;h3 id="文件存储-file-storage"&gt;文件存储 File Storage
+&lt;/h3&gt;&lt;p&gt;文件层级 file hierarchy&lt;/p&gt;
+&lt;p&gt;单文件 single file (e.g. SQLite)&lt;/p&gt;
+&lt;p&gt;DBMS 的存储管理器，管理 database 的文件（page 的集合）&lt;/p&gt;
+&lt;p&gt;DBMS 的 page 的三个概念&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;硬件页 hardware page (usually 4 KB)&lt;/li&gt;
+&lt;li&gt;系统页 OS page (4 KB)&lt;/li&gt;
+&lt;li&gt;database page (1-16 KB)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;存储设备保证了原子写入 atomic write，在 HW page 下。&lt;/p&gt;
+&lt;p&gt;超出的时候，DBMS 需要为安全写出产生额外开销，所以，一般只读的工作负载，开大点的 page size。&lt;/p&gt;
+&lt;h3 id="数据库堆-database-heap"&gt;数据库堆 Database Heap
+&lt;/h3&gt;&lt;p&gt;有许多方式找到页 page 的位置，如堆文件 heap file（页 page 的无序集合）。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;链表 Linked List，页头有指针指向 free page 和 data page，查找只能串型查找&lt;/li&gt;
+&lt;li&gt;页面目录 Page Directory&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="页布局-page-layout"&gt;页布局 Page Layout
+&lt;/h3&gt;&lt;p&gt;每格页 page 包含 header&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Page size&lt;/li&gt;
+&lt;li&gt;Checksum&lt;/li&gt;
+&lt;li&gt;DBMS version&lt;/li&gt;
+&lt;li&gt;Transaction visibility&lt;/li&gt;
+&lt;li&gt;Self-containment (Oracle&amp;hellip;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Slotted-pages 开槽页&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;维护槽 slot 的个数，最后使用的槽 slot 的偏移 offset，槽 slot 的阵列。&lt;/p&gt;
+&lt;p&gt;槽 slot 头到尾增长，data tuple 尾到头增长&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Log-Structured 日志结构&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="元组布局-tuple-layout"&gt;元组布局 Tuple Layout
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;元组头 Tuple Header，元数据&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;元组数据 Tuple Data&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;唯一标识符 Unique Identifier，常见 page_id + (offset / slot)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;非规范化的元组数据 Denormalized Tuple Data&lt;/p&gt;
+&lt;p&gt;两个有关联的表，DBMS 可以预连接 pre-join，这样，就只需要从一个表读，而不是两个不同的表，更高效。&lt;/p&gt;
+&lt;p&gt;但更新会更贵，因为每个 tuple 需要的空间更大。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="lecture-04-database-storage-ii"&gt;Lecture #04: Database Storage II
+&lt;/h2&gt;&lt;h3 id="日志结构存储-log-structured-storage"&gt;日志结构存储 Log-Structured Storage
+&lt;/h3&gt;&lt;p&gt;开槽页 Slotted-Page 面向元组 tuple-oriented 的问题&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;碎片化 Fragmentation&lt;/li&gt;
+&lt;li&gt;无效磁盘 I/O，面向块的非易失性存储，每次都要读整块取更新一个元组 tuple&lt;/li&gt;
+&lt;li&gt;随机磁盘 I/O 效率低&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果只能创建新页 page 且不能复写 overwrite，可以解决上面的问题。&lt;/p&gt;
+&lt;p&gt;基于 LSFS (log-structured file systems) 和 LSM Tree (log-structured merge tree)。&lt;/p&gt;
+&lt;p&gt;DBMS 存储元组的改变的日志记录，在内存中的数据结构中应用改变 MemTable，再依次把改变写到磁盘中 SSTable。&lt;/p&gt;
+&lt;p&gt;PUT / DELETE，原地更新在内存中。&lt;/p&gt;
+&lt;p&gt;读一条记录的时候，先检查 MemTable，不存在的话找 SSTables，从新到旧，使用二分。&lt;/p&gt;
+&lt;p&gt;为了优化，在内存中维护 SummaryTable，跟踪其他的元数据 min/max key&amp;hellip;, key filter。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;压缩 Compaction&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在写负载重的任务中，SSTable 会很多， 周期性使用合并排序，压缩最近的跨页 page 的元组修改。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;权衡 Treadeoff&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;顺序写快，对只附加的存储好&lt;/li&gt;
+&lt;li&gt;写可能慢&lt;/li&gt;
+&lt;li&gt;压缩开销大&lt;/li&gt;
+&lt;li&gt;对写入放大影响，每个逻辑写，会产生多个物理写。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="索引组织的存储-index-organized-storage"&gt;索引组织的存储 Index-Organized Storage
+&lt;/h3&gt;&lt;p&gt;数据直接存在索引结构里，索引即数据，天然有序。&lt;/p&gt;
+&lt;h3 id="数据表示-data-representation"&gt;数据表示 Data Representation
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;填充 Padding&lt;/strong&gt; 和 &lt;strong&gt;重排 Reordering&lt;/strong&gt; 实现 word-aligned，提高访存效率。&lt;/p&gt;
+&lt;h2 id="lecture-05-storage-models--compression"&gt;Lecture #05: Storage Models &amp;amp; Compression
+&lt;/h2&gt;&lt;h3 id="数据库工作负载-database-workloads"&gt;数据库工作负载 Database Workloads
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;OLTP (Online Transaction Processing)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;对单个实体 entity 的快速、简单、重复的查询，写多读少。Write Heavy&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OLAP (Online Analytical Processing)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;时间久、复杂的查询，读多写少，分析数据。 Read Heavy&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;HTAP (Hybrid Transaction + Analytical Processing)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;混合。&lt;/p&gt;
+&lt;h3 id="存储模型-storage-models"&gt;存储模型 Storage Models
+&lt;/h3&gt;&lt;p&gt;元组 tuple 的存储&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;N-Ary Storage Model (NSM)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;N 元组存储模型、行存储 row store，在 OLTP write-heavy 的任务中表现好，因为一次就能拿到所有的属性。&lt;/p&gt;
+&lt;p&gt;但不好压缩。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Decomposition Storage Model (DSM)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;分解存储模型、行存储 column store，在 OLAP read-heavy 的任务表现好，因为常分析属性的子集。&lt;/p&gt;
+&lt;p&gt;在行存储的情况下，把 tuple 放一起有&lt;strong&gt;固定长度偏移 fixed-length offsets&lt;/strong&gt; 或 &lt;strong&gt;嵌入元组编号 embedded tuple ids&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Partition Attributes Across (PAX)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;跨属性分割。&lt;/p&gt;
+&lt;p&gt;综合前两种方式的列的访问，和行的局部性。&lt;/p&gt;
+&lt;h3 id="数据库压缩-database-compression"&gt;数据库压缩 Database Compression
+&lt;/h3&gt;&lt;p&gt;在只读分析的工作负责中的常用优化。&lt;/p&gt;
+&lt;p&gt;块、元组（NSM）、属性、列（DSM）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;压缩率&lt;/strong&gt;和&lt;strong&gt;压缩速度&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="列压缩-columnar-compression"&gt;列压缩 Columnar Compression
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;run-length encoding (RLE)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;游程编码、运行长度编码。&lt;/p&gt;
+&lt;p&gt;值 + 起始偏移 + 连续长度。&lt;/p&gt;
+&lt;p&gt;DBMS 需要预先排序。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Bit-Packing Encoding&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;根据数据范围，只存有效位。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Mostly Encoding&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bit-Packing 基础上，加上特殊标记，表示在什么时候会超过最大值，维持 look-up table 来存储。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Bitmap Encoding&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;表示第 i 个值在不在。&lt;/p&gt;
+&lt;p&gt;常常把位图分成小段，避免占用大块连续内存。&lt;/p&gt;
+&lt;p&gt;适用于种类少的时候。&lt;/p&gt;
+&lt;p&gt;Roaring Bitmaps 可以用来压缩稀疏数据。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Delta Encoding&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;存储和相邻数值的差值。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Incremental Encoding&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;记录常见的前后缀，对排序后的数据好。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Dictionary Compression&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;需要支持保序编码 order-preserving encodings，使得能直接在编码后的数据上操作。&lt;/p&gt;
+&lt;h2 id="lecture-06-buffer-pools"&gt;Lecture #06: Buffer Pools
+&lt;/h2&gt;&lt;p&gt;buffer pool manager 控制 page 在内存和存储的移动。&lt;/p&gt;
+&lt;p&gt;优化目标是时 Temporal 空 Spatial 的控制，&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;page directory&lt;/strong&gt; = page_id =&amp;gt; page_address&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;page table&lt;/strong&gt; = frame_id =&amp;gt; page_id&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;lock&lt;/strong&gt;，能够回滚 roll back 修改。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;latch&lt;/strong&gt;，不需要回滚，锁操作过程。&lt;/p&gt;
+&lt;p&gt;Least Recently Used (LRU)&lt;/p&gt;
+&lt;p&gt;CLOCK&lt;/p&gt;
+&lt;p&gt;在 sequential flooding 顺序扫描中表现不佳。&lt;/p&gt;
+&lt;p&gt;LRU-K&lt;/p&gt;
+&lt;p&gt;localization优化局部性、减少对剩余的污染。&lt;/p&gt;
+&lt;p&gt;priority hints&lt;/p&gt;
+&lt;p&gt;Direct I/O (via the O DIRECT flag) 来绕过操作系统的 cache&lt;/p&gt;
+&lt;h3 id="缓冲池的优化-buffer-pool-optimizations"&gt;缓冲池的优化 Buffer Pool Optimizations
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Multiple Buffer Pools&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;多个缓冲池，不同的用途用不同的缓冲池。&lt;/p&gt;
+&lt;p&gt;采用 Object ID 或 Hash 来找到 page_id 应该找哪个缓存池。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Pre-fetching&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;预取，特别是在顺序扫描的时候。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Scan Sharing (Synchronized Scans)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;同步扫描，共享一个扫描。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Buffer Pool Bypass&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;缓冲池旁路，如顺序扫描等操作，不通过缓冲池，而通过开辟内存的另外的地方。&lt;/p&gt;
+&lt;p&gt;防止污染缓冲池。&lt;/p&gt;
+&lt;p&gt;由于 DBMS 能有更多的信息做判断，所以总是比 OS 的操作好，Evictions, Allocations, Pre-fetching。&lt;/p&gt;
+&lt;h2 id="lecture-07-hash-tables"&gt;Lecture #07: Hash Tables
+&lt;/h2&gt;&lt;p&gt;DBMS 的 hash table 在内部使用，不需要加密，指关心&lt;strong&gt;速度&lt;/strong&gt;和&lt;strong&gt;冲突率&lt;/strong&gt;，哈希函数目前的 sota 是 facebook &lt;strong&gt;xxhash3&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="静态哈希策略-static-hashing-schemes"&gt;静态哈希策略 Static Hashing Schemes
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Linear Probe Hashing&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;线性探测哈希，没找到就向后找，删除用 tombstones 来替换。&lt;/p&gt;
+&lt;p&gt;短的字符串直接存，长的才哈希。&lt;/p&gt;
+&lt;p&gt;为了维护不同大小的哈希表，维护版本，复用原本的哈希表。&lt;/p&gt;
+&lt;p&gt;Google’s &lt;strong&gt;absl::flat_hash_map&lt;/strong&gt; 是 sota&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Cuckoo Hashing&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;布谷鸟哈希，多个哈希函数 / 种子，都被占了的时候，踢出原本在的，让它重新哈希。&lt;/p&gt;
+&lt;h3 id="动态哈希策略-dynamic-hashing-schemes"&gt;动态哈希策略 Dynamic Hashing Schemes
+&lt;/h3&gt;&lt;p&gt;能够空间不足的时候，重建哈希表。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Chained Hashing&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;链哈希。拉链法，hash 到链表的桶，然后遍历链表。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Extendible Hashing&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;可扩展哈希。拉链法没有限制链表的长度，可扩展哈希，使用必要时分裂当前桶的操作来缓解这一点。&lt;/p&gt;
+&lt;p&gt;全局深度、局部深度，具体逻辑暂时没有去了解。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Linear Hashing&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;线性哈希。不在超出的时候立刻分裂，按照指针，一个一个分裂，避免一次性处理过多。&lt;/p&gt;
+&lt;h2 id="lecture-08-indexes--filters-i"&gt;Lecture #08: Indexes &amp;amp; Filters I
+&lt;/h2&gt;&lt;p&gt;table index 表索引，常不用 hash table，因为不支持范围扫描、部分键查找。&lt;/p&gt;
+&lt;p&gt;B- Tree 在所有节点存值，B+ Tree 只在叶子节点存值。&lt;/p&gt;
+&lt;p&gt;B+ Tree 的设计选择：&lt;/p&gt;
+&lt;p&gt;节点大小 Node size、合并阈值 Merge Threshold、变长键 Variable Length Keys（指针、变长节点（内存效率不好）、填充、键映射）&lt;/p&gt;
+&lt;p&gt;内部节点，M/2 − 1 &amp;lt;= num of keys &amp;lt;= M − 1。&lt;/p&gt;
+&lt;p&gt;节点内搜索：&lt;/p&gt;
+&lt;p&gt;线性、二分、插值。&lt;/p&gt;
+&lt;p&gt;优化方法：&lt;/p&gt;
+&lt;p&gt;前缀压缩、去重、后缀截断、指针变换、大量插入（自底向上的构建）、写优化（Bϵ-Tree，懒写入）&lt;/p&gt;
+&lt;h2 id="lecture-09-indexes-ii"&gt;Lecture #09: Indexes II
+&lt;/h2&gt;&lt;p&gt;过滤器 filter，回答元素是否在集合中。&lt;/p&gt;
+&lt;p&gt;快速回答，加速查询。（可能假阳性 false positive）&lt;/p&gt;
+&lt;h3 id="布隆过滤器-bloom-filter"&gt;布隆过滤器 Bloom filter
+&lt;/h3&gt;&lt;p&gt;位图 bitmap 实现的概率过滤器，假阳性率可以计算出来，需要定义&lt;strong&gt;位图的大小&lt;/strong&gt;、&lt;strong&gt;哈希函数的数量大小&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;Insert，算出每个 hash value，对位图大小取模 modular，bitmap 的对应位置 1。&lt;/p&gt;
+&lt;p&gt;lookup，找有无这样的位图。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;变体&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;计数布隆过滤器 Counting Bloom filter，用整数序列代替位图，支持删除操作。&lt;/p&gt;
+&lt;p&gt;布谷鸟过滤器 Cuckoo filter，Cuckoo Hash 的思路，存储元素的内存占用，支持删除操作。&lt;/p&gt;
+&lt;p&gt;精简范围过滤器 Succinct range filter，不可变的过滤器，支持范围查询。&lt;/p&gt;
+&lt;h3 id="跳表-skip-list"&gt;跳表 Skip List
+&lt;/h3&gt;&lt;p&gt;多级链表，没有重平衡的需要。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;操作&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;find，顶层链表开始，逐级下移直到找到目标或确定不存在。&lt;/p&gt;
+&lt;p&gt;insert，通过抛硬币随机决定新节点的层数，从底层向上逐层插入。&lt;/p&gt;
+&lt;p&gt;delete，先标记节点为删除状态（避免并发读取问题），后续清理时从顶层向下移除节点。&lt;/p&gt;
+&lt;p&gt;实现简单，反向扫描复杂，缓存不友好。&lt;/p&gt;
+&lt;h3 id="字典树-trie"&gt;字典树 Trie
+&lt;/h3&gt;&lt;p&gt;按字符/位存储键值的前缀信息，每个节点代表一个字符/位，指针指向子节点，操作时间复杂度取决于键的长度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;压缩优化&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;水平压缩，用数组替代映射表（如256字节数组），减少指针开销。&lt;/p&gt;
+&lt;p&gt;垂直压缩（Radix Tree），合并单子节点路径，减少树深度，提升查询效率。（假阳性）&lt;/p&gt;
+&lt;h3 id="倒排索引-inverted-index"&gt;倒排索引 Inverted Index
+&lt;/h3&gt;&lt;p&gt;关键词搜索，不同于前面提到的点检索、范围检索，将术语映射到包含该术语的记录列表（posting list）。&lt;/p&gt;
+&lt;p&gt;从关键词查找文档。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;实现方案&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Lucene&lt;/strong&gt;，有限状态转换器（FST, finite state transducer），每条边存储权重，通过权重和计算精确位置。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;PostgreSQL&lt;/strong&gt;，B+树存储词典，小posting list直接存ID，大列表用嵌套B+树。&lt;/p&gt;
+&lt;h3 id="向量索引-vector-index"&gt;向量索引 Vector Index
+&lt;/h3&gt;&lt;p&gt;语义搜索，处理嵌入向量（embedding）的相似性查询。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;倒排文件分区&lt;/strong&gt; Inverted File ，通过聚类将向量分组，查询时定位到相关组，如 IVFFlat。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;可导航小世界&lt;/strong&gt;，Navigable Small Worlds，构建向量邻居图，通过贪婪搜索逼近目标，如 FAISS, HNSWlib。&lt;/p&gt;
+&lt;h2 id="lecture-10-index-concurrency-control"&gt;Lecture #10: Index Concurrency Control
+&lt;/h2&gt;&lt;p&gt;物理正确性：确保数据结构内部指针有效，不访问无效内存&lt;/p&gt;
+&lt;p&gt;逻辑正确性：保证事务读取到预期值&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;锁(Locks)&lt;/strong&gt;：高层逻辑原语，保护数据库内容（如表、元组），事务期间持有，系统自动处理死锁检测&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;闩锁(Latches)&lt;/strong&gt;：底层原语，保护内部数据结构，短期持有（如单次操作），需开发者手动避免死锁&lt;/p&gt;
+&lt;h3 id="闩锁的实现方式-latch-implementations"&gt;闩锁的实现方式 Latch Implementations
+&lt;/h3&gt;&lt;p&gt;compare-and-swap (CAS)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Test-and-Set Spin Latch (TAS)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;使用CAS指令自旋等待，std::atomic&lt;/p&gt;
+&lt;p&gt;单指令加锁/解锁（x86），DBMS完全控制，高竞争时效率低，缓存一致性问题（多线程轮询）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Blocking OS Mutex&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;用户空间自旋+内核级互斥量，std::mutex&lt;/p&gt;
+&lt;p&gt;实现简单，开销大（~25ns/次），需OS调度，不推荐DBMS内部使用。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reader-Writer Latches&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;支持读写模式，多读并发，std::shared mutex&lt;/p&gt;
+&lt;p&gt;允许多个读同时进行，提高读密集型场景性能，需管理读写队列避免饥饿，存储开销大（需额外元数据）。&lt;/p&gt;
+&lt;h3 id="哈希表闩锁-hash-table-latching"&gt;哈希表闩锁 Hash Table Latching
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Page Latches&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;每页一个读写闩锁，&lt;strong&gt;读多&lt;/strong&gt;写少场景，单页内操作频繁。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Slot Latches&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;每个槽独立闩锁，高并发&lt;strong&gt;写入&lt;/strong&gt;场景，槽间访问分散。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;无闩锁&lt;/strong&gt;，CAS指令实现的 Linear Probe Hash。&lt;/p&gt;
+&lt;h3 id="btree-latching"&gt;B+Tree Latching
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Basic Latch Crabbing Protocol&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;find，从根节点出发，获取子节点闩锁，再释放父节点闩锁。&lt;/p&gt;
+&lt;p&gt;insert / delete，自顶向下获取所有需要的闩锁，子节点安全（插入：节点未满；删除：节点半满以上），则释放祖先节点。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Improved Latch Crabbing Protocol&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;insert / delete，先用 read latch 像 find 到叶子节点，叶子安全直接操作，不安全释放，重新执行上面的协议。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Leaf Node Scans&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如扫描和删除，不同遍历方向导致的死锁。（因为分裂 / 合并，需要同时访问两个相邻的节点）&lt;/p&gt;
+&lt;p&gt;解决方法：&lt;/p&gt;
+&lt;p&gt;无等待模式 No-wait mode，获取失败则重试；&lt;/p&gt;
+&lt;p&gt;根据进度来安排有限度。&lt;/p&gt;
+&lt;h2 id="lecture-11-sorting--aggregation-algorithms"&gt;Lecture #11: Sorting &amp;amp; Aggregation Algorithms
+&lt;/h2&gt;&lt;h3 id="query-plan"&gt;Query plan
+&lt;/h3&gt;&lt;p&gt;数据库把 SQL 编译成操作树——Query plan。&lt;/p&gt;
+&lt;h3 id="排序-sorting"&gt;排序 Sorting
+&lt;/h3&gt;&lt;p&gt;Top-N Heap Sort，External merge sort&lt;/p&gt;
+&lt;p&gt;Two-way Merge Sort&lt;/p&gt;
+&lt;p&gt;General (K-way) Merge Sort&lt;/p&gt;
+&lt;p&gt;Double Buffering Optimization，双倍缓冲区，可用缓冲区减半，但取数据和计算同步进行。&lt;/p&gt;
+&lt;p&gt;Comparison Optimizations，如 &lt;strong&gt;Code specialization&lt;/strong&gt;，例如 template specialization；字符串的后缀截断 suffix truncation。&lt;/p&gt;
+&lt;p&gt;Using B+Trees，利用 B+Tree index，无需计算，顺序访问。&lt;/p&gt;
+&lt;h3 id="聚合-aggregation"&gt;聚合 Aggregation
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Sorting&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;先过滤再排序，减少排序的数据。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Hashing&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;不追求顺序的时候。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;分区&lt;/li&gt;
+&lt;li&gt;再哈希&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="lecture-12-joins-algorithms"&gt;Lecture #12: Joins Algorithms
+&lt;/h2&gt;&lt;p&gt;数据库设计的目标是减少重复信息，因此常通过&lt;strong&gt;规范化&lt;/strong&gt; normalization theory 将数据拆分到多个表中，再使用 &lt;strong&gt;join&lt;/strong&gt; 重组数据。&lt;/p&gt;
+&lt;p&gt;通常将较小的表作为&lt;strong&gt;外表（outer table）&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="join-operators"&gt;Join Operators
+&lt;/h3&gt;&lt;p&gt;实际一般混合使用。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Early Materialization&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;将匹配的所有列值复制到中间结果中，后续操作无需回基表，但占用更多内存。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Late Materialization&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;仅复制连接键和记录ID。适合列存储，减少内存占用。&lt;/p&gt;
+&lt;h3 id="cost-analysis"&gt;Cost Analysis
+&lt;/h3&gt;&lt;p&gt;主要成本指标：&lt;strong&gt;磁盘 I/O 次数&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;不考虑输出结果的 I/O，因为所有算法的输出相同。&lt;/p&gt;
+&lt;p&gt;注意选择合理的连接类型。&lt;/p&gt;
+&lt;h3 id="nested-loop-join"&gt;Nested Loop Join
+&lt;/h3&gt;&lt;p&gt;外部 for 循环中的表称为外表，而内部 for 循环中的表称为内表。&lt;/p&gt;
+&lt;p&gt;希望“较小”的表作为外表。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;简单嵌套循环连接&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;将外表中的每个元组与内表中的每个元组进行比较。&lt;/p&gt;
+&lt;p&gt;成本： M+(m×N)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;块嵌套循环连接&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;对于外表中的每个块，获取内表中的每个块，并比较这两个块中的所有元组。&lt;/p&gt;
+&lt;p&gt;成本： M+((R中的块数)×N)&lt;/p&gt;
+&lt;p&gt;块大小：如果 DBMS 有 BB 个可用缓冲区来计算连接，它可以使用 B−2B−2 个缓冲区来扫描外表。页数较少的表将作为外表。它将使用一个缓冲区来扫描内表，一个缓冲区来存储连接的输出。&lt;/p&gt;
+&lt;p&gt;成本： M+(MB−2)×N&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;索引嵌套循环连接&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;先前的嵌套循环连接算法性能不佳，因为 DBMS 必须进行顺序扫描来检查内表中的匹配项。&lt;/p&gt;
+&lt;p&gt;外表将是没有索引的那个表。内表将是有索引的那个表。&lt;/p&gt;
+&lt;p&gt;成本：M+(m×C)&lt;/p&gt;
+&lt;h3 id="sort-merge-join"&gt;Sort-Merge Join
+&lt;/h3&gt;&lt;p&gt;该算法的最坏情况是如果两个表中所有元组的连接属性都包含相同的值，这在实际数据库中极不可能发生。在这种情况下，合并的成本将是 M⋅NM⋅N，因为对于每个外部页，我们将不得不匹配整个内部表。但大多数时候，键几乎是唯一的，因此可以假设合并成本大约为 M+NM+N。&lt;/p&gt;
+&lt;p&gt;假设 DBMS 有 BB 个缓冲区可用于该算法：&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;表 RR 的排序成本：&lt;/em&gt; 2M×(1+⌈logB−1⌈MB⌉⌉)
+&lt;em&gt;表 SS 的排序成本：&lt;/em&gt; 2N×(1+⌈logB−1⌈NB⌉⌉)&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;合并成本：&lt;/em&gt; (M+N)&lt;/p&gt;
+&lt;h3 id="hash-join"&gt;Hash Join
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;基本哈希连接&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Build Phase：扫描外表，根据哈希函数 h1 构建内存中的 Hash Table。&lt;/p&gt;
+&lt;p&gt;Probe Phase：扫描内表，对每条元组使用 h1 在 Hash Table 中查找匹配。&lt;/p&gt;
+&lt;p&gt;一个优化是使用布隆过滤器&lt;/p&gt;
+&lt;p&gt;布隆过滤器是一种概率数据结构，&lt;strong&gt;可以放入 CPU 缓存&lt;/strong&gt;中，并回答“键 x 在哈希表中吗？”的问题，回答要么是“绝对不在”，要么是“可能在”。提供了额外元数据，&lt;strong&gt;横向信息传递&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Grace 哈希连接 / 分区哈希连接&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;优化原理：当哈希表太大无法放入内存时，将两个表都使用同一个哈希函数 h1 分区并写入磁盘。然后，逐对加载对应的分区到内存中进行连接。&lt;/p&gt;
+&lt;p&gt;递归分区：如果单个分区仍然过大，使用另一个哈希函数 h2 进行递归分区，直到每个子分区都能放入内存。&lt;/p&gt;
+&lt;p&gt;代价：3(M + N)，源于对两个表的两次读写（分区+探测）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Hybrid Hash Join&lt;/strong&gt;：一种自适应优化，用于处理&lt;strong&gt;数据倾斜&lt;/strong&gt;。它将&lt;strong&gt;热分区&lt;/strong&gt;（频繁出现的键）保留在内存中，并在 &lt;strong&gt;Build Phase&lt;/strong&gt; 时立即进行连接，而不是将其溢出到磁盘。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;下面将是用 AI 对 Note 进行进一步提炼，复制（略加修改得来的）&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id="lecture-13-query-processing-i"&gt;Lecture #13: Query Processing I
+&lt;/h2&gt;&lt;h3 id="查询计划与执行概览"&gt;查询计划与执行概览
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;查询计划 (Query Plan)&lt;/strong&gt; 是一个由&lt;strong&gt;算子 (Operators)&lt;/strong&gt; 组成的&lt;strong&gt;有向无环图 (DAG)&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;流水线 (Pipeline)&lt;/strong&gt;：一系列算子，数据在其中连续流动，无需中间存储。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;流水线破坏者 (Pipeline Breaker)&lt;/strong&gt;：必须等待其子算子&lt;strong&gt;产出所有元组 (Emit All Their Tuples)&lt;/strong&gt; 后才能开始工作的算子，例如 &lt;strong&gt;Join (构建端)&lt;/strong&gt;、&lt;strong&gt;子查询 (Subqueries)&lt;/strong&gt;、&lt;strong&gt;排序 (Order By)&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="处理模型-processing-models"&gt;处理模型 (Processing Models)
+&lt;/h3&gt;&lt;p&gt;处理模型定义了系统如何执行一个&lt;strong&gt;查询计划 (Query Plan)&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;A. Iterator Model / Volcano Model / Pipeline Model&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;原理&lt;/strong&gt;：每个算子实现一个 &lt;code&gt;Next()&lt;/code&gt; 函数。调用时返回&lt;strong&gt;单条元组 (Single Tuple)&lt;/strong&gt; 或 &lt;code&gt;null&lt;/code&gt;。通过递归调用子算子的 &lt;code&gt;Next()&lt;/code&gt; 来&lt;strong&gt;拉取 (Pull)&lt;/strong&gt; 数据。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;控制流 (Control Flow)&lt;/strong&gt;：自顶向下&lt;strong&gt;拉取 (Pull)&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;优点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;输出控制简单，适合&lt;strong&gt;流水线 (Pipelining)&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;几乎所有的&lt;strong&gt;基于行 (Row-Based)&lt;/strong&gt; 的系统都使用它。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;缺点&lt;/strong&gt;：每个元组都调用 &lt;code&gt;Next()&lt;/code&gt;，导致高频函数调用，可能成为性能瓶颈。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;B. Materialization Model&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;原理&lt;/strong&gt;：每个算子一次处理&lt;strong&gt;所有输入 (All Input)&lt;/strong&gt;，并一次性&lt;strong&gt;物化 (Materialize)&lt;/strong&gt; &lt;strong&gt;所有输出 (All Output)&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;控制流 (Control Flow)&lt;/strong&gt;：自顶向下拉取，但每次处理一批。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优点&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;函数调用次数少，适合&lt;strong&gt;OLTP (Online Transaction Processing)&lt;/strong&gt; 负载，因为这类查询通常只涉及少量元组。&lt;/p&gt;
+&lt;p&gt;可结合&lt;strong&gt;Late Materialization (延迟物化)&lt;/strong&gt; 优化。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;缺点&lt;/strong&gt;：不适合中间结果集大的查询，可能导致内存爆炸。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;C. Vectorized / Batch Model&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;原理&lt;/strong&gt;：每个算子一次处理并返回&lt;strong&gt;一批数据 (a Batch of Tuples)&lt;/strong&gt;。Batch 是一组元组的集合（如 100-1000 个）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;控制流 (Control Flow)&lt;/strong&gt;：自顶向下拉取，但每次处理一个 &lt;strong&gt;Batch&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优点&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;显著减少函数调用次数。&lt;/p&gt;
+&lt;p&gt;更适合利用 &lt;strong&gt;SIMD (Single Instruction Multiple Data)&lt;/strong&gt; 指令进行向量化计算，优化 CPU 利用率。&lt;/p&gt;
+&lt;p&gt;非常适合 &lt;strong&gt;OLAP (Online Analytical Processing)&lt;/strong&gt; 负载。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;现代趋势&lt;/strong&gt;：许多现代系统（如 Snowflake, Amazon Redshift）采用此模型。&lt;/p&gt;
+&lt;h3 id="访问方法-access-methods"&gt;访问方法 (Access Methods)
+&lt;/h3&gt;&lt;p&gt;定义了如何访问表中存储的数据，是查询计划中的叶节点。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;A. 顺序扫描 (Sequential Scan)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;原理&lt;/strong&gt;：迭代表中的每一页，评估&lt;strong&gt;谓词 (Predicate)&lt;/strong&gt; 并决定是否发出元组。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优化方法&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;预取 (Prefetching)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;缓冲池旁路 (Buffer Pool Bypass)&lt;/strong&gt;：避免&lt;strong&gt;顺序淹没 (Sequential Flooding)&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;区域映射 (Zone Map)&lt;/strong&gt;：&lt;strong&gt;无损数据跳过 (Lossless Data Skipping)&lt;/strong&gt;，通过预计算聚合值判断是否需要访问该页。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;延迟物化 (Late Materialization)&lt;/strong&gt;：列存数据库中，延迟组合元组直至查询计划上层。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;近似查询 (Approximate Queries)&lt;/strong&gt;：&lt;strong&gt;有损数据跳过 (Lossy Data Skipping)&lt;/strong&gt;，对数据子集进行采样以快速得到近似结果。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;B. 索引扫描 (Index Scan)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;原理&lt;/strong&gt;：DBMS 选择一个&lt;strong&gt;索引 (Index)&lt;/strong&gt; 来查找查询所需的元组。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;索引选择因素&lt;/strong&gt;：索引包含的属性、查询引用的属性、&lt;strong&gt;值域 (Value Domains)&lt;/strong&gt;、&lt;strong&gt;谓词组合 (Predicate Composition)&lt;/strong&gt;、键是否唯一等。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;C. 多索引扫描 (Multi-Index Scan)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;原理&lt;/strong&gt;：使用多个索引，分别计算满足条件的&lt;strong&gt;记录ID集合 (Sets of Record IDs)&lt;/strong&gt;，然后根据谓词（如 AND）合并这些集合（使用&lt;strong&gt;位图/Bitmaps&lt;/strong&gt;、&lt;strong&gt;哈希表/Hash Tables&lt;/strong&gt; 或 &lt;strong&gt;布隆过滤器/Bloom Filters&lt;/strong&gt;），最后获取记录并应用剩余谓词。&lt;/p&gt;
+&lt;h3 id="修改查询-modification-queries"&gt;修改查询 (Modification Queries)
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;INSERT, UPDATE, DELETE&lt;/strong&gt; 算子负责检查&lt;strong&gt;约束 (Constraints)&lt;/strong&gt; 和更新索引。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;万圣节问题 (Halloween Problem)&lt;/strong&gt;：一个&lt;strong&gt;更新 (Update)&lt;/strong&gt; 操作改变了元组的物理位置，导致&lt;strong&gt;扫描算子 (Scan Operator)&lt;/strong&gt; 多次访问该元组。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解决方案&lt;/strong&gt;：跟踪每个查询已修改的&lt;strong&gt;记录ID (Record IDs)&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;例子&lt;/p&gt;
+&lt;p&gt;“给所有工资小于25000的员工加薪百分之十”&lt;/p&gt;
+&lt;p&gt;“所有工资小于25000的哪些记录被无限次数得加薪了百分之十，直到工资大于等于25000为止。”&lt;/p&gt;
+&lt;p&gt;重复扫描了修改后的元组。&lt;/p&gt;
+&lt;h3 id="表达式求值-expression-evaluation"&gt;表达式求值 (Expression Evaluation)
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;WHERE 子句&lt;/strong&gt;被表示为一棵&lt;strong&gt;表达式树 (Expression Tree)&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;传统方式&lt;/strong&gt;：遍历树并逐个求值，速度慢。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优化方式&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;代码生成 (Code Generation) / JIT编译 (JIT Compilation)&lt;/strong&gt;：直接编译表达式为高效代码。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;常量折叠 (Constant Folding)&lt;/strong&gt;：预先计算常量表达式。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;公共子表达式消除 (Sub Expression Elimination)&lt;/strong&gt;：识别并消除重复子表达式。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;向量化求值 (Vectorized Evaluation)&lt;/strong&gt;：对批次元组同时求值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="lecture-14-query-execution-ii"&gt;Lecture #14: Query Execution II
+&lt;/h2&gt;&lt;h3 id="并行执行背景"&gt;并行执行背景
+&lt;/h3&gt;&lt;p&gt;并行执行通过多个&lt;strong&gt;工作线程 Worker&lt;/strong&gt; 处理查询，带来关键优势：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;提升性能&lt;/strong&gt;：更高的吞吐量与更低的延迟&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;提升响应与可用性&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;降低总拥有成本 Total Cost of Ownership&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id="并行与分布式数据库"&gt;并行与分布式数据库
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;并行数据库 Parallel DBMS&lt;/strong&gt;&lt;br&gt;
+资源物理位置相近，通过高速互联通信，通信快速、廉价、可靠。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;分布式数据库 Distributed DBMS&lt;/strong&gt;&lt;br&gt;
+资源可能分布在全球，通过较慢的公网互联，通信成本高且必须考虑故障。&lt;/p&gt;
+&lt;p&gt;两者对应用程序均呈现为单一逻辑数据库。&lt;/p&gt;
+&lt;h3 id="进程模型-process-models"&gt;进程模型 Process Models
+&lt;/h3&gt;&lt;p&gt;定义了系统如何处理多用户并发请求。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;进程每工作线程 Process per Worker&lt;/strong&gt;&lt;br&gt;
+每个工作线程是独立的操作系统进程。&lt;br&gt;
+依赖操作系统调度，可使用共享内存或消息传递。&lt;br&gt;
+一个进程崩溃不会导致整个系统崩溃。&lt;br&gt;
+例如 IBM DB2, Postgres, Oracle。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;线程每工作线程 Thread per Worker&lt;/strong&gt;&lt;br&gt;
+单一进程内包含多个工作线程。&lt;br&gt;
+DBMS 拥有完全的调度控制权，上下文切换开销更小。&lt;br&gt;
+一个线程崩溃可能杀死整个数据库进程。&lt;br&gt;
+近 20 年的现代 DBMS 普遍采用，如 Microsoft SQL Server, MySQL。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;嵌入式数据库 Embedded DBMS&lt;/strong&gt;&lt;br&gt;
+数据库系统运行在应用程序的地址空间内，由应用程序负责调度。&lt;br&gt;
+例如 DuckDB, SQLite, RocksDB。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;调度 Scheduling&lt;/strong&gt;&lt;br&gt;
+DBMS 需要为每个查询计划决定在何处、何时以及如何执行，它比操作系统掌握更多信息，应优先由其决策。&lt;/p&gt;
+&lt;h3 id="查询间并行-inter-query-parallelism"&gt;查询间并行 Inter Query Parallelism
+&lt;/h3&gt;&lt;p&gt;同时执行多个不同的查询。&lt;br&gt;
+对于只读查询，协调简单；对于更新操作，会产生复杂冲突。&lt;/p&gt;
+&lt;h3 id="查询内并行-intra-query-parallelism"&gt;查询内并行 Intra Query Parallelism
+&lt;/h3&gt;&lt;p&gt;并行执行单个查询中的操作，降低长查询的延迟。&lt;br&gt;
+遵循&lt;strong&gt;生产者/消费者 Producer/Consumer&lt;/strong&gt;范式。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;intra-operator 并行（水平）&lt;/strong&gt;&lt;br&gt;
+将算子分解为独立的&lt;strong&gt;片段 Fragment&lt;/strong&gt;，在不同数据子集上执行相同功能。&lt;br&gt;
+使用&lt;strong&gt;交换算子 Exchange Operator&lt;/strong&gt; 合并子算子结果：&lt;br&gt;
+&lt;strong&gt;收集 Gather&lt;/strong&gt;：将多个工作线程的结果合并为单一输出流。&lt;br&gt;
+&lt;strong&gt;分发 Distribute&lt;/strong&gt;：将单一输入流拆分为多个输出流。&lt;br&gt;
+&lt;strong&gt;重分区 Repartition&lt;/strong&gt;：在多个输入流和输出流之间重新组织数据。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;inter-operator 并行（垂直）&lt;/strong&gt;&lt;br&gt;
+也称为&lt;strong&gt;流水线并行 Pipelined Parallelism&lt;/strong&gt;，重叠算子执行，无需物化中间结果，数据直接从一阶段流入下一阶段。广泛用于流处理系统。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Bushy 并行&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;intra-operator&lt;/strong&gt; 和 &lt;strong&gt;inter-operator&lt;/strong&gt; 并行的混合模式，工作线程同时执行查询计划不同段的多个算子。同样使用交换算子合并中间结果。&lt;/p&gt;
+&lt;h3 id="io-并行"&gt;I/O 并行
+&lt;/h3&gt;&lt;p&gt;为避免磁盘成为瓶颈，将数据库拆分到多个存储设备。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;多磁盘并行 Multi Disk Parallelism&lt;/strong&gt;&lt;br&gt;
+通过存储设备或 RAID 配置，由操作系统/硬件将数据库文件分布到多个存储设备。对 DBMS 透明。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;数据库分区 Database Partitioning&lt;/strong&gt;&lt;br&gt;
+将数据库拆分为不相交的子集，分配到不同的磁盘。&lt;br&gt;
+可以在文件系统级别实现，对应用程序理想情况下是透明的。&lt;/p&gt;
+&lt;h2 id="lecture-15-query-planning--optimization"&gt;Lecture #15: Query Planning &amp;amp; Optimization
+&lt;/h2&gt;&lt;p&gt;SQL是&lt;strong&gt;声明式语言 Declarative Language&lt;/strong&gt;，仅说明要计算什么，而非如何计算。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;查询优化器 Query Optimizer&lt;/strong&gt; 负责将SQL语句转换为最优的&lt;strong&gt;可执行查询计划 Executable Query Plan&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;查询优化是DBMS中最难构建的部分。&lt;/p&gt;
+&lt;h3 id="逻辑-vs-物理计划"&gt;逻辑 vs. 物理计划
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;逻辑计划 Logical Plan&lt;/strong&gt; 大致对应于关系代数表达式。&lt;br&gt;
+&lt;strong&gt;物理计划 Physical Plan&lt;/strong&gt; 定义了使用特定&lt;strong&gt;访问路径 Access Path&lt;/strong&gt; 的具体执行策略。&lt;br&gt;
+逻辑计划与物理计划之间并非总是一一对应。&lt;/p&gt;
+&lt;h3 id="查询优化类型"&gt;查询优化类型
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;基于规则的优化 Rule Based Optimization&lt;/strong&gt;&lt;br&gt;
+使用静态&lt;strong&gt;启发式规则 Heuristics&lt;/strong&gt; 来匹配查询模式并转换计划，无需检查数据本身。&lt;br&gt;
+例如&lt;strong&gt;谓词下推 Predicate Pushdown&lt;/strong&gt;、&lt;strong&gt;投影下推 Projection Pushdown&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;基于成本的优化 Cost Based Optimization&lt;/strong&gt;&lt;br&gt;
+读取数据并估算等效计划的执行&lt;strong&gt;成本 Cost&lt;/strong&gt;，选择成本最低的计划。&lt;/p&gt;
+&lt;h3 id="成本估算-cost-estimations"&gt;成本估算 Cost Estimations
+&lt;/h3&gt;&lt;p&gt;成本模型评估的指标包括：CPU、磁盘I/O、内存、网络。&lt;br&gt;
+为避免穷举所有可能计划（对于n路连接有 $4^n$ 种顺序），优化器必须限制搜索空间。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;统计信息 Statistics&lt;/strong&gt;&lt;br&gt;
+DBMS在&lt;strong&gt;内部目录 Internal Catalog&lt;/strong&gt; 中维护关于表、属性和索引的统计信息。&lt;br&gt;
+关键统计信息：&lt;br&gt;
+$N_R$​：关系R中的元组数量&lt;br&gt;
+$V(A,R)$：属性A的不同取值数量&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;选择基数 Selection Cardinality&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;$SC(A,R)$：属性A的平均记录数，计算公式为 $\frac{N_R}{V(A,R)​​}$&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;选择性 Selectivity&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;谓词P的&lt;strong&gt;选择性 Selectivity&lt;/strong&gt; 是满足条件的元组比例，等效于该谓词为真的概率。&lt;br&gt;
+复杂选择性计算依赖于三个关键假设：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;均匀数据 Uniform Data&lt;/strong&gt;：取值分布是均匀的。&lt;br&gt;
+&lt;strong&gt;独立谓词 Independent Predicates&lt;/strong&gt;：不同属性上的谓词相互独立。&lt;br&gt;
+&lt;strong&gt;包含原则 Inclusion Principle&lt;/strong&gt;：连接键的域相互重叠，内表中的每个键在外表中都存在。&lt;br&gt;
+这些假设在真实数据中常常不成立。&lt;/p&gt;
+&lt;h3 id="直方图与采样"&gt;直方图与采样
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;直方图 Histograms&lt;/strong&gt; 用于处理倾斜 skewed 数据，减少存储开销。&lt;br&gt;
+&lt;strong&gt;等宽直方图 Equi-Width Histogram&lt;/strong&gt;：每个桶的取值区间宽度相同。&lt;br&gt;
+&lt;strong&gt;等深直方图 Equi-Depth Histogram&lt;/strong&gt;：每个桶的总出现次数大致相同。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;采样 Sampling&lt;/strong&gt;
+对具有相似分布的表的较小副本应用谓词，以估算选择性。&lt;/p&gt;
+&lt;h3 id="单关系查询计划"&gt;单关系查询计划
+&lt;/h3&gt;&lt;p&gt;主要挑战是选择最佳&lt;strong&gt;访问方法 Access Method&lt;/strong&gt;（顺序扫描、索引扫描等）。&lt;br&gt;
+OLTP查询通常是&lt;strong&gt;可优化查询 Sargable&lt;/strong&gt;，存在一个可通过简单启发式规则选择的最佳索引。&lt;/p&gt;
+&lt;h3 id="多关系查询计划"&gt;多关系查询计划
+&lt;/h3&gt;&lt;p&gt;随着连接数增加，可选计划数量急剧增长，必须限制搜索空间。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;生成式 / 自底向上优化 Generative / Bottom up Optimization&lt;/strong&gt;&lt;br&gt;
+从无到有构建计划。例如 IBM System R, Postgres。&lt;br&gt;
+使用动态编程确定最佳连接顺序，构建&lt;strong&gt;左深树 Left Deep Tree&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;转换式 / 自顶向下优化 Transformation / Top down Optimization&lt;/strong&gt;&lt;br&gt;
+从期望的结果开始，向下寻找最优计划。例如 Microsoft SQL Server, CockroachDB。
+执行&lt;strong&gt;分支限界搜索 Branch and Bound Search&lt;/strong&gt;，将逻辑算子转换为物理算子。&lt;/p&gt;
+&lt;h3 id="嵌套子查询-nested-sub-queries"&gt;嵌套子查询 Nested Sub Queries
+&lt;/h3&gt;&lt;p&gt;DBMS将WHERE子句中的嵌套子查询视为接受参数并返回单个值或值集合的函数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;重写 Rewriting&lt;/strong&gt;&lt;br&gt;
+通过&lt;strong&gt;解相关 De correlating&lt;/strong&gt; 或&lt;strong&gt;扁平化 Flattening&lt;/strong&gt; 将嵌套子查询重写为JOIN。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;分解 Decomposition&lt;/strong&gt;&lt;br&gt;
+将嵌套查询分解，将结果存储到临时表中。&lt;/p&gt;
+&lt;h3 id="表达式重写-expression-rewriting"&gt;表达式重写 Expression Rewriting
+&lt;/h3&gt;&lt;p&gt;将查询表达式转换为最小的表达式集合。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;不可能谓词 Impossible Predicates&lt;/strong&gt;&lt;br&gt;
+在优化时评估表达式，消除不可能条件。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;合并谓词 Merging Predicates&lt;/strong&gt;&lt;br&gt;
+合并冗余的谓词范围。&lt;/p&gt;
+&lt;h2 id="lecture-16-concurrency-control-theory"&gt;Lecture #16: Concurrency Control Theory
+&lt;/h2&gt;&lt;h3 id="动机"&gt;动机
+&lt;/h3&gt;&lt;p&gt;并发控制需解决两个核心问题：&lt;br&gt;
+&lt;strong&gt;丢失更新问题 Lost Update Problem (并发控制 Concurrency Control)&lt;/strong&gt;：如何避免同时更新记录时的竞态条件。&lt;br&gt;
+&lt;strong&gt;持久性问题 Durability Problem (恢复 Recovery)&lt;/strong&gt;：如何在发生断电等故障时确保数据库处于正确状态。&lt;/p&gt;
+&lt;h3 id="事务-transactions"&gt;事务 Transactions
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;事务 Transaction&lt;/strong&gt; 是在共享数据库上执行一个或多个操作（如SQL查询）的序列，以完成某个高级功能。它是数据库变更的基本单位，必须是&lt;strong&gt;原子性 Atomic&lt;/strong&gt;的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;简易系统 Strawman System&lt;/strong&gt;&lt;br&gt;
+一次只执行一个事务，通过复制整个数据库文件来实现。该方法性能低下，无法并发。&lt;/p&gt;
+&lt;h3 id="定义"&gt;定义
+&lt;/h3&gt;&lt;p&gt;数据库可表示为一组固定的命名&lt;strong&gt;数据对象 Data Objects&lt;/strong&gt;。&lt;br&gt;
+&lt;strong&gt;事务 Transaction&lt;/strong&gt; 是对这些对象的&lt;strong&gt;读 Read&lt;/strong&gt;和&lt;strong&gt;写 Write&lt;/strong&gt;操作序列。&lt;br&gt;
+事务边界由客户端定义，以&lt;strong&gt;BEGIN&lt;/strong&gt;开始，以&lt;strong&gt;COMMIT&lt;/strong&gt;或&lt;strong&gt;ABORT&lt;/strong&gt;结束。&lt;br&gt;
+正确性标准由&lt;strong&gt;ACID&lt;/strong&gt;准则保证。&lt;/p&gt;
+&lt;h3 id="acid原子性-atomicity"&gt;ACID：原子性 Atomicity
+&lt;/h3&gt;&lt;p&gt;保证事务中的所有操作要么全部发生，要么全部不发生。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;方法一：日志记录 Logging&lt;/strong&gt;&lt;br&gt;
+记录所有操作以便在事务中止时&lt;strong&gt;撤销 Undo&lt;/strong&gt;。被现代系统广泛使用。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;方法二：影子分页 Shadow Paging&lt;/strong&gt;&lt;br&gt;
+事务修改页的副本，仅在提交时才使页面可见。运行时性能通常较差，恢复简单，实践中较少使用。&lt;/p&gt;
+&lt;h3 id="acid一致性-consistency"&gt;ACID：一致性 Consistency
+&lt;/h3&gt;&lt;p&gt;确保数据库所代表的“世界”在逻辑上是正确的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;数据库一致性 Database Consistency&lt;/strong&gt;：数据库准确建模现实世界并遵循完整性约束。&lt;br&gt;
+&lt;strong&gt;事务一致性 Transaction Consistency&lt;/strong&gt;：确保事务一致性是应用程序的责任。&lt;/p&gt;
+&lt;h3 id="acid隔离性-isolation"&gt;ACID：隔离性 Isolation
+&lt;/h3&gt;&lt;p&gt;为事务提供一种&lt;strong&gt;幻觉 Illusion&lt;/strong&gt;，使其感觉在系统中是单独运行的。并发执行事务的结果应与某种串行执行的结果相同。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;并发控制 Concurrency Control&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;并发控制协议 Concurrency Control Protocol&lt;/strong&gt; 决定如何在运行时正确交错执行多个事务的操作。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;悲观并发控制 Pessimistic&lt;/strong&gt;：假定事务会冲突，从而预先防止问题发生。之前加锁。
+&lt;strong&gt;乐观并发控制 Optimistic&lt;/strong&gt;：假定冲突很少发生，在提交时再处理冲突。之后修正。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;执行调度 Execution Schedule&lt;/strong&gt;&lt;br&gt;
+DBMS执行操作的顺序称为&lt;strong&gt;执行调度 Execution Schedule&lt;/strong&gt;。目标是最大化并发的同时确保输出“正确”。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;可串行化调度 Serializable Schedule&lt;/strong&gt;：一个与某种串行执行等效的调度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;冲突 Conflict&lt;/strong&gt;&lt;br&gt;
+两个操作在不同事务中，针对同一对象，且至少有一个是写操作时，发生冲突。
+&lt;strong&gt;读-写冲突 Read Write Conflicts (&amp;ldquo;不可重复读 Unrepeatable Reads&amp;rdquo;)&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;写-读冲突 Write Read Conflicts (&amp;ldquo;脏读 Dirty Reads&amp;rdquo;)&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;写-写冲突 Write Write conflict (&amp;ldquo;丢失更新 Lost Updates&amp;rdquo;)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;冲突可串行化 Conflict Serializability&lt;/strong&gt;&lt;br&gt;
+两个调度是&lt;strong&gt;冲突等效 Conflict Equivalent&lt;/strong&gt;的，当且仅当它们包含相同事务的相同操作，并且每对冲突操作的顺序相同。&lt;br&gt;
+一个调度是&lt;strong&gt;冲突可串行化 Conflict Serializable&lt;/strong&gt;的，当且仅当其&lt;strong&gt;依赖图 Dependency Graph (优先图 Precedence Graph)&lt;/strong&gt; 是无环的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;视图可串行化 View Serializability&lt;/strong&gt;&lt;br&gt;
+一种更弱的可串行化定义，允许&lt;strong&gt;冲突可串行化 Conflict Serializable&lt;/strong&gt;和&lt;strong&gt;盲写 Blind Writes&lt;/strong&gt;（不先读值就直接写）。允许更多调度，但难以有效执行，实践中不常用。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;调度宇宙 Universe of Schedules&lt;/strong&gt;&lt;br&gt;
+串行调度 ⊂ 冲突可串行化调度 ⊂ 视图可串行化调度 ⊂ 所有调度&lt;/p&gt;
+&lt;h3 id="acid持久性-durability"&gt;ACID：持久性 Durability
+&lt;/h3&gt;&lt;p&gt;已提交事务的所有更改在崩溃或重启后必须是&lt;strong&gt;持久的 Durable&lt;/strong&gt;。通常使用&lt;strong&gt;日志记录 Logging&lt;/strong&gt;或&lt;strong&gt;影子分页 Shadow Paging&lt;/strong&gt;来确保，要求更改存储在&lt;strong&gt;非易失性存储器 Non Volatile Memory&lt;/strong&gt;中。&lt;/p&gt;
+&lt;h2 id="lecture-17-two-phase-locking"&gt;Lecture #17: Two-Phase Locking
+&lt;/h2&gt;&lt;h3 id="事务锁-transaction-locks"&gt;事务锁 Transaction Locks
+&lt;/h3&gt;&lt;p&gt;DBMS使用&lt;strong&gt;锁 Locks&lt;/strong&gt;来动态生成&lt;strong&gt;可串行化 Serializable&lt;/strong&gt;的执行调度，以保护数据库对象在并发访问时的安全。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;锁 Locks&lt;/strong&gt; 与 &lt;strong&gt;闩 Latches&lt;/strong&gt; 的区别：&lt;br&gt;
+&lt;strong&gt;锁 Locks&lt;/strong&gt; 保护数据库中的值免受并发事务影响。&lt;br&gt;
+&lt;strong&gt;闩 Latches&lt;/strong&gt; 保护DBMS内部数据结构免受并发线程影响。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;基本锁类型&lt;/strong&gt;：&lt;br&gt;
+&lt;strong&gt;共享锁 Shared Lock (S LOCK)&lt;/strong&gt;：允许多个事务同时读取同一对象。&lt;br&gt;
+&lt;strong&gt;排他锁 Exclusive Lock (X LOCK)&lt;/strong&gt;：允许事务修改对象，阻止其他事务获取任何其他锁。&lt;/p&gt;
+&lt;p&gt;事务必须向&lt;strong&gt;锁管理器 Lock Manager&lt;/strong&gt;请求锁，锁管理器根据当前锁的持有情况授予或阻塞请求。事务在不再需要锁时必须释放它们。&lt;/p&gt;
+&lt;h3 id="两阶段锁-two-phase-locking"&gt;两阶段锁 Two Phase Locking
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;两阶段锁 2PL&lt;/strong&gt; 是一种&lt;strong&gt;悲观并发控制 Pessimistic Concurrency Control&lt;/strong&gt;协议，用于动态判断是否允许事务访问数据库中的对象。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;阶段一：增长阶段 Growing Phase&lt;/strong&gt;&lt;br&gt;
+事务从锁管理器请求它所需的所有锁。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;阶段二：收缩阶段 Shrinking Phase&lt;/strong&gt;&lt;br&gt;
+事务在释放第一个锁后进入此阶段，此阶段只允许释放锁，不允许获取新锁。&lt;/p&gt;
+&lt;p&gt;2PL本身足以保证&lt;strong&gt;冲突可串行化 Conflict Serializability&lt;/strong&gt;，但它容易导致&lt;strong&gt;级联中止 Cascading Aborts&lt;/strong&gt;（一个事务中止导致另一个事务必须回滚），并且仍然可能存在&lt;strong&gt;脏读 Dirty Reads&lt;/strong&gt;和&lt;strong&gt;死锁 Deadlocks&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="强严格两阶段锁-strong-strict-two-phase-locking"&gt;强严格两阶段锁 Strong Strict Two Phase Locking
+&lt;/h3&gt;&lt;p&gt;也称为&lt;strong&gt;严谨两阶段锁 Rigorous 2PL&lt;/strong&gt;，是2PL的一种变体，事务仅在提交时才释放所有锁。&lt;/p&gt;
+&lt;p&gt;优点：避免了级联中止，并且可以通过恢复修改元组的原始值来回滚已中止事务的更改。&lt;br&gt;
+缺点：生成更保守/悲观的调度，限制了并发性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;调度宇宙 Universe of Schedules&lt;/strong&gt;&lt;br&gt;
+串行调度 ⊂ 强严格2PL调度 ⊂ 冲突可串行化调度 ⊂ 视图可串行化调度 ⊂ 所有调度&lt;/p&gt;
+&lt;h3 id="死锁处理-deadlock-handling"&gt;死锁处理 Deadlock Handling
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;死锁 Deadlock&lt;/strong&gt; 是事务之间相互等待释放锁的循环。2PL中处理死锁有两种方法：检测和预防。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;方法一：死锁检测 Deadlock Detection&lt;/strong&gt;&lt;br&gt;
+DBMS创建一个&lt;strong&gt;等待图 Waits For Graph&lt;/strong&gt;，其中节点是事务，如果事务 Ti 正在等待事务 Tj 释放锁，则存在一条从 Ti 到 Tj 的有向边。&lt;br&gt;
+系统定期检查等待图中是否存在环，并选择&lt;strong&gt;牺牲者事务 Victim Transaction&lt;/strong&gt;来中止以打破死锁。选择牺牲者时可以考虑的属性包括：&lt;strong&gt;时间戳 Timestamp&lt;/strong&gt;（新旧）、进度、已锁定的项目数量、需要随之回滚的事务数量、过去已重启的次数（避免&lt;strong&gt;饥饿 Starvation&lt;/strong&gt;）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;方法二：死锁预防 Deadlock Prevention&lt;/strong&gt;&lt;br&gt;
+在死锁发生之前阻止事务引起死锁。事务被分配优先级（通常基于时间戳，旧事务优先级更高）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;等待-死亡 Wait Die&lt;/strong&gt;（&amp;ldquo;老等少&amp;rdquo;）：如果请求事务的优先级高于持有事务，则等待；否则，请求事务中止（死亡）。&lt;br&gt;
+&lt;strong&gt;伤害-等待 Wound Wait&lt;/strong&gt;（&amp;ldquo;少等老&amp;rdquo;）：如果请求事务的优先级高于持有事务，则持有事务中止（被伤害）并释放锁；否则，请求事务等待。&lt;/p&gt;
+&lt;h3 id="锁粒度-lock-granularities"&gt;锁粒度 Lock Granularities
+&lt;/h3&gt;&lt;p&gt;为了在锁开销和并发度之间取得平衡，DBMS使用&lt;strong&gt;锁层次结构 Lock Hierarchy&lt;/strong&gt;来处理不同粒度级别的锁。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;数据库锁层次结构 Database Lock Hierarchy&lt;/strong&gt;&lt;br&gt;
+数据库级 Database level（较罕见）&lt;br&gt;
+表级 Table level（非常常见）&lt;br&gt;
+页级 Page level（常见）&lt;br&gt;
+元组级 Tuple level（非常常见）&lt;br&gt;
+属性级 Attribute level（罕见）&lt;/p&gt;
+&lt;p&gt;当事务获取层次结构中某个对象的锁时，它隐式获取了其所有子对象的锁。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;意向锁 Intention Locks&lt;/strong&gt;&lt;br&gt;
+意向锁是隐式锁，用于表明在较低级别持有显式锁，从而避免较粗粒度的锁与较细粒度的锁冲突。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;意向共享锁 Intention Shared (IS)&lt;/strong&gt;：表示在较低级别使用共享锁进行显式锁定。&lt;br&gt;
+&lt;strong&gt;意向排他锁 Intention Exclusive (IX)&lt;/strong&gt;：表示在较低级别使用排他锁或共享锁进行显式锁定。&lt;br&gt;
+&lt;strong&gt;共享意向排他锁 Shared Intention Exclusive (SIX)&lt;/strong&gt;：该节点为根的子树以共享模式显式锁定，并且在较低级别正以排他模式锁进行显式锁定。&lt;/p&gt;
+&lt;p&gt;通过层次锁，当事务获取大量低级别锁时，DBMS可以自动切换到更粗粒度的锁，这减少了锁管理器必须处理的请求数量。&lt;/p&gt;
+&lt;h2 id="lecture-18-timestamp-ordering-concurrency-control"&gt;Lecture #18: Timestamp Ordering Concurrency Control
+&lt;/h2&gt;&lt;h3 id="时间戳排序并发控制-timestamp-ordering-concurrency-control"&gt;时间戳排序并发控制 Timestamp Ordering Concurrency Control
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;时间戳排序 T/O&lt;/strong&gt; 是一类&lt;strong&gt;乐观并发控制 Optimistic Concurrency Control&lt;/strong&gt;协议，它假设事务冲突很少，不使用锁，而是使用&lt;strong&gt;时间戳 Timestamps&lt;/strong&gt;来确定事务的&lt;strong&gt;可串行化顺序 Serializable Order&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;每个事务 Ti 被分配一个唯一的、单调递增的固定时间戳 TS(Ti)。如果 TS(Ti) &amp;lt; TS(Tj)，则DBMS必须确保执行调度等效于 Ti 在 Tj 之前出现的串行调度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;时间戳分配策略 Timestamp Allocation&lt;/strong&gt;：可以使用&lt;strong&gt;系统时钟 System Clock&lt;/strong&gt;或&lt;strong&gt;逻辑计数器 Logical Counter&lt;/strong&gt;，也可使用混合方法。&lt;/p&gt;
+&lt;h3 id="乐观并发控制-optimistic-concurrency-control"&gt;乐观并发控制 Optimistic Concurrency Control
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;乐观并发控制 OCC&lt;/strong&gt; 是另一种使用时间戳验证事务的乐观协议，在冲突较少时（如只读事务或访问不相交数据子集）效果最好。&lt;/p&gt;
+&lt;p&gt;OCC为每个事务创建一个&lt;strong&gt;私有工作空间 Private Workspace&lt;/strong&gt;。所有修改都在此空间中进行，其他事务无法读取该空间中的更改。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OCC包含三个阶段&lt;/strong&gt;：&lt;br&gt;
+&lt;strong&gt;读阶段 Read Phase&lt;/strong&gt;：跟踪事务的&lt;strong&gt;读集 Read Set&lt;/strong&gt;和&lt;strong&gt;写集 Write Set&lt;/strong&gt;，将所有访问的元组复制到私有工作空间以确保&lt;strong&gt;可重复读 Repeatable Reads&lt;/strong&gt;。
+&lt;strong&gt;验证阶段 Validation Phase&lt;/strong&gt;：当事务提交时，检查其是否与其他事务冲突。&lt;br&gt;
+&lt;strong&gt;写阶段 Write Phase&lt;/strong&gt;：若验证成功，则将私有工作空间的更改应用到数据库；否则中止并重启事务。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;验证阶段 Validation Phase&lt;/strong&gt;&lt;br&gt;
+DBMS在事务进入验证阶段时为其分配时间戳。为确保只允许可串行化调度，DBMS检查 Ti 与其他事务的 RW 和 WW 冲突，并确保所有冲突单向发生。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;前向验证 Forward Validation&lt;/strong&gt;：检查正在提交的事务与所有其他正在运行的事务的时间戳顺序。&lt;br&gt;
+&lt;strong&gt;后向验证 Backward Validation&lt;/strong&gt;：检查正在提交的事务与已提交事务的读/写集。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;潜在问题 Potential Issues&lt;/strong&gt;：&lt;br&gt;
+将数据复制到私有工作空间的开销高。&lt;br&gt;
+验证/写阶段可能成为瓶颈。&lt;br&gt;
+中止比在其他协议中更浪费，因为事务已执行完毕。&lt;br&gt;
+时间戳分配可能成为瓶颈。&lt;/p&gt;
+&lt;h3 id="动态数据库与幻读问题-dynamic-databases-and-the-phantom-problem"&gt;动态数据库与幻读问题 Dynamic Databases and The Phantom Problem
+&lt;/h3&gt;&lt;p&gt;当事务执行插入、更新和删除时，会出现新的复杂情况。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;幻读问题 Phantom Problem&lt;/strong&gt;：当事务只锁定现有记录，而忽略了正在创建中的记录时，会导致不可串行化的执行。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解决幻读问题的方法&lt;/strong&gt;：&lt;br&gt;
+&lt;strong&gt;重新执行扫描 Re Execute Scans&lt;/strong&gt;：在提交时重新运行查询以检查结果是否一致，确保没有因新记录或删除记录而遗漏更改。&lt;br&gt;
+&lt;strong&gt;谓词锁 Predicate Locking&lt;/strong&gt;：基于查询的谓词获取锁，确保任何满足谓词的数据都不能被其他事务修改。类似&lt;strong&gt;精度锁 Precision Locking&lt;/strong&gt;。&lt;br&gt;
+&lt;strong&gt;索引锁 Index Locking&lt;/strong&gt;：利用索引键来保护数据范围，确保没有新数据可以落入锁定的范围内。&lt;br&gt;
+&lt;strong&gt;键值锁 Key Value Locks&lt;/strong&gt;：对索引中的单个键值加锁，包括不存在值的虚拟键。&lt;br&gt;
+&lt;strong&gt;间隙锁 Gap Locks&lt;/strong&gt;：对键值后的间隙加锁，防止在间隙中插入。&lt;br&gt;
+&lt;strong&gt;键范围锁 Key Range Locks&lt;/strong&gt;：对从一个现有键到下一个键的范围加锁。&lt;br&gt;
+&lt;strong&gt;层次锁 Hierarchical Locking&lt;/strong&gt;：允许事务以不同模式持有更广泛的键范围锁，减少锁管理器开销。&lt;/p&gt;
+&lt;p&gt;如果没有合适的索引，事务必须锁定表中的每一页或整个表本身以防止幻读。&lt;/p&gt;
+&lt;h3 id="隔离级别-isolation-levels"&gt;隔离级别 Isolation Levels
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;可串行化 Serializability&lt;/strong&gt; 允许程序员忽略并发问题，但强制执行它可能允许的并行性太少并限制性能。可以使用较弱的一致性级别来提高可扩展性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;隔离级别 Isolation Levels&lt;/strong&gt; 控制一个事务在多大程度上暴露于其他并发事务的操作。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;异常现象 Anomalies&lt;/strong&gt;：&lt;br&gt;
+&lt;strong&gt;脏读 Dirty Read&lt;/strong&gt;：读取未提交的数据。&lt;br&gt;
+&lt;strong&gt;不可重复读 Unrepeatable Reads&lt;/strong&gt;：再次读取得到不同结果。&lt;br&gt;
+&lt;strong&gt;丢失更新 Lost Updates&lt;/strong&gt;：事务覆盖另一个并发事务的数据。&lt;br&gt;
+&lt;strong&gt;幻读 Phantom Reads&lt;/strong&gt;：插入或删除导致相同的范围扫描查询得到不同结果。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;隔离级别 Isolation Levels&lt;/strong&gt;（从强到弱）：&lt;br&gt;
+&lt;strong&gt;可串行化 SERIALIZABLE&lt;/strong&gt;：无幻读、所有读可重复、无脏读。可能实现方式：严格两阶段锁 + 幻读保护（如索引锁）。&lt;br&gt;
+&lt;strong&gt;可重复读 REPEATABLE READS&lt;/strong&gt;：可能出现幻读。可能实现方式：严格两阶段锁。&lt;br&gt;
+&lt;strong&gt;读已提交 READ COMMITTED&lt;/strong&gt;：可能出现幻读、不可重复读和丢失更新。可能实现方式：排他锁使用严格两阶段锁，读后立即释放共享锁。&lt;br&gt;
+&lt;strong&gt;读未提交 READ UNCOMMITTED&lt;/strong&gt;：所有异常都可能发生。可能实现方式：排他锁使用严格两阶段锁，读操作不加共享锁。&lt;/p&gt;
+&lt;p&gt;SQL-92标准定义的隔离级别只关注基于两阶段锁的DBMS中可能出现的异常。应用程序在开始执行查询之前设置每个事务的隔离级别。&lt;/p&gt;
+&lt;h2 id="lecture-19-multi-version-concurrency-control"&gt;Lecture #19: Multi-Version Concurrency Control
+&lt;/h2&gt;&lt;h3 id="多版本并发控制-multi-version-concurrency-control"&gt;多版本并发控制 Multi Version Concurrency Control
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;多版本并发控制 MVCC&lt;/strong&gt; 是一个比并发控制协议更广泛的概念，涉及DBMS设计和实现的各个方面，是过去十年间几乎所有新DBMS最广泛使用的方案。&lt;/p&gt;
+&lt;p&gt;MVCC为单个逻辑对象维护多个物理版本。事务写入对象时，DBMS创建该对象的新版本；事务读取对象时，读取该事务开始时存在的最新版本。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;核心优势&lt;/strong&gt;：&lt;strong&gt;写者不阻塞读者 Writers Do Not Block Readers&lt;/strong&gt;，&lt;strong&gt;读者不阻塞写者 Readers Do Not Block Writers&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;其他优势&lt;/strong&gt;：&lt;br&gt;
+只读事务无需任何锁即可读取数据库的一致性&lt;strong&gt;快照 Snapshot&lt;/strong&gt;。&lt;br&gt;
+天然支持&lt;strong&gt;快照隔离 Snapshot Isolation&lt;/strong&gt;。&lt;br&gt;
+支持&lt;strong&gt;时间旅行查询 Time Travel Queries&lt;/strong&gt;（若无垃圾回收）。&lt;/p&gt;
+&lt;h3 id="快照隔离-snapshot-isolation"&gt;快照隔离 Snapshot Isolation
+&lt;/h3&gt;&lt;p&gt;为事务提供其开始时数据库的一致性快照。快照中的数据值仅来自已提交事务，事务在完成前完全与其他事务隔离。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;写冲突 Write Conflicts&lt;/strong&gt;：若两个事务更新同一对象，&lt;strong&gt;先写者获胜 First Writer Wins&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;写偏斜异常 Write Skew Anomaly&lt;/strong&gt;：在快照隔离中，两个并发事务修改不同对象可能导致不可串行化的调度。&lt;/p&gt;
+&lt;h3 id="mvcc设计考量"&gt;MVCC设计考量
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;1. 并发控制协议 Concurrency Control Protocol&lt;/strong&gt;&lt;br&gt;
+在之前讨论的方法（两阶段锁、时间戳排序、乐观并发控制）之间选择。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2. 版本存储 Version Storage&lt;/strong&gt;&lt;br&gt;
+DBMS如何存储逻辑对象的不同物理版本，以及事务如何找到对其可见的最新版本。&lt;/p&gt;
+&lt;p&gt;通过元组的指针字段为每个逻辑元组创建&lt;strong&gt;版本链 Version Chain&lt;/strong&gt;（一个按时间戳排序的链表）。索引始终指向链的&amp;quot;头&amp;quot;（最新或最旧版本，取决于实现）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;仅追加存储 Append Only Storage&lt;/strong&gt;&lt;br&gt;
+同一表空间内存储所有物理版本，更新时将新版本追加到表中并更新版本链。&lt;br&gt;
+&lt;strong&gt;旧到新 Oldest to Newest&lt;/strong&gt;：查找需要遍历链。&lt;br&gt;
+&lt;strong&gt;新到旧 Newest to Oldest&lt;/strong&gt;：每次新版本都需要更新索引指针（无需遍历链，通常是更好的方法）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;时间旅行存储 Time Travel Storage&lt;/strong&gt;&lt;br&gt;
+维护一个单独的&lt;strong&gt;时间旅行表 Time Travel Table&lt;/strong&gt;存储旧版本。每次更新时，将元组的旧版本复制到时间旅行表，并在主表中用新数据覆盖该元组。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;增量存储 Delta Storage&lt;/strong&gt;&lt;br&gt;
+不存储完整的旧元组，只存储&lt;strong&gt;增量 Deltas&lt;/strong&gt;（元组间的更改）。事务可以通过反向遍历增量并应用它们来重建旧版本。写操作比时间旅行存储快，但读操作更慢。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3. 垃圾回收 Garbage Collection&lt;/strong&gt;&lt;br&gt;
+需要移除&lt;strong&gt;可回收的 Reclaimable&lt;/strong&gt;物理版本。如果一个版本没有活跃事务可以&amp;quot;看到&amp;quot;，或者它是由已中止事务创建的，则该版本可回收。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;元组级垃圾回收 Tuple Level GC&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;后台清理 Background Vacuuming&lt;/strong&gt;：单独的线程定期扫描表并查找可回收版本。可使用&lt;strong&gt;脏页位图 Dirty Page Bitmap&lt;/strong&gt;优化。&lt;br&gt;
+&lt;strong&gt;协同清理 Cooperative Cleaning&lt;/strong&gt;：工作线程在遍历版本链时识别可回收版本。仅适用于旧到新链。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;事务级垃圾回收 Transaction Level GC&lt;/strong&gt;&lt;br&gt;
+每个事务负责跟踪自己的旧版本。DBMS无需扫描元组。每个事务维护自己的读/写集。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;4. 索引管理 Index Management&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;主键索引 Primary Key Indexes&lt;/strong&gt; 始终指向版本链头。更新主键属性被视为&lt;strong&gt;删除 DELETE&lt;/strong&gt; 后接&lt;strong&gt;插入 INSERT&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;二级索引 Secondary Indexes&lt;/strong&gt; 管理更复杂：&lt;br&gt;
+&lt;strong&gt;逻辑指针 Logical Pointers&lt;/strong&gt;：使用每个元组的固定标识符，需要一个额外的&lt;strong&gt;间接层 Indirection Layer&lt;/strong&gt;将逻辑ID映射到元组的物理位置。&lt;br&gt;
+&lt;strong&gt;物理指针 Physical Pointers&lt;/strong&gt;：使用指向版本链头的物理地址。更新版本链头时需要更新每个索引，开销很大。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;MVCC重复键问题 MVCC Duplicate Key Problem&lt;/strong&gt;&lt;br&gt;
+MVCC DBMS索引（通常）不存储带有其键的元组的版本信息。因此，每个索引必须支持来自不同快照的重复键，因为相同的键在不同快照中可能指向不同的逻辑元组。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;5. 删除操作 Deletes&lt;/strong&gt;&lt;br&gt;
+只有当逻辑删除的元组的所有版本都不可见时，DBMS才会从数据库中物理删除该元组。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;删除标志 Deleted Flag&lt;/strong&gt;：维护一个标志（在元组头或单独的列中）来指示逻辑元组已被删除。&lt;br&gt;
+&lt;strong&gt;墓碑元组 Tombstone Tuple&lt;/strong&gt;：创建一个空的物理版本来指示逻辑元组已被删除。使用单独的池存储墓碑元组以减少存储开销。&lt;/p&gt;
+&lt;h2 id="lecture-20-database-logging"&gt;Lecture #20: Database Logging
+&lt;/h2&gt;&lt;h3 id="崩溃恢复-crash-recovery"&gt;崩溃恢复 Crash Recovery
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;恢复算法 Recovery Algorithms&lt;/strong&gt; 用于在发生故障后确保数据库一致性、事务原子性和持久性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;关键原语 Key Primitives&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;撤销 UNDO&lt;/strong&gt;：移除未完成或已中止事务的影响的过程。&lt;br&gt;
+&lt;strong&gt;重做 REDO&lt;/strong&gt;：重新应用已提交事务的影响以实现持久性的过程。&lt;/p&gt;
+&lt;h3 id="缓冲池管理策略-buffer-pool-management-policies"&gt;缓冲池管理策略 Buffer Pool Management Policies
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;偷取策略 Steal Policy&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;允许偷取 STEAL&lt;/strong&gt;：允许未提交事务覆盖非易失性存储中对象的最新已提交值。&lt;br&gt;
+&lt;strong&gt;禁止偷取 NO STEAL&lt;/strong&gt;：不允许。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;强制策略 Force Policy&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;强制 Force&lt;/strong&gt;：要求事务的所有更新在事务被允许提交前（即向客户端返回提交消息前）反映到非易失性存储上。&lt;br&gt;
+&lt;strong&gt;非强制 NO FORCE&lt;/strong&gt;：不要求。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;策略组合&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;禁止偷取 + 强制 NO STEAL + FORCE&lt;/strong&gt;：最容易实现的策略。无需撤销中止事务的更改（因为更改未写入磁盘），也无需重做已提交事务的更改（因为所有更改在提交时保证已写入磁盘）。但所有待修改数据必须能放入内存，且频繁写入可能导致存储设备磨损。&lt;/p&gt;
+&lt;h3 id="影子分页-shadow-paging"&gt;影子分页 Shadow Paging
+&lt;/h3&gt;&lt;p&gt;DBMS在写入时复制页面，维护数据库的两个独立版本：&lt;br&gt;
+&lt;strong&gt;主版本 master&lt;/strong&gt;：仅包含已提交事务的更改。&lt;br&gt;
+&lt;strong&gt;影子版本 shadow&lt;/strong&gt;：包含未提交事务更改的临时数据库。&lt;/p&gt;
+&lt;p&gt;更新仅在影子副本中进行。当事务提交时，影子副本被原子性地切换为新的主版本。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;恢复 Recovery&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;撤销 UNDO&lt;/strong&gt;：移除影子页面。保留主版本和数据库根指针不变。&lt;br&gt;
+&lt;strong&gt;重做 REDO&lt;/strong&gt;：完全不需要。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;缺点 Disadvantages&lt;/strong&gt;&lt;br&gt;
+复制整个页表开销大。提交开销高，需要刷新页表、根页和每个更新页，导致大量对随机非连续页的写入。导致数据碎片化。需要垃圾回收。仅支持一次一个写入事务或批处理事务。&lt;/p&gt;
+&lt;h3 id="日志文件-journal-file"&gt;日志文件 Journal File
+&lt;/h3&gt;&lt;p&gt;事务修改页面之前，DBMS将原始页面复制到单独的日志文件中。重启后，如果存在日志文件，DBMS收集原始页面并无视性地用这些原始页面覆盖当前页面，将数据恢复到未提交事务之前的状态。&lt;/p&gt;
+&lt;h3 id="预写日志-write-ahead-logging"&gt;预写日志 Write Ahead Logging
+&lt;/h3&gt;&lt;p&gt;DBMS在更改磁盘页面之前，将所有对数据库的更改记录到&lt;strong&gt;日志文件 Log File&lt;/strong&gt;（在稳定存储上）。日志包含必要信息以在崩溃后执行撤销和重做操作来恢复数据库。&lt;/p&gt;
+&lt;p&gt;DBMS必须在将数据库对象刷新到磁盘之前，将对应于该对象更改的日志文件记录写入磁盘。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;实现 Implementation&lt;/strong&gt;&lt;br&gt;
+DBMS首先在易失性存储中暂存事务的所有日志记录。所有与更新页面相关的日志记录必须在页面本身被允许在非易失性存储中被覆盖之前写入非易失性存储。直到所有日志记录写入稳定存储，事务才被视为已提交。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;缓冲池策略 Buffer Pool Policies&lt;/strong&gt;&lt;br&gt;
+大多数DBMS采用&lt;strong&gt;非强制 + 偷取 NO FORCE + STEAL&lt;/strong&gt;策略，因为它具有更优的运行时性能。但在恢复阶段，非强制要求数据库重做，偷取要求数据库撤销，因此恢复时间比强制+禁止偷取慢。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;变更数据捕获 Change Data Capture&lt;/strong&gt;&lt;br&gt;
+预写日志也可用于将更改传播到其他数据源。&lt;/p&gt;
+&lt;h3 id="日志方案-logging-schemes"&gt;日志方案 Logging Schemes
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;物理日志 Physical Logging&lt;/strong&gt;：记录对数据库中特定位置所做的字节级更改。例如 git diff。&lt;br&gt;
+&lt;strong&gt;逻辑日志 Logical Logging&lt;/strong&gt;：记录事务执行的高级操作。不一定局限于单个页面。每个日志记录写入的数据比物理日志少，但在非确定性并发控制方案中，存在并发事务时难以实现恢复，且恢复时间更长，因为必须重新执行每个事务。&lt;br&gt;
+&lt;strong&gt;生理日志 Physiological Logging&lt;/strong&gt;：混合方法，日志记录针对单个页面，但不指定页面的数据组织。即，根据页面中的槽号识别元组，而不指定更改在页面中的确切位置。因此DBMS可以在日志记录写入磁盘后重新组织页面。是DBMS中最常用的方法。&lt;/p&gt;
+&lt;h3 id="检查点-checkpoints"&gt;检查点 Checkpoints
+&lt;/h3&gt;&lt;p&gt;基于预写日志的DBMS的主要问题是日志文件会无限增长。崩溃后，DBMS必须重放整个日志，如果日志文件很大，这将花费很长时间。&lt;/p&gt;
+&lt;p&gt;DBMS可以定期&lt;strong&gt;设置检查点 Checkpoint&lt;/strong&gt;，将所有缓冲区刷新到磁盘。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;设置检查点的频率&lt;/strong&gt;取决于应用程序的性能和停机时间要求。设置检查点太频繁会导致DBMS运行时性能下降。但两次检查点之间等待时间过长同样不利，因为系统重启后的恢复时间会增加。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;阻塞式检查点实现 Blocking Checkpoint Implementation&lt;/strong&gt;&lt;br&gt;
+DBMS停止接受新事务并等待所有活跃事务完成。&lt;br&gt;
+将所有当前驻留在主内存中的日志记录和脏块刷新到稳定存储。&lt;br&gt;
+将&lt;strong&gt;检查点 CHECKPOINT&lt;/strong&gt;条目写入日志并刷新到稳定存储。&lt;br&gt;
+这种实现方式在设置检查点时必须停止一切以确保一致性快照，对运行时性能不利，但使恢复变得容易。&lt;/p&gt;
+&lt;h2 id="lecture-21-database-crash-recovery"&gt;Lecture #21: Database Crash Recovery
+&lt;/h2&gt;&lt;h3 id="崩溃恢复-crash-recovery-1"&gt;崩溃恢复 Crash Recovery
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;恢复算法 Recovery Algorithms&lt;/strong&gt; 确保在发生故障时数据库的一致性、事务的原子性和持久性。每个恢复算法包含两部分：&lt;br&gt;
+正常事务处理期间采取的行动，确保DBMS能够从故障中恢复。&lt;br&gt;
+故障发生后采取的行动，将数据库恢复到确保事务原子性、一致性和持久性的状态。&lt;/p&gt;
+&lt;h3 id="aries-恢复算法"&gt;ARIES 恢复算法
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;利用语义进行恢复和隔离的算法 Algorithms for Recovery and Isolation Exploiting Semantics (ARIES)&lt;/strong&gt; 是1990年代早期IBM为DB2系统开发的恢复算法。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;三个核心概念 Three Key Concepts&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;预写日志 Write Ahead Logging&lt;/strong&gt;：任何更改在数据库更改写入磁盘之前，都记录在稳定存储的日志中（对应 STEAL + NO-FORCE 策略）。&lt;br&gt;
+&lt;strong&gt;重做期间重演历史 Repeating History During Redo&lt;/strong&gt;：重启时，回溯操作并将数据库恢复到崩溃前的确切状态。&lt;br&gt;
+&lt;strong&gt;撤销期间记录更改 Logging Changes During Undo&lt;/strong&gt;：将撤销操作记录到日志，确保在发生重复故障时操作不会重复执行。&lt;/p&gt;
+&lt;h3 id="预写日志记录-wal-records"&gt;预写日志记录 WAL Records
+&lt;/h3&gt;&lt;p&gt;扩展DBMS的日志记录格式，包含全局唯一的&lt;strong&gt;日志序列号 Log Sequence Number (LSN)&lt;/strong&gt;。所有日志记录都有一个LSN。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;关键 LSN&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;flushedLSN&lt;/strong&gt;：内存中，磁盘上日志的最后一条LSN。&lt;br&gt;
+&lt;strong&gt;pageLSN&lt;/strong&gt;：页面中，对该页面最近更新的LSN。&lt;br&gt;
+&lt;strong&gt;recLSN&lt;/strong&gt;：脏页表 Dirty Page Table 中，自上次刷新后页面最旧更新的LSN。&lt;br&gt;
+&lt;strong&gt;lastLSN&lt;/strong&gt;：活跃事务表 Active Transaction Table 中，事务 Ti 的最新记录（由事务管理）。&lt;br&gt;
+&lt;strong&gt;MasterRecord&lt;/strong&gt;：磁盘上，最新检查点的LSN。&lt;/p&gt;
+&lt;p&gt;DBMS将页面 i 写入磁盘之前，必须至少将日志刷新到 pageLSNi ≤ flushedLSN 的位置。&lt;/p&gt;
+&lt;h3 id="正常执行-normal-execution"&gt;正常执行 Normal Execution
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;事务提交 Transaction Commit&lt;/strong&gt;&lt;br&gt;
+DBMS首先将 COMMIT 记录写入内存中的日志缓冲区。&lt;br&gt;
+然后将包括该事务 COMMIT 记录在内的所有日志记录刷新到磁盘。&lt;br&gt;
+这些日志刷新是顺序的、同步的磁盘写入。&lt;br&gt;
+COMMIT 记录安全存储在磁盘上后，DBMS向应用程序返回确认。&lt;br&gt;
+稍后，DBMS会向日志写入特殊的 TXN END 记录，表明该事务在系统中完全结束。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;事务中止 Transaction Abort&lt;/strong&gt;&lt;br&gt;
+中止事务是ARIES撤销操作仅应用于单个事务的特殊情况。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;prevLSN&lt;/strong&gt; 字段：对应事务的前一个LSN。DBMS使用这些值维护每个事务的链表，便于遍历日志查找其记录。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;补偿日志记录 Compensation Log Record (CLR)&lt;/strong&gt;：描述为撤销先前更新记录操作而采取的行动。包含更新日志记录的所有字段，外加 &lt;strong&gt;undoNextLSN&lt;/strong&gt; 指针（即下一个要撤销的LSN）。CLR像任何其他记录一样被添加到日志中，但它们永远不需要被撤销。DBMS在通知应用程序事务已中止之前，无需等待CLR刷新到磁盘。&lt;/p&gt;
+&lt;p&gt;中止事务时，DBMS首先将 ABORT 记录附加到内存中的日志缓冲区。然后以相反顺序撤销事务的更新，从数据库中移除其影响。对于每个被撤销的更新，DBMS在日志中创建CLR条目并恢复旧值。在所有被中止事务的更新被反转后，DBMS写入 TXN END 日志记录。&lt;/p&gt;
+&lt;h3 id="检查点-checkpointing"&gt;检查点 Checkpointing
+&lt;/h3&gt;&lt;p&gt;DBMS定期设置&lt;strong&gt;检查点 Checkpoint&lt;/strong&gt;，将其缓冲池中的脏页写入磁盘。用于最小化恢复时必须重放的日志量。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;非模糊检查点 Non Fuzzy Checkpoints&lt;/strong&gt;&lt;br&gt;
+DBMS在设置检查点时停止事务和查询的执行，以确保它将数据库的一致性快照写入磁盘。&lt;br&gt;
+停止任何新事务的开始。&lt;br&gt;
+等待所有活跃事务执行完成。&lt;br&gt;
+将脏页刷新到磁盘。&lt;br&gt;
+影响运行时性能，但显著简化了恢复。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;稍好的阻塞检查点 Slightly Better Blocking Checkpoints&lt;/strong&gt;&lt;br&gt;
+DBMS在设置检查点时记录其开始时的内部系统状态。&lt;br&gt;
+停止任何新事务的开始。&lt;br&gt;
+在DBMS设置检查点时暂停事务。&lt;br&gt;
+记录两个关键组件：&lt;strong&gt;活跃事务表 Active Transaction Table (ATT)&lt;/strong&gt; 和&lt;strong&gt;脏页表 Dirty Page Table (DPT)&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;活跃事务表 Active Transaction Table (ATT)&lt;/strong&gt;&lt;br&gt;
+跟踪DBMS中正在运行的事务。包含：&lt;br&gt;
+&lt;strong&gt;transactionId&lt;/strong&gt;：唯一事务标识符&lt;br&gt;
+&lt;strong&gt;status&lt;/strong&gt;：事务当前&amp;quot;模式&amp;quot;（运行中、提交中、撤销候选）&lt;br&gt;
+&lt;strong&gt;lastLSN&lt;/strong&gt;：事务写入的最远LSN&lt;br&gt;
+ATT包含每个没有 TXN END 日志记录的事务。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;脏页表 Dirty Page Table (DPT)&lt;/strong&gt;&lt;br&gt;
+包含缓冲池中被未提交事务修改的页面的信息。每个脏页有一个条目，包含 &lt;strong&gt;recLSN&lt;/strong&gt;（即首次导致页面变脏的日志记录的LSN）。&lt;br&gt;
+DPT包含缓冲池中所有脏页。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;模糊检查点 Fuzzy Checkpoints&lt;/strong&gt;&lt;br&gt;
+DBMS允许其他事务继续运行。这是ARIES在其协议中使用的。&lt;br&gt;
+DBMS使用额外的日志记录来跟踪检查点边界：&lt;br&gt;
+&lt;strong&gt;检查点开始 CHECKPOINT BEGIN&lt;/strong&gt;：指示检查点的开始。此时DBMS获取当前ATT和DPT的快照。&lt;br&gt;
+&lt;strong&gt;检查点结束 CHECKPOINT END&lt;/strong&gt;：当检查点完成时。包含在写入 CHECKPOINT BEGIN 日志记录时捕获的ATT + DPT。&lt;br&gt;
+检查点完成后，CHECKPOINT BEGIN 记录的LSN被记录在 MasterRecord 中。&lt;/p&gt;
+&lt;h3 id="aries-恢复-aries-recovery"&gt;ARIES 恢复 ARIES Recovery
+&lt;/h3&gt;&lt;p&gt;崩溃后启动时，DBMS将执行以下三个阶段：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;分析阶段 Analysis Phase&lt;/strong&gt;&lt;br&gt;
+从通过数据库 MasterRecord LSN 找到的最后一个检查点开始。&lt;br&gt;
+向前扫描日志从检查点开始。&lt;br&gt;
+如果DBMS找到 TXN END 记录，则从事务表ATT中移除其事务。&lt;br&gt;
+所有其他记录，将事务添加到ATT，状态为 UNDO，提交时，将事务状态更改为 COMMIT。&lt;br&gt;
+对于 UPDATE 日志记录，如果页面 P 不在 DPT 中，则将 P 添加到 DPT 并将 P 的 recLSN 设置为该日志记录的LSN。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;重做阶段 Redo Phase&lt;/strong&gt;&lt;br&gt;
+目标是DBMS&lt;strong&gt;重演历史 Repeating History&lt;/strong&gt;，以重建其到崩溃时刻的状态。它将重新应用所有更新（甚至是已中止的事务）并重做CLR。&lt;br&gt;
+DBMS从包含 DPT 中最小 recLSN 的日志记录开始向前扫描。&lt;br&gt;
+对于每个具有给定LSN的更新日志记录或CLR，DBMS重新应用更新，除非：&lt;br&gt;
+受影响页面不在 DPT 中，或&lt;br&gt;
+受影响页面在 DPT 中，但该日志记录的LSN小于页面的 recLSN（更新已传播到磁盘），或&lt;br&gt;
+受影响页面的 pageLSN（在磁盘上）≥ LSN。&lt;br&gt;
+重做操作时，DBMS重新应用日志记录中的更改，然后将受影响页面的 pageLSN 设置为该日志记录的LSN。没有额外的日志记录或强制刷新。&lt;br&gt;
+在重做阶段结束时，为所有状态为 COMMIT 的事务写入 TXN END 日志记录，并将它们从ATT中移除。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;撤销阶段 Undo Phase&lt;/strong&gt;&lt;br&gt;
+DBMS反转所有在崩溃时处于活跃状态的事务。这些是在分析阶段后ATT中状态为 UNDO 的所有事务。&lt;br&gt;
+DBMS使用 lastLSN 以反向LSN顺序处理事务，以加速遍历。在每个步骤中，选择ATT中所有事务中最大的 lastLSN。当它反转事务的更新时，DBMS为每个修改写入一个CLR条目到日志中。&lt;br&gt;
+一旦最后一个事务被成功中止，DBMS将日志刷新出去，然后准备开始处理新事务。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;崩溃问题 Crash Issues&lt;/strong&gt;&lt;br&gt;
+如果在恢复的分析阶段数据库崩溃，则再次运行恢复。&lt;br&gt;
+如果在恢复的重做阶段数据库崩溃，则再次重做所有操作。&lt;br&gt;
+为了提高在重做阶段恢复期间的性能，假设它不会再次崩溃，并在后台异步刷新所有更改到磁盘。&lt;br&gt;
+为了提高在撤销阶段恢复期间的性能，在新事务访问页面之前延迟回滚更改，并重写应用程序以避免长时间运行的事务。&lt;/p&gt;
+&lt;h2 id="lecture-22-introduction-to-distributed-databases"&gt;Lecture #22: Introduction to Distributed Databases
+&lt;/h2&gt;&lt;h3 id="分布式数据库系统-distributed-dbmss"&gt;分布式数据库系统 Distributed DBMSs
+&lt;/h3&gt;&lt;p&gt;分布式DBMS将单个逻辑数据库划分到多个物理资源上。应用程序（通常）不知道数据在分离的硬件上被拆分。系统依赖单节点DBMS的技术和算法来支持分布式环境中的事务处理和查询执行。一个重要设计目标是&lt;strong&gt;容错性 Fault Tolerance&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;并行数据库 Parallel Database&lt;/strong&gt; 与 &lt;strong&gt;分布式数据库 Distributed Database&lt;/strong&gt; 的区别：&lt;br&gt;
+&lt;strong&gt;并行数据库&lt;/strong&gt;：节点物理位置相近，通过高速LAN互联，通信成本低且可靠，设计协议时无需过多考虑节点崩溃或丢包。&lt;br&gt;
+&lt;strong&gt;分布式数据库&lt;/strong&gt;：节点可能相距甚远，通过可能缓慢且不可靠的公网互联，通信成本和连接问题不可忽略（节点会崩溃，数据包会丢失）。&lt;/p&gt;
+&lt;h3 id="系统架构-system-architectures"&gt;系统架构 System Architectures
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;无共享 Shared Nothing&lt;/strong&gt;&lt;br&gt;
+每个节点拥有自己的CPU、内存和磁盘。节点仅通过网络进行通信。&lt;br&gt;
+增加容量更困难，因为DBMS必须将数据物理移动到新节点。确保所有节点一致性也更困难。&lt;br&gt;
+优势是潜在性能更好、效率更高。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;共享磁盘 Shared Disk&lt;/strong&gt;&lt;br&gt;
+所有CPU可以通过互联直接读写单个逻辑磁盘，但各自拥有私有内存。每个计算节点的本地存储可作为缓存。在基于云的DBMS中更常见。&lt;br&gt;
+执行层可以与存储层独立扩展。添加新存储节点或执行节点不会影响另一层中数据的布局或位置。&lt;br&gt;
+节点必须相互发送消息以了解其他节点的当前状态。节点拥有自己的缓冲池，被认为是无状态的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;共享内存 Shared Memory&lt;/strong&gt;&lt;br&gt;
+CPU通过高速互联访问公共内存地址空间。CPU也共享同一个磁盘。&lt;br&gt;
+每个处理器对所有内存中的数据结构具有全局视图。每个处理器上的DBMS实例必须“知道”其他实例。&lt;br&gt;
+实践中大多数DBMS不使用此架构，因为它是在操作系统/内核级别提供的，并且会导致问题。&lt;/p&gt;
+&lt;h3 id="设计问题-design-issues"&gt;设计问题 Design Issues
+&lt;/h3&gt;&lt;p&gt;分布式DBMS旨在维护&lt;strong&gt;数据透明性 Data Transparency&lt;/strong&gt;，意味着用户不应需要知道数据的物理位置，或表是如何分区或复制的。数据存储的细节对应用程序是隐藏的。一个在单节点DBMS上工作的SQL查询在分布式DBMS上应该同样工作。&lt;/p&gt;
+&lt;p&gt;关键设计问题：&lt;br&gt;
+应用程序如何找到数据？&lt;br&gt;
+查询应如何在分布式数据上执行？应将查询推送到数据所在位置，还是应将数据汇集到公共位置执行查询？&lt;br&gt;
+数据库应如何跨资源划分？&lt;br&gt;
+DBMS如何确保正确性？&lt;/p&gt;
+&lt;h3 id="分区方案-partitioning-schemes"&gt;分区方案 Partitioning Schemes
+&lt;/h3&gt;&lt;p&gt;分布式系统必须将数据库跨多个资源（包括磁盘、节点、处理器）进行&lt;strong&gt;分区 Partitioning&lt;/strong&gt;。在NoSQL系统中此过程有时称为&lt;strong&gt;分片 Sharding&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;分区方案的目标是最大化&lt;strong&gt;单节点事务 Single Node Transactions&lt;/strong&gt;（仅访问一个分区内数据的事务），这使得DBMS无需协调在其他节点上运行的并发事务的行为。而&lt;strong&gt;分布式事务 Distributed Transaction&lt;/strong&gt; 访问一个或多个分区中的数据，这需要昂贵且困难的协调。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;实现方式 Implementation&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;简单数据分区 Naive Data Partitioning&lt;/strong&gt;：每个节点存储一个表。易于实现，但不可扩展，在跨表连接查询或存在非均匀访问模式时效果不佳。&lt;br&gt;
+&lt;strong&gt;垂直分区 Vertical Partitioning&lt;/strong&gt;：将表的属性拆分到不同的分区中。每个分区还必须存储用于重建原始记录的元组信息。&lt;br&gt;
+&lt;strong&gt;水平分区 Horizontal Partitioning&lt;/strong&gt;：将表的元组拆分为不相交的子集。选择能在大小、负载或使用情况上平均划分数据库的列，这些键称为&lt;strong&gt;分区键 Partitioning Key&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;DBMS可以基于&lt;strong&gt;哈希 Hashing&lt;/strong&gt;、&lt;strong&gt;数据范围 Data Ranges&lt;/strong&gt; 或&lt;strong&gt;谓词 Predicates&lt;/strong&gt; 进行物理分区（无共享）或逻辑分区（共享磁盘）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;一致性哈希 Consistent Hashing&lt;/strong&gt;&lt;br&gt;
+将每个节点分配到某个逻辑环上的一个位置。然后每个分区键的哈希值映射到环上的一个位置。顺时针方向上最接近该键的节点负责该键。&lt;br&gt;
+当添加或移除节点时，键仅在相邻节点之间移动，因此只有 1/n 的键被移动。&lt;br&gt;
+&lt;strong&gt;复制因子 Replication Factor&lt;/strong&gt; 为 k 意味着每个键在顺时针方向的 k 个最近节点处被复制。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;逻辑分区 Logical Partitioning&lt;/strong&gt;：节点负责一组键，但并不实际存储这些键。常用于共享磁盘架构。&lt;br&gt;
+&lt;strong&gt;物理分区 Physical Partitioning&lt;/strong&gt;：节点负责一组键，并物理存储这些键。常用于无共享架构。&lt;/p&gt;
+&lt;h3 id="分布式并发控制-distributed-concurrency-control"&gt;分布式并发控制 Distributed Concurrency Control
+&lt;/h3&gt;&lt;p&gt;分布式事务访问一个或多个分区中的数据，这需要昂贵的协调。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;集中式协调器 Centralized Coordinator&lt;/strong&gt;&lt;br&gt;
+充当全局“交通警察”，协调所有行为。客户端与协调器通信以获取其想要访问的分区上的锁。收到确认后，客户端将其查询发送到这些分区。给定事务的所有查询完成后，客户端向协调器发送提交请求。然后协调器与事务涉及的分区通信以确定是否允许事务提交。&lt;br&gt;
+集中式协调器可用作&lt;strong&gt;中间件 Middleware&lt;/strong&gt;，接受查询请求并将查询路由到正确的分区。&lt;br&gt;
+集中式方法在多个客户端尝试获取相同分区上的锁时会产生瓶颈，但对于分布式两阶段锁，它拥有锁的中央视图，可以更快地处理死锁。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;去中心化协调器 Decentralized Coordinator&lt;/strong&gt;&lt;br&gt;
+节点自行组织。客户端直接将查询发送到其中一个分区。这个&lt;strong&gt;主分区 Home Partition&lt;/strong&gt; 将结果返回给客户端，并负责与其他分区通信并相应提交。&lt;/p&gt;
+&lt;h3 id="联邦数据库-federated-databases"&gt;联邦数据库 Federated Databases
+&lt;/h3&gt;&lt;p&gt;这是一种将多个DBMS连接成单个逻辑系统的分布式架构。在大型公司中更流行。&lt;br&gt;
+查询可以访问任何位置的数据。这很困难，因为存在不同的数据模型、查询语言以及每个独立DBMS的限制。此外，没有简单的方法来优化查询，并且涉及大量数据复制。&lt;br&gt;
+通常通过一个&lt;strong&gt;中间件 Middleware&lt;/strong&gt; 层来实现，该层将查询转换为系统中使用的特定DBMS可读的格式，并通过连接器与多个后端DBMS交互，然后处理从DBMS返回的结果。&lt;/p&gt;
+&lt;h2 id="lecture-23-distributed-oltp-databases"&gt;Lecture #23: Distributed OLTP Databases
+&lt;/h2&gt;&lt;h3 id="oltp-与-olap"&gt;OLTP 与 OLAP
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;联机事务处理 On line Transaction Processing (OLTP)&lt;/strong&gt;&lt;br&gt;
+短生存期的读写事务&lt;br&gt;
+小数据足迹&lt;br&gt;
+重复性操作&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;联机分析处理 On line Analytical Processing (OLAP)&lt;/strong&gt;&lt;br&gt;
+长时间运行的只读查询&lt;br&gt;
+复杂连接&lt;br&gt;
+探索性查询&lt;/p&gt;
+&lt;h3 id="去中心化协调器设置-decentralized-coordinator-setup"&gt;去中心化协调器设置 Decentralized Coordinator Setup
+&lt;/h3&gt;&lt;p&gt;基本场景包含一个应用服务器和多个数据分区。其中一个分区被选为&lt;strong&gt;主节点 Primary Node&lt;/strong&gt;。&lt;br&gt;
+事务的开始请求从应用服务器发送到主节点，查询则直接发送到各个节点。&lt;br&gt;
+提交请求从应用服务器发送到主节点，主节点负责在所有参与节点间协调是否允许提交。&lt;br&gt;
+使用&lt;strong&gt;两阶段锁 2PL&lt;/strong&gt;、&lt;strong&gt;多版本并发控制 MVCC&lt;/strong&gt;、&lt;strong&gt;乐观并发控制 OCC&lt;/strong&gt; 等策略来判断事务是否能在每个节点上安全提交。&lt;/p&gt;
+&lt;h3 id="复制-replication"&gt;复制 Replication
+&lt;/h3&gt;&lt;p&gt;DBMS跨冗余节点复制数据以提高可用性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;设计决策 Design Decisions&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;副本配置 Replica Configuration&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;传播方案 Propagation Scheme&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;传播时序 Propagation Timing&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;更新方法 Update Method&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;副本配置 Replica Configurations&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;主从复制 Primary Replica&lt;/strong&gt;：所有更新都发送到每个对象的指定主节点。主节点将更新传播到其副本，无需原子提交协议。如果不需要最新信息，只读事务可以访问副本。如果主节点宕机，则举行选举选出新的主节点。&lt;br&gt;
+&lt;strong&gt;多主复制 Multi Primary&lt;/strong&gt;：事务可以在任何副本更新数据对象。副本必须使用原子提交协议相互同步。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;K安全 K safety&lt;/strong&gt;：确定复制数据库容错能力的阈值。K值表示每个数据对象必须始终可用的副本数量。如果副本数量低于此阈值，则DBMS停止执行并自行脱机。较高的K值可降低数据丢失风险。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;传播方案 Propagation Scheme&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;同步 Synchronous&lt;/strong&gt;（强一致性）：主节点将更新发送到副本，然后等待它们确认已完全应用更改。然后主节点可以通知客户端更新已成功。确保DBMS不会因强一致性而丢失任何数据。在传统DBMS中更常见。&lt;br&gt;
+&lt;strong&gt;异步 Asynchronous&lt;/strong&gt;（最终一致性）：主节点立即向客户端返回确认，而无需等待副本应用更改。此方法中可能发生&lt;strong&gt;陈旧读取 Stale Reads&lt;/strong&gt;。如果可以容忍某些数据丢失，此选项是一种可行的优化。常用于NoSQL系统。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;传播时序 Propagation Timing&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;连续传播 Continuous Propagation&lt;/strong&gt;：DBMS在生成日志消息时立即发送。注意提交和中止消息也需要发送。大多数系统使用此方法。&lt;br&gt;
+&lt;strong&gt;提交时传播 On Commit Propagation&lt;/strong&gt;：DBMS仅在事务提交后才将事务的日志消息发送到副本。这不会浪费时间为中止的事务发送日志记录。它假设事务的日志记录完全适合内存。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;主动 vs 被动 Active vs Passive&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;主动-主动 Active Active&lt;/strong&gt;：事务在每个副本上独立执行。最后，DBMS需要检查事务在每个副本上是否以相同结果结束，以查看副本是否正确提交。这很困难，因为现在事务的排序必须在所有节点之间同步，因此不太常见。&lt;br&gt;
+&lt;strong&gt;主动-被动 Active Passive&lt;/strong&gt;：每个事务在单个位置执行，并将整体更改传播到副本。DBMS可以发送更改的物理字节（更常见）或逻辑SQL查询。大多数系统是主动-被动。&lt;/p&gt;
+&lt;h3 id="原子提交协议-atomic-commit-protocols"&gt;原子提交协议 Atomic Commit Protocols
+&lt;/h3&gt;&lt;p&gt;当多节点事务完成时，DBMS需要询问所有涉及的节点是否可以安全提交。根据协议，可能需要多数节点或所有节点同意才能提交。&lt;/p&gt;
+&lt;p&gt;所有原子提交协议都有一个共同结构。它们通常有&lt;strong&gt;资源管理器 Resource Managers (RMs)&lt;/strong&gt; 的概念，这些RMs在不同节点上管理资源数据库。RMs需要共同协调以决定每个事务的命运：提交或中止。&lt;/p&gt;
+&lt;p&gt;原子提交协议需要保证以下属性：&lt;br&gt;
+&lt;strong&gt;稳定性 Stability&lt;/strong&gt;：一旦事务的命运被决定，就不能改变。&lt;br&gt;
+&lt;strong&gt;一致性 Consistency&lt;/strong&gt;：所有RMs最终处于相同状态，即使在故障之后。&lt;br&gt;
+&lt;strong&gt;活跃性 Liveness&lt;/strong&gt;：协议总有某种方式向前推进。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;两阶段提交 Two Phase Commit&lt;/strong&gt;&lt;br&gt;
+客户端向协调器发送提交请求。&lt;br&gt;
+第一阶段：协调器发送&lt;strong&gt;准备 Prepare&lt;/strong&gt;消息，询问参与者节点当前事务是否允许提交。如果参与者验证事务有效，则向协调器发送&lt;strong&gt;同意 OK&lt;/strong&gt;。如果协调器从所有参与者收到同意，系统进入第二阶段。如果有人向协调器发送&lt;strong&gt;中止 Abort&lt;/strong&gt;，协调器则向客户端发送中止。&lt;br&gt;
+第二阶段：如果所有参与者都发送了同意，协调器向所有参与者发送&lt;strong&gt;提交 Commit&lt;/strong&gt;，告诉这些节点提交事务。一旦参与者响应同意，协调器可以告诉客户端事务已提交。&lt;br&gt;
+如果事务在第一阶段被中止，参与者会从协调器收到中止，并应响应同意。&lt;br&gt;
+要么所有人都提交，要么没有人提交。协调器也可以是系统中的参与者。&lt;br&gt;
+在崩溃情况下，所有节点都会跟踪每个阶段结果的非易失性日志。节点会阻塞，直到能确定下一步行动。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优化 Optimizations&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;早期准备投票 Early Prepare Voting&lt;/strong&gt;：如果DBMS向一个远程节点发送查询，并且知道这将是该节点执行的最后一个查询，那么该节点将在查询结果中同时返回其对准备阶段的投票。&lt;br&gt;
+&lt;strong&gt;准备后早期确认 Early Acknowledgement after Prepare&lt;/strong&gt;：如果所有节点都投票提交事务，协调器可以在提交阶段完成之前向客户端发送事务成功的确认。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Paxos&lt;/strong&gt;&lt;br&gt;
+Paxos（以及Raft）在现代系统中比2PC更普遍。2PC是Paxos的一种退化情况；Paxos使用 &lt;code&gt;2F + 1&lt;/code&gt; 个协调器，只要至少 &lt;code&gt;F + 1&lt;/code&gt; 个协调器正常工作就能取得进展，而2PC设置 &lt;code&gt;F = 0&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;Paxos是一种共识协议，协调器提出一个结果，然后参与者对该结果是否应该成功进行投票。如果大多数参与者可用，该协议不会阻塞，并且在最佳情况下具有可证明的最小消息延迟。&lt;/p&gt;
+&lt;p&gt;对于Paxos，协调器称为&lt;strong&gt;提议者 Proposer&lt;/strong&gt;，参与者称为&lt;strong&gt;接受者 Acceptors&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Multi Paxos&lt;/strong&gt;：如果系统选举一个单一领导者在一段时间内监督提议更改，那么它可以跳过提议阶段。系统使用另一轮Paxos定期更新领导者是谁。当发生故障时，DBMS可以回退到完整的Paxos。&lt;/p&gt;
+&lt;h3 id="cap-定理"&gt;CAP 定理
+&lt;/h3&gt;&lt;p&gt;CAP定理指出，分布式系统不可能同时始终保证&lt;strong&gt;一致性 Consistency&lt;/strong&gt;、&lt;strong&gt;可用性 Availability&lt;/strong&gt; 和&lt;strong&gt;分区容错性 Partition Tolerance&lt;/strong&gt;。只能选择这三者中的两个。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;一致性 Consistency&lt;/strong&gt; 等同于所有节点上操作的&lt;strong&gt;线性一致性 Linearizability&lt;/strong&gt;。&lt;br&gt;
+&lt;strong&gt;可用性 Availability&lt;/strong&gt; 是所有处于运行状态的节点都能满足所有请求的概念。&lt;br&gt;
+&lt;strong&gt;分区容错性 Partition Tolerance&lt;/strong&gt; 意味着系统在节点之间就值达成共识时出现某些消息丢失的情况下仍能正确运行。&lt;/p&gt;
+&lt;p&gt;如果为系统选择了一致性和分区容错性，则在大多数节点重新连接之前不允许更新，通常在传统或NewSQL DBMS中完成。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;PACELC 定理&lt;/strong&gt; 是现代版本，考虑了&lt;strong&gt;一致性 vs 延迟 Consistency vs Latency&lt;/strong&gt; 的权衡：在分布式系统中出现网络分区的情况下，必须在可用性和一致性之间做出选择，否则，即使系统在没有网络分区的情况下正常运行，也必须在延迟和一致性之间做出选择。&lt;/p&gt;
+&lt;h2 id="lecture-24-distributed-olap-databases"&gt;Lecture #24: Distributed OLAP Databases
+&lt;/h2&gt;&lt;h3 id="决策支持系统-decision-support-systems"&gt;决策支持系统 Decision Support Systems
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;数据仓库 Data Warehouse&lt;/strong&gt; 是一种后端OLAP数据库，用于存储和分析历史数据。&lt;br&gt;
+&lt;strong&gt;ETL&lt;/strong&gt; 是一个中间步骤，代表&lt;strong&gt;提取、转换、加载 Extract, Transform, and Load&lt;/strong&gt;，将OLTP数据库组合成数据仓库的通用模式。&lt;br&gt;
+&lt;strong&gt;ELT&lt;/strong&gt; 是一种现代趋势，代表&lt;strong&gt;提取、加载、转换 Extract, Load, and Transform&lt;/strong&gt;，原始数据加载到OLAP数据库后，转换工作在OLAP数据库本身上完成。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;决策支持系统 Decision Support Systems&lt;/strong&gt; 通过分析数据仓库中存储的历史数据，帮助人们对未来的问题和事务做出决策。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;星型模式 Star Schema&lt;/strong&gt;&lt;br&gt;
+包含两种类型的表：&lt;strong&gt;事实表 Fact Tables&lt;/strong&gt; 和&lt;strong&gt;维度表 Dimension Tables&lt;/strong&gt;。&lt;br&gt;
+事实表包含应用程序中发生的多个&amp;quot;事件&amp;quot;，包含每个事件的最小唯一信息，其余属性是对外部维度表的外键引用。&lt;br&gt;
+维度表包含在多个事件中重复使用的冗余信息。&lt;br&gt;
+星型模式中只能有一层维度表，查询通常更快，因为连接更少。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;雪花模式 Snowflake Schema&lt;/strong&gt;&lt;br&gt;
+与星型模式类似，但允许从事实表引出多个维度，有时包含多个事实表。&lt;br&gt;
+冗余较少，占用存储空间更小，但查询需要更多连接，因此查询通常比星型模式慢。&lt;/p&gt;
+&lt;h3 id="执行模型-execution-models"&gt;执行模型 Execution Models
+&lt;/h3&gt;&lt;p&gt;分布式DBMS的执行模型指定了在查询执行期间节点之间如何通信。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;将查询推送到数据 Pushing a Query to Data&lt;/strong&gt;&lt;br&gt;
+DBMS将查询（或其中一部分）发送到包含数据的节点。它在数据驻留的位置执行尽可能多的过滤和处理，以最小化昂贵的数据传输。然后将结果发送回执行查询的位置。在&lt;strong&gt;无共享 Shared Nothing&lt;/strong&gt; 系统中更常见。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;将数据拉取到查询 Pulling Data to Query&lt;/strong&gt;&lt;br&gt;
+DBMS将数据带到执行查询所需的节点。换句话说，节点检测它们可以对哪些数据分区进行计算，并相应地从存储中拉取数据。然后，本地操作传播到一个节点，该节点对所有中间结果执行操作。通常是&lt;strong&gt;共享磁盘 Shared Disk&lt;/strong&gt; 系统会这样做。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;查询容错 Query Fault Tolerance&lt;/strong&gt;&lt;br&gt;
+大多数无共享分布式OLAP DBMS设计为假设节点在查询执行期间不会发生故障。如果一个节点在查询执行期间发生故障，则整个查询失败，迫使整个查询从头开始重新执行。&lt;br&gt;
+DBMS可以在执行期间对查询的中间结果进行&lt;strong&gt;快照 Snapshot&lt;/strong&gt;，以便在节点发生故障时恢复，但此操作开销很大。&lt;/p&gt;
+&lt;h3 id="查询计划-query-planning"&gt;查询计划 Query Planning
+&lt;/h3&gt;&lt;p&gt;分布式查询优化更加困难，因为它必须考虑集群中数据的物理位置和&lt;strong&gt;数据移动成本 Data Movement Costs&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;查询计划片段 Query Plan Fragments&lt;/strong&gt;&lt;br&gt;
+生成单个全局查询计划，然后将物理算子分发到节点，将其分解为特定于分区的片段。大多数系统实现此方法。&lt;br&gt;
+另一种方法是将SQL查询重写为特定于分区的查询。这允许在每个节点进行本地优化。&lt;/p&gt;
+&lt;h3 id="分布式连接算法-distributed-join-algorithms"&gt;分布式连接算法 Distributed Join Algorithms
+&lt;/h3&gt;&lt;p&gt;对于分析工作负载，大部分时间花在连接和从磁盘读取上。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;场景1&lt;/strong&gt;：一个表在每个节点复制，另一个表跨节点分区。每个节点并行连接其本地数据，然后将结果发送到协调节点。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;场景2&lt;/strong&gt;：两个表都在连接属性上分区，ID在每个节点上匹配。每个节点对本地数据执行连接，然后发送到一个节点进行合并。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;场景3&lt;/strong&gt;：两个表在不同键上分区。如果其中一个表很小，则DBMS将该表&lt;strong&gt;广播 Broadcast&lt;/strong&gt; 到所有节点。这回到场景1。本地连接被计算，然后这些连接被发送到一个公共节点以执行最终连接。这称为&lt;strong&gt;广播连接 Broadcast Join&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;场景4&lt;/strong&gt;：最坏情况。两个表都没有在连接键上分区。DBMS通过跨节点&lt;strong&gt;重新洗牌 Reshuffling&lt;/strong&gt; 来复制表。本地连接被计算，然后结果被发送到一个公共节点进行最终连接。这称为&lt;strong&gt;洗牌连接 Shuffle Join&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;半连接 Semi Join&lt;/strong&gt;&lt;br&gt;
+一种连接算子，结果仅包含左表的列。分布式DBMS使用半连接来最小化连接期间发送的数据量。&lt;/p&gt;
+&lt;h3 id="云系统-cloud-systems"&gt;云系统 Cloud Systems
+&lt;/h3&gt;&lt;p&gt;供应商提供&lt;strong&gt;数据库即服务 Database as a Service&lt;/strong&gt; 产品，即托管的DBMS环境。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;托管式DBMS Managed DBMS&lt;/strong&gt;&lt;br&gt;
+没有对DBMS进行重大修改以使其&amp;quot;感知&amp;quot;它在云环境中运行。它为客户端提供了一种抽象所有备份和恢复的方法。大多数供应商部署此方法。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;云原生DBMS Cloud Native DBMS&lt;/strong&gt;&lt;br&gt;
+明确设计用于在云环境中运行的系统。通常基于共享磁盘架构。例如 Snowflake, Google BigQuery, Amazon Redshift, Microsoft SQL Azure。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;无服务器数据库 Serverless Databases&lt;/strong&gt;&lt;br&gt;
+当客户变得空闲时，&lt;strong&gt;无服务器DBMS Serverless DBMS&lt;/strong&gt; 会驱逐租户，将系统中的当前进度&lt;strong&gt;设置检查点 Checkpointing&lt;/strong&gt; 到磁盘。当不主动查询时，用户只需为存储付费。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;数据湖 Data Lakes&lt;/strong&gt;&lt;br&gt;
+一个集中式存储库，用于存储大量结构化、半结构化和非结构化数据，而无需定义模式或将数据摄取到专有内部格式中。数据湖通常在摄取数据时更快，因为它们不需要立即进行转换。但它们需要用户编写自己的转换管道。&lt;/p&gt;
+&lt;h3 id="olap-商品化-olap-commoditization"&gt;OLAP 商品化 OLAP Commoditization
+&lt;/h3&gt;&lt;p&gt;近十年的一个趋势是将OLAP引擎子系统拆分为独立的开源组件。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;系统目录 System Catalogs&lt;/strong&gt;&lt;br&gt;
+DBMS在其目录中跟踪数据库的模式和数据文件。 Notable examples: HCatalog, Google Data Catalog, Amazon Glue Data Catalog。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;查询优化器 Query Optimizers&lt;/strong&gt;&lt;br&gt;
+用于基于启发式和成本的查询优化的可扩展搜索引擎框架。 Notable examples: Greenplum Orca, Apache Calcite。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;数据文件格式 Data File Formats&lt;/strong&gt;&lt;br&gt;
+新的开源二进制文件格式，使跨系统访问数据更容易。 Notable examples: Apache Parquet, Apache ORC, Apache CarbonData, Apache Iceberg, HDF5, Apache Arrow。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;执行引擎 Execution Engines&lt;/strong&gt;&lt;br&gt;
+用于在列式数据上执行向量化查询算子的独立库。 Notable examples: Velox, DataFusion, Intel OAP。&lt;/p&gt;</description></item><item><title>『学习笔记』CMU 15-445 (2024 fall) Project #1 - Buffer Pool Manager</title><link>https://livinfly.github.io/p/cmu_15-445_database_2024fall_p1/</link><pubDate>Thu, 11 Sep 2025 05:45:00 +0000</pubDate><guid>https://livinfly.github.io/p/cmu_15-445_database_2024fall_p1/</guid><description>&lt;img src="https://livinfly.github.io/p/cmu_15-445_database_2024fall_p1/cover.jpeg" alt="Featured image of post 『学习笔记』CMU 15-445 (2024 fall) Project #1 - Buffer Pool Manager" /&gt;&lt;h1 id="cmu-15-445-2024-fall-project-1---buffer-pool-manager"&gt;CMU 15-445 (2024 fall) Project #1 - Buffer Pool Manager
+&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;封面来源：&lt;a class="link" href="https://x.com/psychoron/status/1868253168645349484" target="_blank" rel="noopener"
+&gt;@psychoron&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a class="link" href="https://15445.courses.cs.cmu.edu/fall2024/project1/" target="_blank" rel="noopener"
+&gt;Project #1 - Buffer Pool Manager | CMU 15-445/645 :: Intro to Database Systems (Fall 2024)&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;p&gt;实现的 BusTub 是面向磁盘的 DBMS，数据存储在 non-volatile disk 中。&lt;/p&gt;
+&lt;p&gt;BusTub 的 page 是固定大小 4 KB，&lt;/p&gt;
+&lt;p&gt;缓存池管理器 Buffer Pool Manager 存储 store 页到固定大小的 buffer 中，称为 frame。&lt;/p&gt;
+&lt;p&gt;把逻辑页 logical page 存储到物理固定帧 physical fixed frame 中。&lt;/p&gt;
+&lt;p&gt;作为 cache 也作为提供 DBMS 支持大于内存大小的数据库的管理。&lt;/p&gt;
+&lt;p&gt;实现需要是线程安全的，使用 &lt;a class="link" href="https://stackoverflow.com/a/42464336" target="_blank" rel="noopener"
+&gt;latches&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+来保证。&lt;/p&gt;
+&lt;p&gt;和 OS 的 lock 的区别大概是保护内部数据的关键部分，且不需要支持回滚 rollback change。&lt;/p&gt;
+&lt;h2 id="task-1---lru-k-replacement-policy"&gt;Task #1 - LRU-K Replacement Policy
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;size_t&lt;/code&gt; 是 &lt;code&gt;unsigned&lt;/code&gt; 默认值不要赋 &lt;code&gt;-1&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;别的就正常实现，线程安全，先都加大锁，后面再考虑优化。&lt;/p&gt;
+&lt;h2 id="task-2---disk-scheduler"&gt;Task #2 - Disk Scheduler
+&lt;/h2&gt;&lt;p&gt;了解 &lt;code&gt;std::promise&lt;/code&gt; 和 &lt;code&gt;std::future&lt;/code&gt;，简单理解是线程之间更加方便传递数据的方式。&lt;/p&gt;
+&lt;p&gt;关于 &lt;code&gt;std::promise&lt;/code&gt; 和 &lt;code&gt;std::future&lt;/code&gt; 的使用方式：&lt;/p&gt;
+&lt;p&gt;线程一，创建 promise 和 future，把 promise 传递给线程二（ref / move）；&lt;/p&gt;
+&lt;p&gt;线程一，获取值（等待，堵塞）；线程二，future 返回值，线程一继续。&lt;/p&gt;
+&lt;p&gt;另一个相关的是 &lt;code&gt;std::async&lt;/code&gt;，对 &lt;code&gt;std::future&lt;/code&gt; 和 &lt;code&gt;std::thread&lt;/code&gt; （和 &lt;code&gt;std::packaged_task&lt;/code&gt;）的封装。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;std::packaged_task&lt;/code&gt; 也是类似。&lt;/p&gt;
+&lt;p&gt;值得注意的是，&lt;code&gt;std::future.get()&lt;/code&gt; 的时候，会自动调用 wait，且只能调用一次 &lt;code&gt;get()&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;std::async&lt;/code&gt; 有不同的启动模式&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;std::launch::async&lt;/code&gt; 异步&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;std::launch::deferred&lt;/code&gt; 在 &lt;code&gt;get()&lt;/code&gt;, &lt;code&gt;wait()&lt;/code&gt; 的再去延迟执行&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;std::launch::async | std::launch::deferred&lt;/code&gt; 默认，都可以，取决于编译器 / 操作系统（？）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果 &lt;code&gt;std::future&lt;/code&gt; 关联的 &lt;code&gt;std::promise&lt;/code&gt; 在未被使用的时候，被释放了，会报错。&lt;/p&gt;
+&lt;p&gt;多个线程等待同一个执行结果时，可以使用 &lt;code&gt;std::shared_future&lt;/code&gt;。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// std::promise + std::future
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;work&lt;/span&gt;&lt;span class="p"&gt;(...,&lt;/span&gt; &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;promise&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;work_promise&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="c1"&gt;// void, set_value()
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="n"&gt;work_promise&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_value&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;xxx&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;promise&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;work_promise&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;work_future&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;work_promise&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_future&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="kr"&gt;thread&lt;/span&gt; &lt;span class="n"&gt;work_thread&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;work&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;...,&lt;/span&gt; &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;move&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;work_promise&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// std::promise&amp;lt;int&amp;gt; &amp;amp;.., std::ref()
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// std::async + std::future
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;future_&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;async&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;]);&lt;/span&gt; &lt;span class="c1"&gt;// func -&amp;gt; int
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// std::packaged_task + std::future
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;packaged_task&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;task_&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// func(int, int) -&amp;gt; int
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;future_&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;task_&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_future&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="kr"&gt;thread&lt;/span&gt; &lt;span class="n"&gt;thread_&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;move&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;task_&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;auto&lt;/span&gt; &lt;span class="n"&gt;ret&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;future_&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;thread_&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// std::shared_future
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;shared_future&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;future_&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;promise_&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_future&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 在不同线程多次使用 future_
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;a class="link" href="https://en.cppreference.com/w/cpp/thread/promise" target="_blank" rel="noopener"
+&gt;cppreference std::promise&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://www.cnblogs.com/guxuanqing/p/11360572.html" target="_blank" rel="noopener"
+&gt;C++之future和promise - PKICA - 博客园&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://www.limerence2017.com/2023/09/17/concpp07/" target="_blank" rel="noopener"
+&gt;C++ 并发三剑客future, promise和async | 恋恋风辰的个人博客&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;p&gt;虽然讲了很多，不过只要用一点点就行了。&lt;/p&gt;
+&lt;h2 id="task-3---buffer-pool-manager"&gt;Task #3 - Buffer Pool Manager
+&lt;/h2&gt;&lt;p&gt;主要调试的点：&lt;/p&gt;
+&lt;p&gt;（其实跟着 test case 就能出来）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Frame&lt;/code&gt; 和 &lt;code&gt;Page&lt;/code&gt; 的数据同步问题&lt;/li&gt;
+&lt;li&gt;同一个 &lt;code&gt;Frame&lt;/code&gt;，读写的同步问题&lt;/li&gt;
+&lt;li&gt;逐出状态是跟着 &lt;code&gt;frame_id&lt;/code&gt; 走的，构建时需要重置下&lt;/li&gt;
+&lt;li&gt;在 &lt;code&gt;frame&lt;/code&gt; 的访问次数小于 &lt;code&gt;k&lt;/code&gt; 时的比较方式和网页描述疑似不一致，是按照 FIFO 的方式？&lt;/li&gt;
+&lt;li&gt;就算是 &lt;code&gt;assert&lt;/code&gt; 有使用到需要用锁的参数，也需要包含在锁的范围内，如 &lt;code&gt;LRUKReplacer::SetEvictable&lt;/code&gt;。或者只在必要时才调用来缓解（不过应该不算彻底解决，但同时加上也是更合理的写法）。具体也不算搞清楚原因，&lt;strong&gt;just work&amp;hellip;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;试着让 &lt;code&gt;bpm&lt;/code&gt; 和 &lt;code&gt;page_guard&lt;/code&gt; 的职责分开。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;frame&lt;/code&gt; 的 &lt;code&gt;rw_latch&lt;/code&gt; 需不需要锁。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# discord - p1-20224-fall - Rob c — 2025/4/9 09:05&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;literally staring at the same deadlock
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;I think that comment was added later on, and the fall &lt;span class="m"&gt;2024&lt;/span&gt; code looked like this: https://github.com/cmu-db/bustub/blob/01a64ffdbad34b4bf0693096382c44e3107ba690/src/buffer/buffer_pool_manager.cpp
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;and the comment about taking the page lock was added in this PR https://github.com/cmu-db/bustub/commit/3e933255eff5600b8d083cca73ad583ec9f6e6a4
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;In the PR &lt;span class="k"&gt;for&lt;/span&gt; that commit, &lt;span class="c1"&gt;#800, there&amp;#39;s a devastating line:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Note that previously, the buffer pool manager only had unsafe flush methods.
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Which imo seems like pretty good confirmation that we&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;re not supposed to lock.
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;感觉是错哪改哪，后续还应该再去整理一遍的样子。&lt;/p&gt;
+&lt;h2 id="提交结果"&gt;提交结果
+&lt;/h2&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/cmu_15-445_database_2024fall_p1/figures/1757569968819.png"
+width="756"
+height="496"
+srcset="https://livinfly.github.io/p/cmu_15-445_database_2024fall_p1/figures/1757569968819_hu_2f973abec91e01a4.png 480w, https://livinfly.github.io/p/cmu_15-445_database_2024fall_p1/figures/1757569968819_hu_c00db4a586627223.png 1024w"
+loading="lazy"
+alt="Gradescope 提交结果"
+class="gallery-image"
+data-flex-grow="152"
+data-flex-basis="365px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Leaderboard 顺带贴一下吧，还没有做额外修改，也还没做 bonus 部分。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/cmu_15-445_database_2024fall_p1/figures/1757570013315.png"
+width="2912"
+height="476"
+srcset="https://livinfly.github.io/p/cmu_15-445_database_2024fall_p1/figures/1757570013315_hu_614b028bf0b01a87.png 480w, https://livinfly.github.io/p/cmu_15-445_database_2024fall_p1/figures/1757570013315_hu_a0df08fded5b6c0f.png 1024w"
+loading="lazy"
+alt="Gradescope Leaderboard 结果"
+class="gallery-image"
+data-flex-grow="611"
+data-flex-basis="1468px"
+&gt;&lt;/p&gt;</description></item><item><title>『学习笔记』CMU 15-445 (2024 fall) Homework #1 - SQL</title><link>https://livinfly.github.io/p/cmu_15-445_database_2024fall_hw1/</link><pubDate>Sat, 06 Sep 2025 06:28:22 +0000</pubDate><guid>https://livinfly.github.io/p/cmu_15-445_database_2024fall_hw1/</guid><description>&lt;img src="https://livinfly.github.io/p/cmu_15-445_database_2024fall_hw1/cover.jpeg" alt="Featured image of post 『学习笔记』CMU 15-445 (2024 fall) Homework #1 - SQL" /&gt;&lt;h1 id="homework-1---sql"&gt;Homework #1 - SQL
+&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;封面来源：&lt;a class="link" href="https://x.com/psychoron/status/1890415031998673363" target="_blank" rel="noopener"
+&gt;@psychoron&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a class="link" href="https://15445.courses.cs.cmu.edu/fall2024/homework1/" target="_blank" rel="noopener"
+&gt;Homework #1 - SQL | CMU 15-445/645 :: Intro to Database Systems (Fall 2024)&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;p&gt;用 duckdb 生成的结果，如果有 &lt;code&gt;'&lt;/code&gt; 单引号，会被双引号框起来，导致和 sqlite3 的结果不一致。&lt;/p&gt;
+&lt;p&gt;可手动去除或都用 sqlite3 跑。&lt;/p&gt;
+&lt;p&gt;同时可以使用 .mode 等命令，使得 duckdb 的输出格式和 sqlite 一致。&lt;/p&gt;
+&lt;p&gt;逃了，写 Q5 写得头晕，Q1 - 4 还是完成了，感觉已经起到基础锻炼效果了，基本都在翻 note / 问 ai / 做完看上一个的参考答案 = =&lt;/p&gt;
+&lt;p&gt;后面两个理清然后实现 sqlite 的版本。&lt;/p&gt;
+&lt;p&gt;中间遇到 &lt;code&gt;diff&lt;/code&gt; 因为 LF 和 CRLF 的区别而显示不一致（（&lt;/p&gt;
+&lt;p&gt;具体的做法感觉也不用多说，就贴下代码吧。（Homework，官方有放 sol，所以也应该是允许的）&lt;/p&gt;
+&lt;p&gt;其他的作业因为是纸质，就不单独贴文章了。&lt;/p&gt;
+&lt;h2 id="q1_samplesqlitesql"&gt;q1_sample.sqlite.sql
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;DISTINCT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;medal_info&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ORDER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="q2_successful_coachessqlitesql"&gt;q2_successful_coaches.sqlite.sql
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;COUNT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;coaches&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;winner_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;discipline&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;medals&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;athletes&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;winner_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;UNION&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ALL&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;DISTINCT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;winner_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;discipline&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;medals&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;teams&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;winner_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;winners&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;discipline&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;winners&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;discipline&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;winners&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;GROUP&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;ORDER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;COUNT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;DESC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ASC&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="q3_judo_athlete_medalssqlitesql"&gt;q3_Judo_athlete_medals.sqlite.sql
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;DISTINCT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;winner_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;athletes&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;LEFT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;teams&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;athletes_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;LEFT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;medals&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;winner_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;OR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;winner_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;disciplines&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;LIKE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;%Judo%&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;GROUP&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;ORDER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;winner_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;DESC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="q4_athletics_venue_athletessqlitesql"&gt;q4_Athletics_venue_athletes.sqlite.sql
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;/span&gt;&lt;span class="lnt"&gt;26
+&lt;/span&gt;&lt;span class="lnt"&gt;27
+&lt;/span&gt;&lt;span class="lnt"&gt;28
+&lt;/span&gt;&lt;span class="lnt"&gt;29
+&lt;/span&gt;&lt;span class="lnt"&gt;30
+&lt;/span&gt;&lt;span class="lnt"&gt;31
+&lt;/span&gt;&lt;span class="lnt"&gt;32
+&lt;/span&gt;&lt;span class="lnt"&gt;33
+&lt;/span&gt;&lt;span class="lnt"&gt;34
+&lt;/span&gt;&lt;span class="lnt"&gt;35
+&lt;/span&gt;&lt;span class="lnt"&gt;36
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WITH&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;athletes&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;DISTINCT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;participant_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;participant_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;LEFT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;venues&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;venue&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;venue&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;disciplines&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;LIKE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;%Athletics%&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;participant_type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Person&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;UNION&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;athletes_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;participant_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;teams&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;IN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;participant_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;LEFT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;venues&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;venue&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;venue&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;disciplines&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;LIKE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;%Athletics%&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;participant_type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Team&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nationality_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;LEFT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;c&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Latitude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cLatitude&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;c&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Longitude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cLongitude&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;countries&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;c&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;c1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;c1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;LEFT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;c&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Latitude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;nLatitude&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;c&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Longitude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;nLongitude&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;countries&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;c&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;c2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nationality_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;c2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cLatitude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;IS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NOT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NULL&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cLongitude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;IS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NOT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NULL&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;nLatitude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;IS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NOT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NULL&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;nLongitude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;IS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NOT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NULL&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;ORDER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cLatitude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;nLatitude&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cLatitude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;nLatitude&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cLongitude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;nLongitude&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cLongitude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;nLongitude&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;DESC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="q5_top5_rank_country_per_daysqlitesql"&gt;q5_top5_rank_country_per_day.sqlite.sql
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;/span&gt;&lt;span class="lnt"&gt;26
+&lt;/span&gt;&lt;span class="lnt"&gt;27
+&lt;/span&gt;&lt;span class="lnt"&gt;28
+&lt;/span&gt;&lt;span class="lnt"&gt;29
+&lt;/span&gt;&lt;span class="lnt"&gt;30
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;WITH&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;teams&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;GROUP&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cr&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;RANK&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OVER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;ORDER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;c&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;GDP ($ per capita)&amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;DESC&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;gdprk&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;RANK&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OVER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;ORDER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;c&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Population&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;DESC&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;poprk&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;countries&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;c&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;date&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ccode&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;gdprk&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;poprk&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ROW_NUMBER&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OVER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PARTITION&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;date&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ORDER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;DESC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ccode&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;rn&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;CASE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHEN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;IS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NOT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NULL&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;THEN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ELSE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;END&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ccode&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;COUNT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rank&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;LEFT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;participant_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;LEFT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;athletes&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;participant_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;rank&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;GROUP&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;date&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ccode&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ranked&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cr&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;rn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ranked&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ccode&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;ORDER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;date&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="q6_big_progress_country_female_teamssqlitesql"&gt;q6_big_progress_country_female_teams.sqlite.sql
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;/span&gt;&lt;span class="lnt"&gt;26
+&lt;/span&gt;&lt;span class="lnt"&gt;27
+&lt;/span&gt;&lt;span class="lnt"&gt;28
+&lt;/span&gt;&lt;span class="lnt"&gt;29
+&lt;/span&gt;&lt;span class="lnt"&gt;30
+&lt;/span&gt;&lt;span class="lnt"&gt;31
+&lt;/span&gt;&lt;span class="lnt"&gt;32
+&lt;/span&gt;&lt;span class="lnt"&gt;33
+&lt;/span&gt;&lt;span class="lnt"&gt;34
+&lt;/span&gt;&lt;span class="lnt"&gt;35
+&lt;/span&gt;&lt;span class="lnt"&gt;36
+&lt;/span&gt;&lt;span class="lnt"&gt;37
+&lt;/span&gt;&lt;span class="lnt"&gt;38
+&lt;/span&gt;&lt;span class="lnt"&gt;39
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;teams&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;group&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;by&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="n"&gt;paris_medals&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;medal_number&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;medal_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;case&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;when&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;not&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;null&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;athletes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;end&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;medals&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;left&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;join&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;on&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;medals&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;winner_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t1&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;left&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;join&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;athletes&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;on&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;athletes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;winner_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;medal_info&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;mi&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;where&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;medal_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;mi&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;and&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;mi&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Gold Medal&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;group&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;by&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;order&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;by&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;medal_number&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;desc&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="n"&gt;cs&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;paris_medals&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;country&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;paris_medals&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;medal_number&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tokyo_medals&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gold_medal&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;progress&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tokyo_medals&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;paris_medals&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;where&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;paris_medals&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tokyo_medals&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;order&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;by&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;progress&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;desc&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;limit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;progress&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;increased_gold_medal_number&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tcode&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;teams&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tcode&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;athletes&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;teams&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;teams&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;athletes_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;athletes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cs&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;teams&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;country&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;group&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;by&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;teams&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;having&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;gender&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="k"&gt;order&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;by&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;progress&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;desc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;country&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tcode&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item><item><title>『学习笔记』CMU 15-445 (2024 fall) Project #0 - C++ Primer</title><link>https://livinfly.github.io/p/cmu_15-445_database_2024fall_p0/</link><pubDate>Wed, 03 Sep 2025 05:33:04 +0000</pubDate><guid>https://livinfly.github.io/p/cmu_15-445_database_2024fall_p0/</guid><description>&lt;img src="https://livinfly.github.io/p/cmu_15-445_database_2024fall_p0/cover.jpeg" alt="Featured image of post 『学习笔记』CMU 15-445 (2024 fall) Project #0 - C++ Primer" /&gt;&lt;h1 id="cmu-15-445-2024-fall-project-0---c-primer"&gt;CMU 15-445 (2024 fall) Project #0 - C++ Primer
+&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;封面来源：&lt;a class="link" href="https://x.com/doggo_1d34/status/1961758941328945252" target="_blank" rel="noopener"
+&gt;@doggo_1d34&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a class="link" href="https://15445.courses.cs.cmu.edu/fall2024/project0/" target="_blank" rel="noopener"
+&gt;Project #0 - C++ Primer | CMU 15-445/645 :: Intro to Database Systems (Fall 2024)&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;p&gt;引一个 &lt;a class="link" href="https://db.in.tum.de/teaching/ss23/c&amp;#43;&amp;#43;praktikum/slides/lecture-10.2.pdf?lang=en" target="_blank" rel="noopener"
+&gt;C++ 多线程的 slide&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+，过了一遍，感觉不错。&lt;/p&gt;
+&lt;p&gt;再引一些之前一直没学的 GDB，远古经典基础使用 &lt;a class="link" href="https://www.cs.cmu.edu/~gilpin/tutorial/" target="_blank" rel="noopener"
+&gt;gdb Tutorial&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+、近期进阶使用 &lt;a class="link" href="https://techbeamers.com/how-to-use-gdb-top-debugging-tips/" target="_blank" rel="noopener"
+&gt;GDB Tutorial: Essential GDB Tips to Learn Debugging&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+、大神表演 &lt;a class="link" href="https://www.youtube.com/watch?v=PorfLSr3DDI" target="_blank" rel="noopener"
+&gt;CppCon 2015: Greg Law &amp;quot; Give me 15 minutes &amp;amp; I&amp;rsquo;ll change your view of GDB&amp;quot; - YouTube&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+。&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://github.com/cmu-db/15445-bootcamp" target="_blank" rel="noopener"
+&gt;cmu-db/15445-bootcamp&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+来作为现代 C++ 特性的学习也很不错。&lt;/p&gt;
+&lt;p&gt;提供的视频很好 &lt;a class="link" href="https://www.youtube.com/watch?v=lJYufx0bfpw" target="_blank" rel="noopener"
+&gt;video&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+。&lt;/p&gt;
+&lt;p&gt;简单说下 HLL (HyperLogLog) 的算法原理：&lt;/p&gt;
+&lt;p&gt;伯努利原理，丢硬币的场景，00..01 的情况；&lt;/p&gt;
+&lt;p&gt;总共丢 n 次，丢 k 次第一次出现 1 的情况，最大一次是 ${k_{max}}$，那按照概率 $n = 2^{k_{max}}$；&lt;/p&gt;
+&lt;p&gt;回到我们要做的问题，是估计总共集合大小，hash 成 01串，一个 hash 算一个 k，然后统计 k_max 估计；
+然后，为了降低误差，采用 分桶 bucket ，随机分配给多个统计 $k_{max_i}$；&lt;/p&gt;
+&lt;p&gt;然后求调和平均（缓解极端值），最后乘分桶数，再乘修正参数，是估计值。&lt;/p&gt;
+&lt;p&gt;分桶这一部分，把一段 01 作为选择桶的参数，然后剩余的 01 算 k。&lt;/p&gt;
+&lt;p&gt;（还有许多别的修正）&lt;/p&gt;
+&lt;p&gt;可以想到这个算法在数量少的时候，误差大，所以在大数据场景比较合适。&lt;/p&gt;
+&lt;h2 id="task-1"&gt;Task #1
+&lt;/h2&gt;&lt;p&gt;概念上，Left most one 是高位来的，需要统计到 1 这一位，most significant bit，即高位。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;位运算左移 / 右移位数&lt;/strong&gt;大于&lt;strong&gt;被操作数的位数&lt;/strong&gt;时，是 ub (undefined behavior)，依赖编译器的处理，一般是取余、移动，但仍需要避免。&lt;/p&gt;
+&lt;p&gt;当使用 &lt;code&gt;bitset&lt;/code&gt; 时，则是全 0，移动补 0 的处理。&lt;/p&gt;
+&lt;p&gt;测试时，注意删掉 &lt;code&gt;DISABLED_&lt;/code&gt; 前缀，如 &lt;code&gt;DISABLED_BasicTest1&lt;/code&gt; 变成 &lt;code&gt;BasicTest1&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;在测 Task #2 时，也可以把 Task #1 中耗时的测试重新加上 &lt;code&gt;DISABLED_&lt;/code&gt;。&lt;/p&gt;
+&lt;h2 id="task-2"&gt;Task #2
+&lt;/h2&gt;&lt;p&gt;开始一直卡在不清楚各个部分的意义先列下我看到的帮助我理解的资料 / 聊天记录 / 注释，&lt;/p&gt;
+&lt;p&gt;再简单讲讲 Presto&amp;rsquo;s HLL 中的 &lt;strong&gt;dense layout implementation&lt;/strong&gt; 的算法原理：&lt;/p&gt;
+&lt;p&gt;主要参考 &lt;a class="link" href="https://engineering.fb.com/2018/12/13/data-infrastructure/hyperloglog/" target="_blank" rel="noopener"
+&gt;HyperLogLog in Presto: Faster cardinality estimation - Engineering at Meta&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+（介绍了算法的发展历程）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# discord - p0-2024-fall - vittilad — 2024/9/4 18:34&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;1. Count the zeros from the right &lt;span class="o"&gt;(&lt;/span&gt;this is the Rj in the cardinality computation&lt;span class="o"&gt;)&lt;/span&gt;. Also find the dense bucket index.
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;2. Reconstruct the curently stored Rj &lt;span class="k"&gt;for&lt;/span&gt; the bucket. &lt;span class="o"&gt;(&lt;/span&gt;See step &lt;span class="m"&gt;4&lt;/span&gt; how to &lt;span class="k"&gt;do&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;. Compare to determine &lt;span class="k"&gt;if&lt;/span&gt; you need to overwrite the stored bucket value.
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;3. Store the &lt;span class="m"&gt;4&lt;/span&gt; least significant bits of Rj binary representation in the dense array &lt;span class="o"&gt;(&lt;/span&gt;and the &lt;span class="m"&gt;3&lt;/span&gt; bits remaining in the overflow but only &lt;span class="k"&gt;if&lt;/span&gt; they are not all zero, overflow bucket is a map from dense bucket index to thos &lt;span class="m"&gt;3&lt;/span&gt; bits&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;4. When computing cardinality, you need to reconstruct the Rj from the dense/overflow storage. The &lt;span class="m"&gt;3&lt;/span&gt; lower bits come from dense bucket and &lt;span class="k"&gt;if&lt;/span&gt; there is an entry &lt;span class="k"&gt;for&lt;/span&gt; the bucket index in overflow bucket you need to that into account.
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# discord - p0-2024-fall - shengdao - 2024/12/15 11:00&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;According to my understanding, in the presto implementation of HLL, the high p bits are taken as the common bucket number, recorded as bucket_index. Take the LSB as the value. If the LSB exceeds the bucket width &lt;span class="o"&gt;(&lt;/span&gt;DENSE_BUCKET_SIZE&lt;span class="o"&gt;)&lt;/span&gt;, it needs to be placed in the overflow bucket. The high &lt;span class="m"&gt;3&lt;/span&gt; bits &lt;span class="o"&gt;(&lt;/span&gt;OVERFLOW_BUCKET_SIZE&lt;span class="o"&gt;)&lt;/span&gt; are placed in the overflow bucket and stored in the form of &lt;span class="o"&gt;(&lt;/span&gt;bucket_index,xxx&lt;span class="o"&gt;)&lt;/span&gt;. The remaining low &lt;span class="m"&gt;4&lt;/span&gt; bits &lt;span class="o"&gt;(&lt;/span&gt;DENSE_BUCKET_SIZE&lt;span class="o"&gt;)&lt;/span&gt; are placed in the corresponding common bucket. When calculating the cardinality, traverse densebucket. If there is a corresponding value in the overflow bucket, take the maximum value of the two and calculate according to the formula to obtain the cardinality.
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;If my understanding is correct, when calculating the cardinality, CONSTANTmm/sum, the minimum sum can be about 2^&lt;span class="o"&gt;(&lt;/span&gt;-15&lt;span class="o"&gt;)&lt;/span&gt;, and it will not calculate such a large cardinality, just like where I made a mistake. I would like to ask, what are the mistakes and omissions I made?
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# discord - p0-2024-fall - EvanHuang — 2024/12/21 01:13&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;you are supposed to combine bits from dense and overflow into the original number
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;注释中，&lt;code&gt;dense_bucket_&lt;/code&gt; &lt;strong&gt;Structure holding dense buckets (or also known as registers)&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;del&gt;应该好好读注释的，我卡了好久 QnQ&lt;/del&gt;&lt;/p&gt;
+&lt;p&gt;（不保证正确，欢迎修正）&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;n_leading_bits&lt;/code&gt; 仍然和 Task #1 一致，是用于桶编号的位数。&lt;/p&gt;
+&lt;p&gt;桶的内容存储有区别，应该是考虑到大多数的值 LSBs 的 0，是比较小的，即 &lt;code&gt;DENSE_BUCKET_SIZE&lt;/code&gt; 就够了。&lt;/p&gt;
+&lt;p&gt;然后对于超出 &lt;code&gt;DENSE_BUCKET_SIZE&lt;/code&gt; 的部分，使用哈希映射分配 &lt;code&gt;OVERFLOW_BUCKET_SIZE&lt;/code&gt;，显然就足够最大 64 位 0 了。&lt;/p&gt;
+&lt;p&gt;所以是为了节省一点空间。（？）&lt;/p&gt;
+&lt;h2 id="提交结果"&gt;提交结果
+&lt;/h2&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/cmu_15-445_database_2024fall_p0/figures/image-20250903132023127.png"
+width="734"
+height="1178"
+srcset="https://livinfly.github.io/p/cmu_15-445_database_2024fall_p0/figures/image-20250903132023127_hu_2e715b0ec4e573fd.png 480w, https://livinfly.github.io/p/cmu_15-445_database_2024fall_p0/figures/image-20250903132023127_hu_1ae8ac3dea44688b.png 1024w"
+loading="lazy"
+alt="Gradescope 提交结果"
+class="gallery-image"
+data-flex-grow="62"
+data-flex-basis="149px"
+&gt;&lt;/p&gt;</description></item></channel></rss>
