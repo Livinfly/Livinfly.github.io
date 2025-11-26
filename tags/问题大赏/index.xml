@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>问题大赏 on Livinfly's Blog</title><link>https://livinfly.github.io/tags/%E9%97%AE%E9%A2%98%E5%A4%A7%E8%B5%8F/</link><description>Recent content in 问题大赏 on Livinfly's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 30 Oct 2025 09:12:01 +0000</lastBuildDate><atom:link href="https://livinfly.github.io/tags/%E9%97%AE%E9%A2%98%E5%A4%A7%E8%B5%8F/index.xml" rel="self" type="application/rss+xml"/><item><title>喜闻乐见的软硬件问题大赏</title><link>https://livinfly.github.io/p/hs_problems_fun_to_see/</link><pubDate>Sun, 09 Mar 2025 07:35:00 +0000</pubDate><guid>https://livinfly.github.io/p/hs_problems_fun_to_see/</guid><description>&lt;img src="https://livinfly.github.io/p/hs_problems_fun_to_see/cover.png" alt="Featured image of post 喜闻乐见的软硬件问题大赏" /&gt;&lt;h1 id="喜闻乐见的软硬件问题大赏"&gt;喜闻乐见的软硬件问题大赏
+&lt;/h1&gt;&lt;h2 id="chrome-谷歌浏览器在-bilibili-视频页面鼠标滚轮滚动延迟果冻效应等"&gt;Chrome 谷歌浏览器，在 Bilibili 视频页面，鼠标滚轮滚动延迟、果冻效应等
+&lt;/h2&gt;&lt;p&gt;关闭谷歌浏览器「平滑滚动」。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;打开 Chrome 谷歌浏览器，在地址栏中执行如下指令： &lt;strong&gt;Chrome://flags/#enable-smooth-scrolling&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;找到「&lt;strong&gt;平滑滚动&lt;/strong&gt;」选项，&lt;strong&gt;smooth-scrolling&lt;/strong&gt; 选项，选择「关闭」，&lt;strong&gt;Disabled&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/hs_problems_fun_to_see/HS_problems_fun_to_see.assets/image-20250309152015073.png"
+width="1412"
+height="602"
+srcset="https://livinfly.github.io/p/hs_problems_fun_to_see/HS_problems_fun_to_see.assets/image-20250309152015073_hu_a7df0e25b6764b2e.png 480w, https://livinfly.github.io/p/hs_problems_fun_to_see/HS_problems_fun_to_see.assets/image-20250309152015073_hu_b95809c9d2f6b150.png 1024w"
+loading="lazy"
+alt="smooth-scrolling 选项"
+class="gallery-image"
+data-flex-grow="234"
+data-flex-basis="562px"
+&gt;&lt;/p&gt;
+&lt;h2 id="鼠标滚轮停顿延迟回滚乱跳等"&gt;鼠标滚轮停顿、延迟、回滚、乱跳等
+&lt;/h2&gt;&lt;p&gt;&lt;a class="link" href="https://www.zhihu.com/question/41680058/answer/2720712055" target="_blank" rel="noopener"
+&gt;知乎比较全面的回答&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;p&gt;滚轮编码器脏了，使用WD-40，或者换个新的滚轮编码器。&lt;/p&gt;
+&lt;p&gt;拆开鼠标，往滚轮和编码器处喷些 WD-40 即可，注意量不用太多。&lt;/p&gt;
+&lt;h2 id="windows-系统对文件路径的最长长度限制导致的问题"&gt;Windows 系统对文件路径的最长长度限制导致的问题
+&lt;/h2&gt;&lt;p&gt;如安装 Python 的 vLLM 库时，遇到 &lt;code&gt;error: could not create 'build\bdist.win-amd64\wheel\.\vllm\model_executor\layers\quantization\utils\configs\N=1536,K=1536,device_name=AMD_Instinct_MI300X,dtype=fp8_w8a8,block_shape=[128,128].json': No such file or directory&lt;/code&gt;错误。&lt;/p&gt;
+&lt;p&gt;这实际是由安装过程中需要创建的某个文件的完整路径超过&lt;strong&gt;长度限制&lt;/strong&gt;导致的。&lt;/p&gt;
+&lt;p&gt;虽然安装 Python 时好像是会提示&lt;strong&gt;是否禁用文件名长度限制&lt;/strong&gt;，但是在 conda 环境安装 Python 时是没有的。&lt;/p&gt;
+&lt;p&gt;这里只介绍一种方法，修改注册表。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;打开注册表编辑器
+&lt;ul&gt;
+&lt;li&gt;按下 Win + R 键打开“运行”对话框。&lt;/li&gt;
+&lt;li&gt;输入 regedit 然后按回车键。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;导航到指定路径
+&lt;ul&gt;
+&lt;li&gt;在注册表编辑器的地址栏中，复制并粘贴以下路径，然后按回车键：&lt;code&gt;HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;修改键值
+&lt;ul&gt;
+&lt;li&gt;在右侧的窗口中，找到一个名为 LongPathsEnabled 的值。&lt;/li&gt;
+&lt;li&gt;如果找不到，可以右键点击空白处，选择 “新建” -&amp;gt; “DWORD (32 位) 值”，并将其命名为 LongPathsEnabled。&lt;/li&gt;
+&lt;li&gt;双击 LongPathsEnabled，将它的“数值数据”从 0 修改为 1。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;重启电脑
+&lt;ul&gt;
+&lt;li&gt;确保设置生效。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="windows-系统-c-盘拯救计划文件软链接搬迁"&gt;Windows 系统 C 盘拯救计划（文件软链接搬迁）
+&lt;/h2&gt;&lt;p&gt;笔者苦 C 盘「红温」久矣，故找寻到此方法，因为软链接在一些操作中仍有所不同，不保证方法的安全性，若瞎搬瞎删文件，导致的任何损失，概不负责。&lt;/p&gt;
+&lt;p&gt;简单来讲就是建立&lt;strong&gt;文件软链接&lt;/strong&gt;，尽量避免对软链接文件进行打包等操作，同时，建议只搬迁用户级的文件，而非系统级的文件，以防出现问题。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# windows&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 把 src 文件（夹）链接给 dest，会自动创建 dest 路径的文件（夹）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;mklink /d &lt;span class="o"&gt;[&lt;/span&gt;dest&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;src&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 示例&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;mklink /d C:&lt;span class="se"&gt;\a&lt;/span&gt;aa E:&lt;span class="se"&gt;\a&lt;/span&gt;aa
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 删除链接，不要用 del，否则疑似会删除原文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;rmdir &lt;span class="o"&gt;[&lt;/span&gt;dest&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# linux&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ln –s &lt;span class="o"&gt;[&lt;/span&gt;src&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;dest&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;rm -rf &lt;span class="o"&gt;[&lt;/span&gt;dest&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="vsc-visual-studio-code-打开新文件覆盖--不覆盖设置"&gt;VSC (Visual Studio Code) 打开新文件覆盖 / 不覆盖设置
+&lt;/h2&gt;&lt;p&gt;笔者之前一直很讨厌 VSC 在打开新文件时，覆盖掉我没用编辑的当前文件，觉得非常不方便。&lt;/p&gt;
+&lt;p&gt;而可能是 VSC 更新后，这个设置默认值可能倒过来了。&lt;/p&gt;
+&lt;p&gt;打开都是不覆盖，导致我什么文件都看一眼，就有十几个文件窗口要关掉了。&lt;/p&gt;
+&lt;p&gt;遂设置回来，意外之喜是发现可以通过点两下新文件设置成固定的。&lt;/p&gt;
+&lt;p&gt;千言万语化为下面这张图。&lt;/p&gt;
+&lt;p&gt;可以通过双击左侧「资源管理器」栏的文件 / 处于预览状态下的上方的文件窗口，固定住文件！&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/hs_problems_fun_to_see/HS_problems_fun_to_see.assets/vsc_editor_preview.png"
+width="2420"
+height="817"
+srcset="https://livinfly.github.io/p/hs_problems_fun_to_see/HS_problems_fun_to_see.assets/vsc_editor_preview_hu_13a18b01b20a1dc0.png 480w, https://livinfly.github.io/p/hs_problems_fun_to_see/HS_problems_fun_to_see.assets/vsc_editor_preview_hu_b41673b1f099ec0b.png 1024w"
+loading="lazy"
+alt="vsc_editor_preview"
+class="gallery-image"
+data-flex-grow="296"
+data-flex-basis="710px"
+&gt;&lt;/p&gt;</description></item></channel></rss>

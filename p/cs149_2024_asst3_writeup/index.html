@@ -1,0 +1,1449 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='Stanford CS149 (2024): Assignment 3 writeup.'><title>『学习笔记』CS149 (2024): Assignment 3 | Livinfly's Blog</title><link rel=canonical href=https://livinfly.github.io/p/cs149_2024_asst3_writeup/><link rel=stylesheet href=/scss/style.min.7b96b7b80dada1deccaa378dbac0dcc82da1c6e0722374b6ba5d8ad5b920363f.css><meta property='og:title' content="『学习笔记』CS149 (2024): Assignment 3"><meta property='og:description' content="Stanford CS149 (2024): Assignment 3 writeup."><meta property='og:url' content='https://livinfly.github.io/p/cs149_2024_asst3_writeup/'><meta property='og:site_name' content="Livinfly's Blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='学习笔记'><meta property='article:tag' content='CS149'><meta property='article:tag' content='并行计算'><meta property='article:published_time' content='2025-08-16T02:46:17+00:00'><meta property='article:modified_time' content='2025-09-06T14:35:51+08:00'><meta property='og:image' content='https://livinfly.github.io/p/cs149_2024_asst3_writeup/cover.jpeg'><meta name=twitter:site content="@Mengmm_JhaiL"><meta name=twitter:creator content="@Mengmm_JhaiL"><meta name=twitter:title content="『学习笔记』CS149 (2024): Assignment 3"><meta name=twitter:description content="Stanford CS149 (2024): Assignment 3 writeup."><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://livinfly.github.io/p/cs149_2024_asst3_writeup/cover.jpeg'><link rel="shortcut icon" href=/favicon.png><link rel=apple-touch-icon href=/favicon.png><script async src="https://www.googletagmanager.com/gtag/js?id=G-LKX43Y8KEL"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-LKX43Y8KEL")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_6155a7461c712b4f.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🤣</span></figure><div class=site-meta><h1 class=site-name><a href=/>Livinfly's Blog</a></h1><h2 class=site-description>想要留下点温暖的地方</h2></div></header><ol class=menu-social><li><a href=mailto:luojie3m@163.com target=_blank title=Email rel=me><svg class="icon icon-tabler icon-tabler-mail" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg></a></li><li><a href=https://github.com/Livinfly target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://twitter.com/Mengmm_JhaiL target=_blank title=Twitter rel=me><svg class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M22 4.01c-1 .49-1.98.689-3 .99-1.121-1.265-2.783-1.335-4.38-.737S11.977 6.323 12 8v1c-3.245.083-6.135-1.395-8-4 0 0-4.182 7.433 4 11-1.872 1.247-3.739 2.088-6 2 3.308 1.803 6.913 2.423 10.034 1.517 3.58-1.04 6.522-3.723 7.651-7.742a13.84 13.84.0 00.497-3.753C20.18 7.773 21.692 5.25 22 4.009z"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>友链</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#环境>环境</a></li><li><a href=#part-1-cuda-warm-up-1-saxpy>Part 1: CUDA Warm-Up 1: SAXPY</a></li><li><a href=#part-2-cuda-warm-up-2-parallel-prefix-sum>Part 2: CUDA Warm-Up 2: Parallel Prefix-Sum</a><ol><li><a href=#exclusive-prefix-sum>Exclusive Prefix Sum</a></li><li><a href=#find-repeats>Find Repeats</a></li></ol></li><li><a href=#part-3-a-simple-circle-renderer>Part 3: A Simple Circle Renderer</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/cs149_2024_asst3_writeup/><img src=/p/cs149_2024_asst3_writeup/cover_hu_ff21073d841ec52e.jpeg srcset="/p/cs149_2024_asst3_writeup/cover_hu_ff21073d841ec52e.jpeg 800w, /p/cs149_2024_asst3_writeup/cover_hu_b298e8d10fd27584.jpeg 1600w" width=800 height=567 loading=lazy alt="Featured image of post 『学习笔记』CS149 (2024): Assignment 3"></a></div><div class=article-details><header class=article-category><a href=/categories/note/>笔记</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/cs149_2024_asst3_writeup/>『学习笔记』CS149 (2024): Assignment 3</a></h2><h3 class=article-subtitle>Stanford CS149 (2024): Assignment 3 writeup.</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2025-08-16T02:46:17Z>2025 年 8 月 16 日</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 15 分钟</time></div></footer></div></header><section class=article-content><h1 id=cs149-2024-assignment-3>CS149 (2024): Assignment 3</h1><blockquote><p>封面来源：<a class=link href=https://x.com/ch00suke/status/1946495728588661095 target=_blank rel=noopener>@ch00suke</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p></blockquote><blockquote><p>因为对着 15418 2016 看，顺序是先讲了写 CUDA，那就先做 Asst3 吧，做到一半感觉难度曲线有些高，滚去看了 CS149 的slides，<a class=link href=https://gfxcourses.stanford.edu/cs149/fall24/lecture/dataparallel/ target=_blank rel=noopener>dataparallel</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg>
+</sup>（于是后面觉得还是对着 CS149 学吧，逃）</p><p>相关文章：<a class=link href=https://blog.mizuki.fun/posts/1d4a4d05.html target=_blank rel=noopener>CS149 Programming Assignment 3 - A Simple Renderer in CUDA | MizukiCry&rsquo;s Blog</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p><p>原始实验材料仓库：<a class=link href=https://github.com/stanford-cs149/asst3/tree/4fe1eea25f9ec6381d781ba792ac1a23135eec06 target=_blank rel=noopener>stanford-cs149/asst3</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p><p>我的实现仓库：<a class=link href=https://github.com/Livinfly/15-418u15-618uCS149u target=_blank rel=noopener>Livinfly/15-418u15-618uCS149u</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p></blockquote><blockquote><p>任务推荐资料：</p><p>The CUDA C programmer&rsquo;s guide <a class=link href=http://docs.nvidia.com/cuda/pdf/CUDA_C_Programming_Guide.pdf target=_blank rel=noopener>PDF 版本</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg>
+</sup>或 <a class=link href=https://docs.nvidia.com/cuda/cuda-c-programming-guide/ target=_blank rel=noopener>web 版本</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p><p>CUDA 教程和 SDK 例子 Google 或 <a class=link href=http://docs.nvidia.com/cuda/ target=_blank rel=noopener>NVIDIA developer site</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p><p>计算能力文档 <a class=link href=https://docs.nvidia.com/cuda/cuda-c-programming-guide/#compute-capabilities target=_blank rel=noopener>CUDA C Programming Guide</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p><p>C++ 的一些特性 <a class=link href=https://isocpp.org/faq target=_blank rel=noopener>C++ Super-FAQ</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p><p>关于 pinned <a class=link href=https://canvas.kth.se/courses/12406/pages/optimizing-host-device-data-communication-i-pinned-host-memory target=_blank rel=noopener>Optimizing Host-Device Data Communication I -Pinned Host Memory: DD2360 HT19 (50340) Applied GPU Programming</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p><p><a class=link href=https://developer.nvidia.com/blog/easy-introduction-cuda-c-and-c/ target=_blank rel=noopener>An Easy Introduction to CUDA C and C++ | NVIDIA Technical Blog</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p><p><a class=link href=https://developer.nvidia.com/blog/even-easier-introduction-cuda/ target=_blank rel=noopener>（更新版）An Even Easier Introduction to CUDA (Updated) | NVIDIA Technical Blog</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg>
+</sup>（新接触到 <a class=link href=https://developer.nvidia.com/blog/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/ target=_blank rel=noopener>grid-stride loop</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg>
+</sup>写法，<strong>Where To From Here?</strong>，有不少经典优化方法，还没直接去看）</p></blockquote><blockquote><p>[!TIP]</p><p>建议进入 c++ edit configuration，</p><p>添加 <code>"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.1\\**"</code> 的路径类似物到 <code>includePath</code>，获取一些补全。</p></blockquote><h2 id=环境>环境</h2><p>因为本机没有 N 卡，在另一台 1660s 的机器上 ssh 做，这里给出这台机器的环境。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 系统版本</span>
+</span></span><span class=line><span class=cl>uname -a
+</span></span><span class=line><span class=cl>lsb_release -a
+</span></span><span class=line><span class=cl>nvidia-smi
+</span></span><span class=line><span class=cl>cat /proc/cpuinfo
+</span></span><span class=line><span class=cl>cat /proc/cpuinfo <span class=p>|</span> grep processor <span class=p>|</span> wc -l
+</span></span></code></pre></td></tr></table></div></div><ul><li>OS: Windows10 - wsl2 (6.6.87.2-microsoft-standard-WSL2) - Ubuntu 22.04.5 LTS</li><li>CPU: AMD Ryzen 5 3600 6-Core Processor (6 cores, 12 processors)</li><li>GPU: NVIDIA GeForce GTX 1660 super (6 GB, bandwidth 336 GB/s, 192-bit bus), Driver Version: 576.02, CUDA Version: 12.9</li><li>Python 3.10.1</li></ul><h2 id=part-1-cuda-warm-up-1-saxpy>Part 1: CUDA Warm-Up 1: SAXPY</h2><p>自行查看学习<code>cudaMemcpy</code>的定义。（应该是在<a class=link href=https://docs.nvidia.com/cuda/cuda-c-programming-guide/#device-memory target=_blank rel=noopener>device-memory</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg>
+</sup>这一部分）</p><p>文档中已说明，默认情况下，GPU 上的 kernel 调用和 CPU 的主线程是异步的，需要用<code>cudaDeviceSynchronize()</code>同步（CPU 等待 GPU的同步，<code>__syncthreads()</code>是块内同步）。</p><p>同时，<code>cudaMemcpy()</code>在我们使用的情况下是同步的；CPU 不能访问<code>cudaMalloc</code>分配在 CUDA 设备的内存（使用<code>cudaMallocManaged</code>分配的可以访问，但按需搬运易有<strong>Page Fault</strong>，使得 Memory-bound，使用<code>cudaMemPrefetchAsync</code>预取到 Device 上）</p><p>任务：实现<code>saxpy.cu</code>。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// saxpy.cu
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=nf>saxpyCuda</span><span class=p>(</span><span class=kt>int</span> <span class=n>N</span><span class=p>,</span> <span class=kt>float</span> <span class=n>alpha</span><span class=p>,</span> <span class=kt>float</span><span class=o>*</span> <span class=n>xarray</span><span class=p>,</span> <span class=kt>float</span><span class=o>*</span> <span class=n>yarray</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>               <span class=kt>float</span><span class=o>*</span> <span class=n>resultarray</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// must read both input arrays (xarray and yarray) and write to
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// output array (resultarray)
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>totalBytes</span> <span class=o>=</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>float</span><span class=p>)</span> <span class=o>*</span> <span class=mi>3</span> <span class=o>*</span> <span class=n>N</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// compute number of blocks and threads per block.  In this
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// application we&#39;ve hardcoded thread blocks to contain 512 CUDA
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// threads.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>const</span> <span class=kt>int</span> <span class=n>threadsPerBlock</span> <span class=o>=</span> <span class=mi>512</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// Notice the round up here.  The code needs to compute the number
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// of threads blocks needed such that there is one thread per
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// element of the arrays.  This code is written to work for values
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// of N that are not multiples of threadPerBlock.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>const</span> <span class=kt>int</span> <span class=n>blocks</span> <span class=o>=</span> <span class=p>(</span><span class=n>N</span> <span class=o>+</span> <span class=n>threadsPerBlock</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> <span class=o>/</span> <span class=n>threadsPerBlock</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// These are pointers that will be pointers to memory allocated
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// *one the GPU*.  You should allocate these pointers via
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// cudaMalloc.  You can access the resulting buffers from CUDA
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// device kernel code (see the kernel function saxpy_kernel()
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// above) but you cannot access the contents these buffers from
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// this thread. CPU threads cannot issue loads and stores from GPU
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// memory!
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>float</span><span class=o>*</span> <span class=n>device_x</span> <span class=o>=</span> <span class=k>nullptr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span><span class=o>*</span> <span class=n>device_y</span> <span class=o>=</span> <span class=k>nullptr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span><span class=o>*</span> <span class=n>device_result</span> <span class=o>=</span> <span class=k>nullptr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// CS149 TODO: allocate device memory buffers on the GPU using cudaMalloc.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// We highly recommend taking a look at NVIDIA&#39;s
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// tutorial, which clearly walks you through the few lines of code
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// you need to write for this part of the assignment:
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// https://devblogs.nvidia.com/easy-introduction-cuda-c-and-c/
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=c1>// start timing after allocation of device memory
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// cudaSetDevice(0);
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>cudaMalloc</span><span class=p>(</span><span class=o>&amp;</span><span class=n>device_x</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>float</span><span class=p>)</span> <span class=o>*</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>cudaMalloc</span><span class=p>(</span><span class=o>&amp;</span><span class=n>device_y</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>float</span><span class=p>)</span> <span class=o>*</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>cudaMalloc</span><span class=p>(</span><span class=o>&amp;</span><span class=n>device_result</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>float</span><span class=p>)</span> <span class=o>*</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>double</span> <span class=n>startTime</span> <span class=o>=</span> <span class=n>CycleTimer</span><span class=o>::</span><span class=n>currentSeconds</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// CS149 TODO: copy input arrays to the GPU using cudaMemcpy
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>cudaMemcpy</span><span class=p>(</span><span class=n>device_x</span><span class=p>,</span> <span class=n>xarray</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>float</span><span class=p>)</span> <span class=o>*</span> <span class=n>N</span><span class=p>,</span> <span class=n>cudaMemcpyHostToDevice</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>cudaMemcpy</span><span class=p>(</span><span class=n>device_y</span><span class=p>,</span> <span class=n>yarray</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>float</span><span class=p>)</span> <span class=o>*</span> <span class=n>N</span><span class=p>,</span> <span class=n>cudaMemcpyHostToDevice</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// run CUDA kernel. (notice the &lt;&lt;&lt; &gt;&gt;&gt; brackets indicating a CUDA
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// kernel launch) Execution on the GPU occurs here.
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=kt>double</span> <span class=n>startKernelTime</span> <span class=o>=</span> <span class=n>CycleTimer</span><span class=o>::</span><span class=n>currentSeconds</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=n>saxpy_kernel</span><span class=o>&lt;&lt;&lt;</span><span class=n>blocks</span><span class=p>,</span> <span class=n>threadsPerBlock</span><span class=o>&gt;&gt;&gt;</span><span class=p>(</span><span class=n>N</span><span class=p>,</span> <span class=n>alpha</span><span class=p>,</span> <span class=n>device_x</span><span class=p>,</span> <span class=n>device_y</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                              <span class=n>device_result</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>cudaDeviceSynchronize</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=kt>double</span> <span class=n>endKernelTime</span> <span class=o>=</span> <span class=n>CycleTimer</span><span class=o>::</span><span class=n>currentSeconds</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// CS149 TODO: copy result from GPU back to CPU using cudaMemcpy
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>cudaMemcpy</span><span class=p>(</span><span class=n>resultarray</span><span class=p>,</span> <span class=n>device_result</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>float</span><span class=p>)</span> <span class=o>*</span> <span class=n>N</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>               <span class=n>cudaMemcpyDeviceToHost</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// end timing after result has been copied back into host memory
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>double</span> <span class=n>endTime</span> <span class=o>=</span> <span class=n>CycleTimer</span><span class=o>::</span><span class=n>currentSeconds</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>cudaError_t</span> <span class=n>errCode</span> <span class=o>=</span> <span class=n>cudaPeekAtLastError</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>errCode</span> <span class=o>!=</span> <span class=n>cudaSuccess</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>fprintf</span><span class=p>(</span><span class=n>stderr</span><span class=p>,</span> <span class=s>&#34;WARNING: A CUDA error occured: code=%d, %s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>errCode</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>cudaGetErrorString</span><span class=p>(</span><span class=n>errCode</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>double</span> <span class=n>overallDuration</span> <span class=o>=</span> <span class=n>endTime</span> <span class=o>-</span> <span class=n>startTime</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>double</span> <span class=n>overallKernelDuration</span> <span class=o>=</span> <span class=n>endKernelTime</span> <span class=o>-</span> <span class=n>startKernelTime</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;Effective BW     by CUDA saxpy: %.3f ms</span><span class=se>\t\t</span><span class=s>[%.3f GB/s]</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>           <span class=mf>1000.f</span> <span class=o>*</span> <span class=n>overallDuration</span><span class=p>,</span> <span class=n>GBPerSec</span><span class=p>(</span><span class=n>totalBytes</span><span class=p>,</span> <span class=n>overallDuration</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;Effective kernel by CUDA saxpy: %.3f ms</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>           <span class=mf>1000.f</span> <span class=o>*</span> <span class=n>overallKernelDuration</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// CS149 TODO: free memory buffers on the GPU using cudaFree
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>cudaFree</span><span class=p>(</span><span class=n>device_x</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>cudaFree</span><span class=p>(</span><span class=n>device_y</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>cudaFree</span><span class=p>(</span><span class=n>device_result</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>运行结果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># N 默认 100M</span>
+</span></span><span class=line><span class=cl>---------------------------------------------------------
+</span></span><span class=line><span class=cl>Found <span class=m>1</span> CUDA devices
+</span></span><span class=line><span class=cl>Device 0: NVIDIA GeForce GTX <span class=m>1660</span> SUPER
+</span></span><span class=line><span class=cl>   SMs:        <span class=m>22</span>
+</span></span><span class=line><span class=cl>   Global mem: <span class=m>6144</span> MB
+</span></span><span class=line><span class=cl>   CUDA Cap:   7.5
+</span></span><span class=line><span class=cl>---------------------------------------------------------
+</span></span><span class=line><span class=cl>Running <span class=m>3</span> timing tests:
+</span></span><span class=line><span class=cl>Effective BW     by CUDA saxpy: 201.713 ms              <span class=o>[</span>5.540 GB/s<span class=o>]</span>
+</span></span><span class=line><span class=cl>Effective kernel by CUDA saxpy: 5.995 ms
+</span></span><span class=line><span class=cl>Effective BW     by CUDA saxpy: 214.931 ms              <span class=o>[</span>5.200 GB/s<span class=o>]</span>
+</span></span><span class=line><span class=cl>Effective kernel by CUDA saxpy: 4.311 ms
+</span></span><span class=line><span class=cl>Effective BW     by CUDA saxpy: 185.933 ms              <span class=o>[</span>6.011 GB/s<span class=o>]</span>
+</span></span><span class=line><span class=cl>Effective kernel by CUDA saxpy: 4.790 ms
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># startTime 计时如果放在，分配 cudaMalloc 之前</span>
+</span></span><span class=line><span class=cl>Running <span class=m>3</span> timing tests:
+</span></span><span class=line><span class=cl>Effective BW     by CUDA saxpy: 447.963 ms              <span class=o>[</span>2.495 GB/s<span class=o>]</span>
+</span></span><span class=line><span class=cl>Effective kernel by CUDA saxpy: 6.083 ms
+</span></span><span class=line><span class=cl>Effective BW     by CUDA saxpy: 205.574 ms              <span class=o>[</span>5.436 GB/s<span class=o>]</span>
+</span></span><span class=line><span class=cl>Effective kernel by CUDA saxpy: 4.299 ms
+</span></span><span class=line><span class=cl>Effective BW     by CUDA saxpy: 218.466 ms              <span class=o>[</span>5.116 GB/s<span class=o>]</span>
+</span></span><span class=line><span class=cl>Effective kernel by CUDA saxpy: 4.311 ms
+</span></span></code></pre></td></tr></table></div></div><p>为什么第一次会慢 250ms 左右呢？</p><p><strong>CUDA 上下文创建</strong>，在第一次调用需要与 GPU 通信的 CUDA API 时会触发，后续所有的 CUDA API 调用都可以快速执行了。</p><p>手动初始化（CUDA 上下文创建），<code>cudaSetDevice(Device)</code>，下面这种写法，第一次的测试速度与后两次无异。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=n>cudaSetDevice</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>double</span> <span class=n>startTime</span> <span class=o>=</span> <span class=n>CycleTimer</span><span class=o>::</span><span class=n>currentSeconds</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>cudaMalloc</span><span class=p>(</span><span class=o>&amp;</span><span class=n>device_x</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>float</span><span class=p>)</span> <span class=o>*</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>cudaMalloc</span><span class=p>(</span><span class=o>&amp;</span><span class=n>device_y</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>float</span><span class=p>)</span> <span class=o>*</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>cudaMalloc</span><span class=p>(</span><span class=o>&amp;</span><span class=n>device_result</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>float</span><span class=p>)</span> <span class=o>*</span> <span class=n>N</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>对比 Asst1 的<code>saxpy</code>的<strong>串行实现与 ISPC 实现</strong>，实验结果如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 为了实验参数对齐，N 为 100M（默认 20M）
+</span></span><span class=line><span class=cl><span class=o>[</span>saxpy serial<span class=o>]</span>:         <span class=o>[</span>60.025<span class=o>]</span> ms     <span class=o>[</span>24.825<span class=o>]</span> GB/s   <span class=o>[</span>3.332<span class=o>]</span> GFLOPS
+</span></span><span class=line><span class=cl><span class=o>[</span>saxpy avx2<span class=o>]</span>:           <span class=o>[</span>34.177<span class=o>]</span> ms     <span class=o>[</span>43.600<span class=o>]</span> GB/s   <span class=o>[</span>5.852<span class=o>]</span> GFLOPS
+</span></span><span class=line><span class=cl><span class=o>[</span>saxpy ispc<span class=o>]</span>:           <span class=o>[</span>53.822<span class=o>]</span> ms     <span class=o>[</span>27.686<span class=o>]</span> GB/s   <span class=o>[</span>3.716<span class=o>]</span> GFLOPS
+</span></span><span class=line><span class=cl><span class=o>[</span>saxpy task ispc<span class=o>]</span>:      <span class=o>[</span>44.228<span class=o>]</span> ms     <span class=o>[</span>33.692<span class=o>]</span> GB/s   <span class=o>[</span>4.522<span class=o>]</span> GFLOPS
+</span></span><span class=line><span class=cl>                                <span class=o>(</span>1.76x speedup from My AVX2<span class=o>)</span>
+</span></span><span class=line><span class=cl>                                <span class=o>(</span>1.22x speedup from use of tasks<span class=o>)</span>
+</span></span><span class=line><span class=cl>                                <span class=o>(</span>1.12x speedup from ISPC<span class=o>)</span>
+</span></span><span class=line><span class=cl>                                <span class=o>(</span>1.36x speedup from task ISPC<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>对比串行，能快 10~12 倍，但是内存通信的开销大。</p><p>对比峰值内存带宽，显然没有达到预期。</p><p>不难发现，<strong>数据移动</strong>占了绝大部分的时间，导致整个运算总时间比串行还长。</p><p>根据材料给出的<a class=link href=https://canvas.kth.se/courses/12406/pages/optimizing-host-device-data-communication-i-pinned-host-memory target=_blank rel=noopener>视频 / 文字稿</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg>
+</sup>学习。</p><p>原因是<code>cudaMemcpy()</code>的实现使用 DMA 设备，在 Host 端，DMA 操作的是物理地址，会出现超出一页 page 的情况，导致错误。</p><p>所以，<strong>DMA 的传输源必须是固定内存 pinned memory（特殊标记的虚拟内存页面）</strong>，所以在传输时，会先复制到 pinned memory 中，产生额外开销。</p><p>因此，优化数据移动，我们可以使用以下方法：</p><ol><li><p>使用 pinned memory，具体地，使用<code>cudaMallocHost()</code>或<code>cudaHostAlloc()</code>而不是<code>malloc()</code>或<code>new</code>。</p><p>两个函数的区别是，如果要兼容特别老的 CUDA 版本，需要用前者，后者提供了额外的 <strong>flag</strong> 来操控，是前者的超集。</p><p><a class=link href=https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__MEMORY.html#group__CUDART__MEMORY_1gb65da58f444e7230d3322b6126bb4902 target=_blank rel=noopener>cuda-runtime-api cudaHostAlloc</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg>
+</sup>和<a class=link href=https://forums.developer.nvidia.com/t/cudamallochost-and-cudahostalloc-differences-and-usage/21056 target=_blank rel=noopener>cudaMallocHost and cudaHostAlloc differences and usage</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg>
+</sup>。</p></li><li><p>使用 pinned memory 时，可以小数据传输批量处理成一次大数据传输。（我的测试试验中好像变化不大，可能是只有两段数据，不明显，便不列出来了）</p></li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// main.cpp
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>// pinned memory
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>float</span><span class=o>*</span> <span class=n>xarray</span> <span class=o>=</span> <span class=k>nullptr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>float</span><span class=o>*</span> <span class=n>yarray</span> <span class=o>=</span> <span class=k>nullptr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>float</span><span class=o>*</span> <span class=n>resultarray</span> <span class=o>=</span> <span class=k>nullptr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=c1>// cudaMallocHost(&amp;xarray, sizeof(float) * N);
+</span></span></span><span class=line><span class=cl><span class=c1>// cudaMallocHost(&amp;yarray, sizeof(float) * N);
+</span></span></span><span class=line><span class=cl><span class=c1>// cudaMallocHost(&amp;resultarray, sizeof(float) * N);
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>cudaHostAlloc</span><span class=p>(</span><span class=o>&amp;</span><span class=n>xarray</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>float</span><span class=p>)</span> <span class=o>*</span> <span class=n>N</span><span class=p>,</span> <span class=n>cudaHostAllocDefault</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>cudaHostAlloc</span><span class=p>(</span><span class=o>&amp;</span><span class=n>xarray</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>float</span><span class=p>)</span> <span class=o>*</span> <span class=n>N</span><span class=p>,</span> <span class=n>cudaHostAllocDefault</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>cudaHostAlloc</span><span class=p>(</span><span class=o>&amp;</span><span class=n>xarray</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>float</span><span class=p>)</span> <span class=o>*</span> <span class=n>N</span><span class=p>,</span> <span class=n>cudaHostAllocDefault</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// pinned memory
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>cudaFreeHost</span><span class=p>(</span><span class=n>xarray</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>cudaFreeHost</span><span class=p>(</span><span class=n>yarray</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>cudaFreeHost</span><span class=p>(</span><span class=n>resultarray</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>运行结果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Running <span class=m>3</span> timing tests:
+</span></span><span class=line><span class=cl>Effective BW     by CUDA saxpy: 117.512 ms              <span class=o>[</span>9.510 GB/s<span class=o>]</span>
+</span></span><span class=line><span class=cl>Effective kernel by CUDA saxpy: 5.163 ms
+</span></span><span class=line><span class=cl>Effective BW     by CUDA saxpy: 116.699 ms              <span class=o>[</span>9.577 GB/s<span class=o>]</span>
+</span></span><span class=line><span class=cl>Effective kernel by CUDA saxpy: 4.826 ms
+</span></span><span class=line><span class=cl>Effective BW     by CUDA saxpy: 110.485 ms              <span class=o>[</span>10.115 GB/s<span class=o>]</span>
+</span></span><span class=line><span class=cl>Effective kernel by CUDA saxpy: 4.140 ms
+</span></span></code></pre></td></tr></table></div></div><p>加速效果明显，数据搬运耗时减少一半，符合预期。</p><p>同时，还尝试了<code>cudaMemcpyAsync()</code>，不过效果同样不明显，不再列出。</p><h2 id=part-2-cuda-warm-up-2-parallel-prefix-sum>Part 2: CUDA Warm-Up 2: Parallel Prefix-Sum</h2><p>实验中给出的<code>nextPow2()</code>只使用于大于零的情况，还有<code>1&lt;&lt;(__lg(n-1)+1)</code>可能不被某些编译器兼容的求法。</p><ul><li><p><code>cpu_exclusive_scan()</code>的<code>PARALLEL</code>版本，用来验证，需要数组长度为2的倍数，不然结果有误。</p></li><li><p>修改 Device 中的内存，直接修改直接报<strong>段错误</strong>；需要用<code>cudaMemset()</code>等其他 CUDA API 来操作，注意同步。</p></li></ul><blockquote><p>因为写这部分代码的时候，没文档记录，具体的情况与结果标写在注释中了，劳烦翻阅。</p><p>下面就对着代码，然后说明我遇到的一些情况。</p></blockquote><h3 id=exclusive-prefix-sum>Exclusive Prefix Sum</h3><p>根据任务要求给出的示例串行代码实现一下就可以。</p><p>首先，先说一下 <code>cpu_exclusive_scan()</code> 的模拟并行部分的使用问题。</p><p>在 upsweep 阶段，<code>twod &lt;= N / 2</code>是要带上等号的，虽然对于 exclusive_scan 的结果不影响，但不符合定义上的要求，区别见下。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># cpu_exclusive_scan</span>
+</span></span><span class=line><span class=cl><span class=o>(</span>two_d &lt; N / 2<span class=o>)</span>
+</span></span><span class=line><span class=cl>    ./cudaScan -i ones -n <span class=m>7</span>
+</span></span><span class=line><span class=cl>    Array size: <span class=m>7</span>
+</span></span><span class=line><span class=cl>    <span class=m>1</span> <span class=m>2</span> <span class=m>1</span> <span class=m>4</span> <span class=m>1</span> <span class=m>2</span> <span class=m>1</span> <span class=o>(</span>upsweep phase<span class=o>)</span>
+</span></span><span class=line><span class=cl>    <span class=m>2</span> <span class=m>3</span> <span class=m>4</span> <span class=m>6</span> <span class=m>3</span> <span class=m>4</span> <span class=m>3</span> <span class=o>(</span>downsweep phase<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    ./cudaScan -i ones -n <span class=m>8</span>
+</span></span><span class=line><span class=cl>    Array size: <span class=m>8</span>
+</span></span><span class=line><span class=cl>    <span class=m>1</span> <span class=m>2</span> <span class=m>1</span> <span class=m>4</span> <span class=m>1</span> <span class=m>2</span> <span class=m>1</span> <span class=m>4</span> <span class=o>(</span>upsweep phase<span class=o>)</span>
+</span></span><span class=line><span class=cl>    <span class=m>0</span> <span class=m>1</span> <span class=m>2</span> <span class=m>3</span> <span class=m>4</span> <span class=m>5</span> <span class=m>6</span> <span class=m>7</span> <span class=o>(</span>downsweep phase<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>(</span>two_d &lt;<span class=o>=</span> N / 2<span class=o>)</span>
+</span></span><span class=line><span class=cl>    ./cudaScan -i ones -n <span class=m>7</span>
+</span></span><span class=line><span class=cl>    Array size: <span class=m>7</span>
+</span></span><span class=line><span class=cl>    <span class=m>1</span> <span class=m>2</span> <span class=m>1</span> <span class=m>4</span> <span class=m>1</span> <span class=m>2</span> <span class=m>1</span> <span class=o>(</span>upsweep phase<span class=o>)</span>
+</span></span><span class=line><span class=cl>    <span class=m>2</span> <span class=m>3</span> <span class=m>4</span> <span class=m>6</span> <span class=m>3</span> <span class=m>4</span> <span class=m>3</span> <span class=o>(</span>downsweep phase<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    ./cudaScan -i ones -n <span class=m>8</span>
+</span></span><span class=line><span class=cl>    Array size: <span class=m>8</span>
+</span></span><span class=line><span class=cl>    <span class=m>1</span> <span class=m>2</span> <span class=m>1</span> <span class=m>4</span> <span class=m>1</span> <span class=m>2</span> <span class=m>1</span> <span class=m>8</span> <span class=o>(</span>upsweep phase<span class=o>)</span>
+</span></span><span class=line><span class=cl>    <span class=m>0</span> <span class=m>1</span> <span class=m>2</span> <span class=m>3</span> <span class=m>4</span> <span class=m>5</span> <span class=m>6</span> <span class=m>7</span> <span class=o>(</span>downsweep phase<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>其次，downsweep 阶段，在非 2 的整幂次时，访问 <code>output[i + twod1 - 1]</code> 是溢出的。</p><p>若多开空间到 2 的整幂次，根据计算结果的定义，给拓展后的最后一位赋值为 0（或者都初始化为 0）。</p><p>总之，修改会同时该比较多的地方，所以，还是就只在 <strong>2 的整幂次</strong>使用吧。</p><p>在实现 CUDA 版本的<code>exclusive_scan()</code>遇到的坑点，下面给出情况解释与分析。</p><p>线程总数可能溢出<code>int</code>的问题。</p><p>根据分块代码 $\text{idx} = \text{numBlocks} \cross \text{THREADS_PER_BLOCK} = \text{numThreads} + [0, 255]$。</p><p>如果在外面乘 $\text{stride_2}$ 变成下标 $\text{idx_} = (\text{numThreads} + ( &lt; 256)) \cross \text{stride_2} = \text{N} + [0, 255] \cross \text{stride_2}$，</p><p>$\text{stride_2}$ 范围 $[2, \text{N}]$ 所以，$\text{idx_}$ 范围 $[\text{N}, 256 * \text{N}]$ 这种情况下，$\text{INT_MAX} = 2^{31} - 1$，</p><p>在大约超出 $8388607.996 ( ≈ 2^{23})$ 时，会产生溢出。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># (idx &lt; N)，内部的话，因为会申请 nextPow2 的内存，所以不会越界</span>
+</span></span><span class=line><span class=cl><span class=c1># 实验结果符合预期：</span>
+</span></span><span class=line><span class=cl><span class=o>(</span>idx &lt; N<span class=o>)</span>
+</span></span><span class=line><span class=cl>    <span class=m>8388608</span> correct, <span class=m>8388609</span> error
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>(</span>idx + stride_2 - <span class=m>1</span> &lt; N<span class=o>)</span>
+</span></span><span class=line><span class=cl>    <span class=m>4194304</span> correct, <span class=m>4194305</span> error
+</span></span><span class=line><span class=cl>因为 4194305，N 自动变成 8388608，按照上面的分析，idx 刚好在 int 范围，
+</span></span><span class=line><span class=cl>在加上，就是刚好不在了，所以报错。
+</span></span></code></pre></td></tr></table></div></div><p>错误代码示例留存：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// scan.cu upsweep
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>int</span> <span class=n>stride_2</span> <span class=o>=</span> <span class=n>stride</span> <span class=o>*</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>idx</span> <span class=o>*=</span> <span class=n>stride_2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>assert</span><span class=p>(</span><span class=mi>1LL</span> <span class=o>*</span> <span class=n>idx</span> <span class=o>+</span> <span class=n>stride_2</span> <span class=o>-</span> <span class=mi>1</span> <span class=o>&lt;</span> <span class=mi>2147483647</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=p>(</span><span class=n>idx</span> <span class=o>+</span> <span class=n>stride_2</span> <span class=o>-</span> <span class=mi>1</span> <span class=o>&lt;</span> <span class=n>numThreads</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>output</span><span class=p>[</span><span class=n>idx</span> <span class=o>+</span> <span class=n>stride_2</span> <span class=o>-</span> <span class=mi>1</span><span class=p>]</span> <span class=o>+=</span> <span class=n>output</span><span class=p>[</span><span class=n>idx</span> <span class=o>+</span> <span class=n>stride</span> <span class=o>-</span> <span class=mi>1</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>经验就是尽量不要在判断外对 $\text{idx}$ 做其他的运算，找好比较的对象，爆 <code>int</code> 也太难查了。</p><p>运行结果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>-------------------------
+</span></span><span class=line><span class=cl>Scan Score Table:
+</span></span><span class=line><span class=cl>-------------------------
+</span></span><span class=line><span class=cl>-------------------------------------------------------------------------
+</span></span><span class=line><span class=cl><span class=p>|</span> Element Count   <span class=p>|</span> Ref Time        <span class=p>|</span> Student Time    <span class=p>|</span> Score           <span class=p>|</span>
+</span></span><span class=line><span class=cl>-------------------------------------------------------------------------
+</span></span><span class=line><span class=cl><span class=p>|</span> <span class=m>1000000</span>         <span class=p>|</span> 1.296           <span class=p>|</span> 2.676           <span class=p>|</span> 0.6053811659192825 <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> <span class=m>10000000</span>        <span class=p>|</span> 10.398          <span class=p>|</span> 9.67            <span class=p>|</span> 1.25            <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> <span class=m>20000000</span>        <span class=p>|</span> 20.531          <span class=p>|</span> 16.089          <span class=p>|</span> 1.25            <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> <span class=m>40000000</span>        <span class=p>|</span> 39.415          <span class=p>|</span> 31.501          <span class=p>|</span> 1.25            <span class=p>|</span>
+</span></span><span class=line><span class=cl>-------------------------------------------------------------------------
+</span></span><span class=line><span class=cl><span class=p>|</span>                                   <span class=p>|</span> Total score:    <span class=p>|</span> 4.355381165919282/5.0 <span class=p>|</span>
+</span></span><span class=line><span class=cl>-------------------------------------------------------------------------
+</span></span></code></pre></td></tr></table></div></div><p>1e6 的没拿满，不太懂，也不是全都开 N 个线程，已经随着遍历改了。</p><p>大改写法还是算了。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// scan.cu
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>__global__</span> <span class=kt>void</span> <span class=nf>upsweep</span><span class=p>(</span><span class=kt>int</span> <span class=n>numThreads</span><span class=p>,</span> <span class=kt>int</span><span class=o>*</span> <span class=n>output</span><span class=p>,</span> <span class=kt>int</span> <span class=n>stride</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>idx</span> <span class=o>=</span> <span class=n>blockIdx</span><span class=p>.</span><span class=n>x</span> <span class=o>*</span> <span class=n>blockDim</span><span class=p>.</span><span class=n>x</span> <span class=o>+</span> <span class=n>threadIdx</span><span class=p>.</span><span class=n>x</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// idx = numBlocks * THREADS_PER_BLOCK = numThreads + [0, 255]
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 如果在外面乘 stride_2 变成下标
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// idx_ = (numThreads + ( &lt; 256)) * stride_2 = N + [0, 255] * stride_2
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// stride_2 范围 [2, N]
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 所以，idx_ 范围 [N, 256 * N]
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 这种情况下，INT_MAX = 2^31 - 1，在大约超出 8388607.996 ( ≈ 2^23)
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 时，会产生溢出。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>    (idx &lt; N)，内部的话，因为会申请 nextPow2 的内存，所以不会越界
+</span></span></span><span class=line><span class=cl><span class=cm>    实验结果符合预期：
+</span></span></span><span class=line><span class=cl><span class=cm>    (idx &lt; N)
+</span></span></span><span class=line><span class=cl><span class=cm>        8388608 correct, 8388609 error
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>    (idx + stride_2 - 1 &lt; N)
+</span></span></span><span class=line><span class=cl><span class=cm>        4194304 correct, 4194305 error
+</span></span></span><span class=line><span class=cl><span class=cm>    因为 4194305，N 自动变成 8388608，按照上面的分析，idx 刚好在 int 范围，
+</span></span></span><span class=line><span class=cl><span class=cm>    在加上，就是刚好不在了，所以报错。
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>    错误代码示例留存：
+</span></span></span><span class=line><span class=cl><span class=cm>    int stride_2 = stride * 2;
+</span></span></span><span class=line><span class=cl><span class=cm>    idx *= stride_2;
+</span></span></span><span class=line><span class=cl><span class=cm>    assert(1LL * idx + stride_2 - 1 &lt; 2147483647);
+</span></span></span><span class=line><span class=cl><span class=cm>    if (idx + stride_2 - 1 &lt; numThreads) {
+</span></span></span><span class=line><span class=cl><span class=cm>        output[idx + stride_2 - 1] += output[idx + stride - 1];
+</span></span></span><span class=line><span class=cl><span class=cm>    }
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>    经验就是尽量不要在判断外对 idx 做其他的运算，
+</span></span></span><span class=line><span class=cl><span class=cm>    找好比较的对象，爆 int 也太难查了。
+</span></span></span><span class=line><span class=cl><span class=cm>    */</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>idx</span> <span class=o>&lt;</span> <span class=n>numThreads</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>stride_2</span> <span class=o>=</span> <span class=n>stride</span> <span class=o>*</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>idx</span> <span class=o>*=</span> <span class=n>stride_2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>output</span><span class=p>[</span><span class=n>idx</span> <span class=o>+</span> <span class=n>stride_2</span> <span class=o>-</span> <span class=mi>1</span><span class=p>]</span> <span class=o>+=</span> <span class=n>output</span><span class=p>[</span><span class=n>idx</span> <span class=o>+</span> <span class=n>stride</span> <span class=o>-</span> <span class=mi>1</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>__global__</span> <span class=kt>void</span> <span class=nf>downsweep</span><span class=p>(</span><span class=kt>int</span> <span class=n>numThreads</span><span class=p>,</span> <span class=kt>int</span><span class=o>*</span> <span class=n>output</span><span class=p>,</span> <span class=kt>int</span> <span class=n>stride</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>idx</span> <span class=o>=</span> <span class=n>blockIdx</span><span class=p>.</span><span class=n>x</span> <span class=o>*</span> <span class=n>blockDim</span><span class=p>.</span><span class=n>x</span> <span class=o>+</span> <span class=n>threadIdx</span><span class=p>.</span><span class=n>x</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>idx</span> <span class=o>&lt;</span> <span class=n>numThreads</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>stride_2</span> <span class=o>=</span> <span class=n>stride</span> <span class=o>*</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>idx</span> <span class=o>*=</span> <span class=n>stride_2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>t</span> <span class=o>=</span> <span class=n>output</span><span class=p>[</span><span class=n>idx</span> <span class=o>+</span> <span class=n>stride</span> <span class=o>-</span> <span class=mi>1</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=n>output</span><span class=p>[</span><span class=n>idx</span> <span class=o>+</span> <span class=n>stride</span> <span class=o>-</span> <span class=mi>1</span><span class=p>]</span> <span class=o>=</span> <span class=n>output</span><span class=p>[</span><span class=n>idx</span> <span class=o>+</span> <span class=n>stride_2</span> <span class=o>-</span> <span class=mi>1</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=n>output</span><span class=p>[</span><span class=n>idx</span> <span class=o>+</span> <span class=n>stride_2</span> <span class=o>-</span> <span class=mi>1</span><span class=p>]</span> <span class=o>+=</span> <span class=n>t</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>exclusive_scan</span><span class=p>(</span><span class=kt>int</span><span class=o>*</span> <span class=n>input</span><span class=p>,</span> <span class=kt>int</span> <span class=n>N</span><span class=p>,</span> <span class=kt>int</span><span class=o>*</span> <span class=n>result</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>N</span> <span class=o>=</span> <span class=n>nextPow2</span><span class=p>(</span><span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>two_d</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span> <span class=n>two_d</span> <span class=o>&lt;=</span> <span class=n>N</span> <span class=o>/</span> <span class=mi>2</span><span class=p>;</span> <span class=n>two_d</span> <span class=o>*=</span> <span class=mi>2</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>two_dplus1</span> <span class=o>=</span> <span class=mi>2</span> <span class=o>*</span> <span class=n>two_d</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>numThreads</span> <span class=o>=</span> <span class=n>N</span> <span class=o>/</span> <span class=n>two_dplus1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>numBlocks</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>            <span class=p>(</span><span class=n>numThreads</span> <span class=o>+</span> <span class=n>THREADS_PER_BLOCK</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> <span class=o>/</span> <span class=n>THREADS_PER_BLOCK</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>upsweep</span><span class=o>&lt;&lt;&lt;</span><span class=n>numBlocks</span><span class=p>,</span> <span class=n>THREADS_PER_BLOCK</span><span class=o>&gt;&gt;&gt;</span><span class=p>(</span><span class=n>numThreads</span><span class=p>,</span> <span class=n>result</span><span class=p>,</span> <span class=n>two_d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>cudaDeviceSynchronize</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// result[N - 1] = 0;
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>cudaMemset</span><span class=p>(</span><span class=o>&amp;</span><span class=n>result</span><span class=p>[</span><span class=n>N</span> <span class=o>-</span> <span class=mi>1</span><span class=p>],</span> <span class=mi>0</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>int</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=n>cudaDeviceSynchronize</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>two_d</span> <span class=o>=</span> <span class=n>N</span> <span class=o>/</span> <span class=mi>2</span><span class=p>;</span> <span class=n>two_d</span> <span class=o>&gt;=</span> <span class=mi>1</span><span class=p>;</span> <span class=n>two_d</span> <span class=o>/=</span> <span class=mi>2</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>two_dplus1</span> <span class=o>=</span> <span class=mi>2</span> <span class=o>*</span> <span class=n>two_d</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>numThreads</span> <span class=o>=</span> <span class=n>N</span> <span class=o>/</span> <span class=n>two_dplus1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>numBlocks</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>            <span class=p>(</span><span class=n>numThreads</span> <span class=o>+</span> <span class=n>THREADS_PER_BLOCK</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> <span class=o>/</span> <span class=n>THREADS_PER_BLOCK</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>downsweep</span><span class=o>&lt;&lt;&lt;</span><span class=n>numBlocks</span><span class=p>,</span> <span class=n>THREADS_PER_BLOCK</span><span class=o>&gt;&gt;&gt;</span><span class=p>(</span><span class=n>numThreads</span><span class=p>,</span> <span class=n>result</span><span class=p>,</span> <span class=n>two_d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>cudaDeviceSynchronize</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>应该挺好用，但是没怎么用的 <code>cudaCheckError</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#define DEBUG
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=cp>#ifdef DEBUG
+</span></span></span><span class=line><span class=cl><span class=cp>#define cudaCheckError(ans) { cudaAssert((ans), __FILE__, __LINE__); }
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=kr>inline</span> <span class=kt>void</span> <span class=nf>cudaAssert</span><span class=p>(</span><span class=n>cudaError_t</span> <span class=n>code</span><span class=p>,</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>file</span><span class=p>,</span> <span class=kt>int</span> <span class=n>line</span><span class=p>,</span> <span class=kt>bool</span>
+</span></span><span class=line><span class=cl><span class=n>abort</span><span class=o>=</span><span class=nb>true</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>if</span> <span class=p>(</span><span class=n>code</span> <span class=o>!=</span> <span class=n>cudaSuccess</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>   <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>fprintf</span><span class=p>(</span><span class=n>stderr</span><span class=p>,</span> <span class=s>&#34;CUDA Error: %s at %s:%d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>cudaGetErrorString</span><span class=p>(</span><span class=n>code</span><span class=p>),</span> <span class=n>file</span><span class=p>,</span> <span class=n>line</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span> <span class=p>(</span><span class=n>abort</span><span class=p>)</span> <span class=n>exit</span><span class=p>(</span><span class=n>code</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>   <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=cp>#else
+</span></span></span><span class=line><span class=cl><span class=cp>#define cudaCheckError(ans) ans
+</span></span></span><span class=line><span class=cl><span class=cp>#endif
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=n>cudaCheckError</span><span class=p>(</span> <span class=n>cudaMalloc</span><span class=p>(</span><span class=o>&amp;</span><span class=n>a</span><span class=p>,</span> <span class=n>size</span><span class=o>*</span><span class=k>sizeof</span><span class=p>(</span><span class=kt>int</span><span class=p>))</span> <span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=find-repeats>Find Repeats</h3><p>还太能直接反映出，并行的实现，有些发懵，先学习了下别人的才反应过来 QnQ。</p><p>要利用<code>exclusive_scan()</code>。</p><p>先标记和相邻的相同的下标，再利用<code>exclusive_scan()</code>方便后面映射到结果数组，提取出未相邻重复的数。</p><p>运行结果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>-------------------------
+</span></span><span class=line><span class=cl>Find_repeats Score Table:
+</span></span><span class=line><span class=cl>-------------------------
+</span></span><span class=line><span class=cl>-------------------------------------------------------------------------
+</span></span><span class=line><span class=cl><span class=p>|</span> Element Count   <span class=p>|</span> Ref Time        <span class=p>|</span> Student Time    <span class=p>|</span> Score           <span class=p>|</span>
+</span></span><span class=line><span class=cl>-------------------------------------------------------------------------
+</span></span><span class=line><span class=cl><span class=p>|</span> <span class=m>1000000</span>         <span class=p>|</span> 2.49            <span class=p>|</span> 3.613           <span class=p>|</span> 0.8614724605590922 <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> <span class=m>10000000</span>        <span class=p>|</span> 15.93           <span class=p>|</span> 15.16           <span class=p>|</span> 1.25            <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> <span class=m>20000000</span>        <span class=p>|</span> 32.058          <span class=p>|</span> 22.803          <span class=p>|</span> 1.25            <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> <span class=m>40000000</span>        <span class=p>|</span> 61.725          <span class=p>|</span> 42.734          <span class=p>|</span> 1.25            <span class=p>|</span>
+</span></span><span class=line><span class=cl>-------------------------------------------------------------------------
+</span></span><span class=line><span class=cl><span class=p>|</span>                                   <span class=p>|</span> Total score:    <span class=p>|</span> 4.611472460559092/5.0 <span class=p>|</span>
+</span></span><span class=line><span class=cl>-------------------------------------------------------------------------<span class=sb>``</span>
+</span></span></code></pre></td></tr></table></div></div><p>包括这个 <code>find_repeats</code>，也是只有 1e6 的没拿满，不太清楚是什么问题，甚至拿别人在他的机器上满分的代码，也有部分没拿满。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// scan.cu
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>__global__</span> <span class=kt>void</span> <span class=nf>find_repeats_kernel_1</span><span class=p>(</span><span class=kt>int</span> <span class=n>length</span><span class=p>,</span> <span class=kt>int</span><span class=o>*</span> <span class=n>input</span><span class=p>,</span> <span class=kt>int</span><span class=o>*</span> <span class=n>device_tmp</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>idx</span> <span class=o>=</span> <span class=n>blockIdx</span><span class=p>.</span><span class=n>x</span> <span class=o>*</span> <span class=n>blockDim</span><span class=p>.</span><span class=n>x</span> <span class=o>+</span> <span class=n>threadIdx</span><span class=p>.</span><span class=n>x</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>idx</span> <span class=o>+</span> <span class=mi>1</span> <span class=o>&lt;</span> <span class=n>length</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>device_tmp</span><span class=p>[</span><span class=n>idx</span><span class=p>]</span> <span class=o>=</span> <span class=p>(</span><span class=n>input</span><span class=p>[</span><span class=n>idx</span><span class=p>]</span> <span class=o>==</span> <span class=n>input</span><span class=p>[</span><span class=n>idx</span> <span class=o>+</span> <span class=mi>1</span><span class=p>]</span> <span class=o>?</span> <span class=mi>1</span> <span class=o>:</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>__global__</span> <span class=kt>void</span> <span class=nf>find_repeats_kernel_2</span><span class=p>(</span><span class=kt>int</span> <span class=n>length</span><span class=p>,</span> <span class=kt>int</span><span class=o>*</span> <span class=n>device_tmp</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                      <span class=kt>int</span><span class=o>*</span> <span class=n>output</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>idx</span> <span class=o>=</span> <span class=n>blockIdx</span><span class=p>.</span><span class=n>x</span> <span class=o>*</span> <span class=n>blockDim</span><span class=p>.</span><span class=n>x</span> <span class=o>+</span> <span class=n>threadIdx</span><span class=p>.</span><span class=n>x</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>idx</span> <span class=o>+</span> <span class=mi>1</span> <span class=o>&lt;</span> <span class=n>length</span> <span class=o>&amp;&amp;</span> <span class=n>device_tmp</span><span class=p>[</span><span class=n>idx</span><span class=p>]</span> <span class=o>!=</span> <span class=n>device_tmp</span><span class=p>[</span><span class=n>idx</span> <span class=o>+</span> <span class=mi>1</span><span class=p>])</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>output</span><span class=p>[</span><span class=n>device_tmp</span><span class=p>[</span><span class=n>idx</span><span class=p>]]</span> <span class=o>=</span> <span class=n>idx</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>find_repeats</span><span class=p>(</span><span class=kt>int</span><span class=o>*</span> <span class=n>device_input</span><span class=p>,</span> <span class=kt>int</span> <span class=n>length</span><span class=p>,</span> <span class=kt>int</span><span class=o>*</span> <span class=n>device_output</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>N</span> <span class=o>=</span> <span class=n>nextPow2</span><span class=p>(</span><span class=n>length</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>numBlocks</span> <span class=o>=</span> <span class=p>(</span><span class=n>N</span> <span class=o>+</span> <span class=n>THREADS_PER_BLOCK</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> <span class=o>/</span> <span class=n>THREADS_PER_BLOCK</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span><span class=o>*</span> <span class=n>device_tmp</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>cudaMalloc</span><span class=p>((</span><span class=kt>void</span><span class=o>**</span><span class=p>)</span><span class=o>&amp;</span><span class=n>device_tmp</span><span class=p>,</span> <span class=n>N</span> <span class=o>*</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>int</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>find_repeats_kernel_1</span><span class=o>&lt;&lt;&lt;</span><span class=n>numBlocks</span><span class=p>,</span> <span class=n>THREADS_PER_BLOCK</span><span class=o>&gt;&gt;&gt;</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=n>length</span><span class=p>,</span> <span class=n>device_input</span><span class=p>,</span> <span class=n>device_tmp</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>cudaDeviceSynchronize</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>exclusive_scan</span><span class=p>(</span><span class=n>device_tmp</span><span class=p>,</span> <span class=n>length</span><span class=p>,</span> <span class=n>device_tmp</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>find_repeats_kernel_2</span><span class=o>&lt;&lt;&lt;</span><span class=n>numBlocks</span><span class=p>,</span> <span class=n>THREADS_PER_BLOCK</span><span class=o>&gt;&gt;&gt;</span><span class=p>(</span><span class=n>length</span><span class=p>,</span> <span class=n>device_tmp</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                                            <span class=n>device_output</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>cudaDeviceSynchronize</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>cudaMemcpy</span><span class=p>(</span><span class=o>&amp;</span><span class=n>result</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>device_tmp</span><span class=p>[</span><span class=n>length</span> <span class=o>-</span> <span class=mi>1</span><span class=p>],</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>int</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>               <span class=n>cudaMemcpyDeviceToHost</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>cudaFree</span><span class=p>(</span><span class=n>device_tmp</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=part-3-a-simple-circle-renderer>Part 3: A Simple Circle Renderer</h2><p>如同任务要求开头所说，"<strong>Now for the real show!</strong></p><p>上来就丢了很多文件和一些说明文档，说原本实现是错的，把他改对。</p><p>因为自己在阅读这些资料的过程中，有些迷失了（晕了，看着看着，不知道在看什么，迷茫）。</p><p>后参看了下 <a class=link href=https://blog.mizuki.fun/posts/1d4a4d05.html target=_blank rel=noopener>MizukiCry</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg>
+</sup>这部分的实现，然后重新又自己理了理，写了写。</p><p>所以，这部分再会增加一些对代码结构的一些说明。</p><p>首先，尝试按照任务说明的编译运行一下，若提示找不到 <code>#include &lt;GL/glut.h></code>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 安装 GLUT 开发库</span>
+</span></span><span class=line><span class=cl>sudo apt-get install freeglut3-dev
+</span></span></code></pre></td></tr></table></div></div><p>然后，通过任务要求文档， 我们得知，渲染器 renderer 需要按照一定顺序渲染，不然在有图像重叠时，可能会出错。</p><p>强调 <strong>Atomicity</strong> 和 <strong>Order</strong>。</p><p>这两个点，是我们后面具体修正 CUDA 实现的时候需要注意的。</p><p>随后，我们开始阅读代码。</p><p>发现文件很多，个人建议先主要看<code>main.cpp</code>, <code>refRenderer.cpp / h</code>，<code>cudaRenderer.cu / h</code>，把握核心逻辑，重点在<code>kernelRenderCircles()</code> 和 <code>shadePixel()</code>。</p><p>看完 <code>main.cpp</code> 搞清楚程序运行的逻辑后，后面两个文件的大多数函数，我们只要先知道他做了什么，先不要看他的实现逻辑。（比如每个材质，渲染方式不同，这种逻辑看了对我们没有太大的帮助，当然有兴趣都是可以看的，不过容易直接看晕）</p><p>之后按照前面提到的 <strong>Atomicity</strong> 和 <strong>Order</strong> 的实现原则去检查和渲染 render 相关的代码实现，查看是否有错误。</p><p>我觉得主要搞清楚一下一些变量的含义，还有它们的范围之后，应该会好看很多。</p><p>再要具体写代码的时候，查看 <code>*.cu_inl</code> 文件，看看有没有可以重复利用的函数。</p><p>如果确定了方向，可以先自己尝试去看，还是比较晕，可以看看我下面的 hint。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=k>struct</span> <span class=nc>GlobalConstants</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>SceneName</span> <span class=n>sceneName</span><span class=p>;</span> 	<span class=c1>// 场景名字
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>numCircles</span><span class=p>;</span>      	<span class=c1>// 渲染的圆的数量
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>float</span><span class=o>*</span> <span class=n>position</span><span class=p>;</span>		<span class=c1>// 位置
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>float</span><span class=o>*</span> <span class=n>velocity</span><span class=p>;</span>		<span class=c1>// 速度
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>float</span><span class=o>*</span> <span class=n>color</span><span class=p>;</span>			<span class=c1>// 颜色
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>float</span><span class=o>*</span> <span class=n>radius</span><span class=p>;</span>			<span class=c1>// 半径
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>imageWidth</span><span class=p>;</span>			<span class=c1>// 图片宽度
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>imageHeight</span><span class=p>;</span>		<span class=c1>// 图片高度
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>float</span><span class=o>*</span> <span class=n>imageData</span><span class=p>;</span>		<span class=c1>// 图片数据
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>具体的存储方式，如 <code>float3</code>，范围的话可以在出现的函数中找到，比如很大部分的值时归一化的 <code>float</code> 存储的，位置分 <code>（x, y, 深度）</code>。</p><p>（当然，这些是我理解的，没有仔细查证）</p><p>接下来，我介绍我的实现（几种实现的介绍可以参考 data parallel - slide 最后几页）。</p><p>我们先思考，CUDA 开的线程是什么信息，圆的编号，还是像素，还是其他？</p><p>我这边先给出我第一个实现思路，也是 data parallel - slide 的第一种 solution 1 / 2。（代码统一放在最后）</p><p>对每个像素建一个线程，按圆编号顺序以此检查是否在圆内，在圆内才渲染。</p><p>满足了两个原则。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># kernelRenderCircles_1_bf 运行结果</span>
+</span></span><span class=line><span class=cl><span class=c1># ./checker.py </span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: rgb...
+</span></span><span class=line><span class=cl><span class=o>[</span>rgb<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>rgb<span class=o>]</span> Student times:  <span class=o>[</span>0.3469, 0.3525, 0.362<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>rgb<span class=o>]</span> Reference times:  <span class=o>[</span>0.4353, 0.4865, 0.4146<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: rand10k...
+</span></span><span class=line><span class=cl><span class=o>[</span>rand10k<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>rand10k<span class=o>]</span> Student times:  <span class=o>[</span>65.4322, 66.6227, 70.4742<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>rand10k<span class=o>]</span> Reference times:  <span class=o>[</span>5.2589, 5.229, 5.3398<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: rand100k...
+</span></span><span class=line><span class=cl><span class=o>[</span>rand100k<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>rand100k<span class=o>]</span> Student times:  <span class=o>[</span>642.4314, 638.4485, 639.3848<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>rand100k<span class=o>]</span> Reference times:  <span class=o>[</span>45.3885, 47.9276, 48.3938<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: pattern...
+</span></span><span class=line><span class=cl><span class=o>[</span>pattern<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>pattern<span class=o>]</span> Student times:  <span class=o>[</span>9.0589, 9.1332, 9.0711<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>pattern<span class=o>]</span> Reference times:  <span class=o>[</span>0.7231, 0.7794, 0.7507<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: snowsingle...
+</span></span><span class=line><span class=cl><span class=o>[</span>snowsingle<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>snowsingle<span class=o>]</span> Student times:  <span class=o>[</span>595.5139, 593.2695, 597.059<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>snowsingle<span class=o>]</span> Reference times:  <span class=o>[</span>29.8196, 30.8086, 30.8295<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: biglittle...
+</span></span><span class=line><span class=cl><span class=o>[</span>biglittle<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>biglittle<span class=o>]</span> Student times:  <span class=o>[</span>91.9496, 88.6234, 88.3303<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>biglittle<span class=o>]</span> Reference times:  <span class=o>[</span>27.8894, 27.8606, 28.044<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: rand1M...
+</span></span><span class=line><span class=cl><span class=o>[</span>rand1M<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>rand1M<span class=o>]</span> Student times:  <span class=o>[</span>6243.6725, 6278.3903, 6286.1439<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>rand1M<span class=o>]</span> Reference times:  <span class=o>[</span>271.1312, 269.9863, 270.0433<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: micro2M...
+</span></span><span class=line><span class=cl><span class=o>[</span>micro2M<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>micro2M<span class=o>]</span> Student times:  <span class=o>[</span>12637.5187, 12641.5866, 12667.2077<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>micro2M<span class=o>]</span> Reference times:  <span class=o>[</span>500.5195, 501.222, 504.6417<span class=o>]</span>
+</span></span><span class=line><span class=cl>------------
+</span></span><span class=line><span class=cl>Score table:
+</span></span><span class=line><span class=cl>------------
+</span></span><span class=line><span class=cl>--------------------------------------------------------------------------
+</span></span><span class=line><span class=cl><span class=p>|</span> Scene Name      <span class=p>|</span> Ref Time <span class=o>(</span>T_ref<span class=o>)</span> <span class=p>|</span> Your Time <span class=o>(</span>T<span class=o>)</span>   <span class=p>|</span> Score           <span class=p>|</span>
+</span></span><span class=line><span class=cl>--------------------------------------------------------------------------
+</span></span><span class=line><span class=cl><span class=p>|</span> rgb             <span class=p>|</span> 0.4146           <span class=p>|</span> 0.3469          <span class=p>|</span> <span class=m>9</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> rand10k         <span class=p>|</span> 5.229            <span class=p>|</span> 65.4322         <span class=p>|</span> <span class=m>2</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> rand100k        <span class=p>|</span> 45.3885          <span class=p>|</span> 638.4485        <span class=p>|</span> <span class=m>2</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> pattern         <span class=p>|</span> 0.7231           <span class=p>|</span> 9.0589          <span class=p>|</span> <span class=m>2</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> snowsingle      <span class=p>|</span> 29.8196          <span class=p>|</span> 593.2695        <span class=p>|</span> <span class=m>2</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> biglittle       <span class=p>|</span> 27.8606          <span class=p>|</span> 88.3303         <span class=p>|</span> <span class=m>5</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> rand1M          <span class=p>|</span> 269.9863         <span class=p>|</span> 6243.6725       <span class=p>|</span> <span class=m>2</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> micro2M         <span class=p>|</span> 500.5195         <span class=p>|</span> 12637.5187      <span class=p>|</span> <span class=m>2</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl>--------------------------------------------------------------------------
+</span></span><span class=line><span class=cl><span class=p>|</span>                                    <span class=p>|</span> Total score:    <span class=p>|</span> 26/72           <span class=p>|</span>
+</span></span><span class=line><span class=cl>--------------------------------------------------------------------------
+</span></span></code></pre></td></tr></table></div></div><p>再看到 <code>shadePixel()</code>注释中提到的 <strong>specialized template magic</strong>，对 <code>shadePixel()</code> 进行模版优化，实现 <code>shadePixel_template()</code>。</p><p>（然后就发现差别不大，像是正常波动，就不放出来了，不知道是不是实现的其实有问题？后续也继续用原本的<code>shadePixel()</code>）</p><p>后面写优化感觉自己烂完了，看懂 MizukiCry 的版本跑路了。</p><p>优化方式就是增加了像素分块，并行检测块是否在圆内，最后把有交集的整理出来，像素并行，顺序遍历这些圆，去渲染。</p><p>具体地实现方面，用<code>exclusive_scan()</code>完整并行检测后的排序。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># MizukiCry 运行结果</span>
+</span></span><span class=line><span class=cl><span class=c1># ./checker.py</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: rgb...
+</span></span><span class=line><span class=cl><span class=o>[</span>rgb<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>rgb<span class=o>]</span> Student times:  <span class=o>[</span>0.5717, 0.5957, 0.491<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>rgb<span class=o>]</span> Reference times:  <span class=o>[</span>0.4137, 0.4899, 0.4276<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: rand10k...
+</span></span><span class=line><span class=cl><span class=o>[</span>rand10k<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>rand10k<span class=o>]</span> Student times:  <span class=o>[</span>6.5862, 6.5918, 6.5984<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>rand10k<span class=o>]</span> Reference times:  <span class=o>[</span>5.3212, 5.232, 5.2773<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: rand100k...
+</span></span><span class=line><span class=cl><span class=o>[</span>rand100k<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>rand100k<span class=o>]</span> Student times:  <span class=o>[</span>59.2156, 56.0504, 55.9814<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>rand100k<span class=o>]</span> Reference times:  <span class=o>[</span>44.41, 48.7485, 45.5738<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: pattern...
+</span></span><span class=line><span class=cl><span class=o>[</span>pattern<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>pattern<span class=o>]</span> Student times:  <span class=o>[</span>0.8356, 0.9017, 0.841<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>pattern<span class=o>]</span> Reference times:  <span class=o>[</span>0.7524, 0.7637, 0.7094<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: snowsingle...
+</span></span><span class=line><span class=cl><span class=o>[</span>snowsingle<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>snowsingle<span class=o>]</span> Student times:  <span class=o>[</span>30.8606, 30.921, 31.0172<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>snowsingle<span class=o>]</span> Reference times:  <span class=o>[</span>30.7988, 30.901, 31.0349<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: biglittle...
+</span></span><span class=line><span class=cl><span class=o>[</span>biglittle<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>biglittle<span class=o>]</span> Student times:  <span class=o>[</span>50.6408, 51.9845, 47.8579<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>biglittle<span class=o>]</span> Reference times:  <span class=o>[</span>27.885, 28.0244, 27.989<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: rand1M...
+</span></span><span class=line><span class=cl><span class=o>[</span>rand1M<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>rand1M<span class=o>]</span> Student times:  <span class=o>[</span>277.3871, 271.2555, 278.4894<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>rand1M<span class=o>]</span> Reference times:  <span class=o>[</span>267.8346, 261.9554, 264.5599<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running scene: micro2M...
+</span></span><span class=line><span class=cl><span class=o>[</span>micro2M<span class=o>]</span> Correctness passed!
+</span></span><span class=line><span class=cl><span class=o>[</span>micro2M<span class=o>]</span> Student times:  <span class=o>[</span>491.7058, 492.4224, 488.8702<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>micro2M<span class=o>]</span> Reference times:  <span class=o>[</span>492.4264, 497.237, 500.9529<span class=o>]</span>
+</span></span><span class=line><span class=cl>------------
+</span></span><span class=line><span class=cl>Score table:
+</span></span><span class=line><span class=cl>------------
+</span></span><span class=line><span class=cl>--------------------------------------------------------------------------
+</span></span><span class=line><span class=cl><span class=p>|</span> Scene Name      <span class=p>|</span> Ref Time <span class=o>(</span>T_ref<span class=o>)</span> <span class=p>|</span> Your Time <span class=o>(</span>T<span class=o>)</span>   <span class=p>|</span> Score           <span class=p>|</span>
+</span></span><span class=line><span class=cl>--------------------------------------------------------------------------
+</span></span><span class=line><span class=cl><span class=p>|</span> rgb             <span class=p>|</span> 0.4137           <span class=p>|</span> 0.491           <span class=p>|</span> <span class=m>9</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> rand10k         <span class=p>|</span> 5.232            <span class=p>|</span> 6.5862          <span class=p>|</span> <span class=m>8</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> rand100k        <span class=p>|</span> 44.41            <span class=p>|</span> 55.9814         <span class=p>|</span> <span class=m>8</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> pattern         <span class=p>|</span> 0.7094           <span class=p>|</span> 0.8356          <span class=p>|</span> <span class=m>9</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> snowsingle      <span class=p>|</span> 30.7988          <span class=p>|</span> 30.8606         <span class=p>|</span> <span class=m>9</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> biglittle       <span class=p>|</span> 27.885           <span class=p>|</span> 47.8579         <span class=p>|</span> <span class=m>7</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> rand1M          <span class=p>|</span> 261.9554         <span class=p>|</span> 271.2555        <span class=p>|</span> <span class=m>9</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span> micro2M         <span class=p>|</span> 492.4264         <span class=p>|</span> 488.8702        <span class=p>|</span> <span class=m>9</span>               <span class=p>|</span>
+</span></span><span class=line><span class=cl>--------------------------------------------------------------------------
+</span></span><span class=line><span class=cl><span class=p>|</span>                                    <span class=p>|</span> Total score:    <span class=p>|</span> 68/72           <span class=p>|</span>
+</span></span><span class=line><span class=cl>--------------------------------------------------------------------------
+</span></span></code></pre></td></tr></table></div></div><p>相关代码：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>//cudaRenderer.cu
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>namespace</span> <span class=n>MySolution</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cp>#define DEBUG
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=cp>#ifdef DEBUG
+</span></span></span><span class=line><span class=cl><span class=cp>#define cudaCheckError(ans)                    \
+</span></span></span><span class=line><span class=cl><span class=cp>    {                                          \
+</span></span></span><span class=line><span class=cl><span class=cp>        cudaAssert((ans), __FILE__, __LINE__); \
+</span></span></span><span class=line><span class=cl><span class=cp>    }
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=kr>inline</span> <span class=kt>void</span> <span class=nf>cudaAssert</span><span class=p>(</span><span class=n>cudaError_t</span> <span class=n>code</span><span class=p>,</span> <span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>file</span><span class=p>,</span> <span class=kt>int</span> <span class=n>line</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                       <span class=kt>bool</span> <span class=n>abort</span> <span class=o>=</span> <span class=nb>true</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>code</span> <span class=o>!=</span> <span class=n>cudaSuccess</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>fprintf</span><span class=p>(</span><span class=n>stderr</span><span class=p>,</span> <span class=s>&#34;CUDA Error: %s at %s:%d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>cudaGetErrorString</span><span class=p>(</span><span class=n>code</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=n>file</span><span class=p>,</span> <span class=n>line</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>abort</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>exit</span><span class=p>(</span><span class=n>code</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=cp>#else
+</span></span></span><span class=line><span class=cl><span class=cp>#define cudaCheckError(ans) ans
+</span></span></span><span class=line><span class=cl><span class=cp>#endif
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>constexpr</span> <span class=kt>int</span> <span class=n>BLOCK_DIM</span> <span class=o>=</span> <span class=mi>16</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>constexpr</span> <span class=kt>int</span> <span class=n>BLOCK_SIZE</span> <span class=o>=</span> <span class=n>BLOCK_DIM</span> <span class=o>*</span> <span class=n>BLOCK_DIM</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cp>#define SCAN_BLOCK_DIM BLOCK_SIZE
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;circleBoxTest.cu_inl&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;exclusiveScan.cu_inl&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>template</span> <span class=o>&lt;</span><span class=kt>bool</span> <span class=n>isSNOWFLAKES</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=n>__device__</span> <span class=n>__inline__</span> <span class=kt>void</span> <span class=n>shadePixel_template</span><span class=p>(</span><span class=kt>int</span> <span class=n>circleIndex</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                               <span class=n>float2</span> <span class=n>pixelCenter</span><span class=p>,</span> <span class=n>float3</span> <span class=n>p</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                               <span class=n>float4</span><span class=o>*</span> <span class=n>imagePtr</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>diffX</span> <span class=o>=</span> <span class=n>p</span><span class=p>.</span><span class=n>x</span> <span class=o>-</span> <span class=n>pixelCenter</span><span class=p>.</span><span class=n>x</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>diffY</span> <span class=o>=</span> <span class=n>p</span><span class=p>.</span><span class=n>y</span> <span class=o>-</span> <span class=n>pixelCenter</span><span class=p>.</span><span class=n>y</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>pixelDist</span> <span class=o>=</span> <span class=n>diffX</span> <span class=o>*</span> <span class=n>diffX</span> <span class=o>+</span> <span class=n>diffY</span> <span class=o>*</span> <span class=n>diffY</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>rad</span> <span class=o>=</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>radius</span><span class=p>[</span><span class=n>circleIndex</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>maxDist</span> <span class=o>=</span> <span class=n>rad</span> <span class=o>*</span> <span class=n>rad</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>pixelDist</span> <span class=o>&gt;</span> <span class=n>maxDist</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>float3</span> <span class=n>rgb</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>alpha</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// specialized template magic
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>if</span> <span class=nf>constexpr</span> <span class=p>(</span><span class=n>isSNOWFLAKES</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>const</span> <span class=kt>float</span> <span class=n>kCircleMaxAlpha</span> <span class=o>=</span> <span class=mf>.5f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>const</span> <span class=kt>float</span> <span class=n>falloffScale</span> <span class=o>=</span> <span class=mf>4.f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kt>float</span> <span class=n>normPixelDist</span> <span class=o>=</span> <span class=n>sqrt</span><span class=p>(</span><span class=n>pixelDist</span><span class=p>)</span> <span class=o>/</span> <span class=n>rad</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>rgb</span> <span class=o>=</span> <span class=n>lookupColor</span><span class=p>(</span><span class=n>normPixelDist</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kt>float</span> <span class=n>maxAlpha</span> <span class=o>=</span> <span class=mf>.6f</span> <span class=o>+</span> <span class=mf>.4f</span> <span class=o>*</span> <span class=p>(</span><span class=mf>1.f</span> <span class=o>-</span> <span class=n>p</span><span class=p>.</span><span class=n>z</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>maxAlpha</span> <span class=o>=</span> <span class=n>kCircleMaxAlpha</span> <span class=o>*</span> <span class=n>fmaxf</span><span class=p>(</span><span class=n>fminf</span><span class=p>(</span><span class=n>maxAlpha</span><span class=p>,</span> <span class=mf>1.f</span><span class=p>),</span> <span class=mf>0.f</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>alpha</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>            <span class=n>maxAlpha</span> <span class=o>*</span> <span class=n>exp</span><span class=p>(</span><span class=o>-</span><span class=mf>1.f</span> <span class=o>*</span> <span class=n>falloffScale</span> <span class=o>*</span> <span class=n>normPixelDist</span> <span class=o>*</span> <span class=n>normPixelDist</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>index3</span> <span class=o>=</span> <span class=mi>3</span> <span class=o>*</span> <span class=n>circleIndex</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>rgb</span> <span class=o>=</span> <span class=o>*</span><span class=p>(</span><span class=n>float3</span><span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=p>(</span><span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>color</span><span class=p>[</span><span class=n>index3</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>        <span class=n>alpha</span> <span class=o>=</span> <span class=mf>.5f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>oneMinusAlpha</span> <span class=o>=</span> <span class=mf>1.f</span> <span class=o>-</span> <span class=n>alpha</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>float4</span> <span class=n>existingColor</span> <span class=o>=</span> <span class=o>*</span><span class=n>imagePtr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>float4</span> <span class=n>newColor</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>newColor</span><span class=p>.</span><span class=n>x</span> <span class=o>=</span> <span class=n>alpha</span> <span class=o>*</span> <span class=n>rgb</span><span class=p>.</span><span class=n>x</span> <span class=o>+</span> <span class=n>oneMinusAlpha</span> <span class=o>*</span> <span class=n>existingColor</span><span class=p>.</span><span class=n>x</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>newColor</span><span class=p>.</span><span class=n>y</span> <span class=o>=</span> <span class=n>alpha</span> <span class=o>*</span> <span class=n>rgb</span><span class=p>.</span><span class=n>y</span> <span class=o>+</span> <span class=n>oneMinusAlpha</span> <span class=o>*</span> <span class=n>existingColor</span><span class=p>.</span><span class=n>y</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>newColor</span><span class=p>.</span><span class=n>z</span> <span class=o>=</span> <span class=n>alpha</span> <span class=o>*</span> <span class=n>rgb</span><span class=p>.</span><span class=n>z</span> <span class=o>+</span> <span class=n>oneMinusAlpha</span> <span class=o>*</span> <span class=n>existingColor</span><span class=p>.</span><span class=n>z</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>newColor</span><span class=p>.</span><span class=n>w</span> <span class=o>=</span> <span class=n>alpha</span> <span class=o>+</span> <span class=n>existingColor</span><span class=p>.</span><span class=n>w</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=o>*</span><span class=n>imagePtr</span> <span class=o>=</span> <span class=n>newColor</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// MizukiCry 的实现（开头提到的博客）
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>__global__</span> <span class=kt>void</span> <span class=nf>kernelRenderCircles_MizukiCry</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>__shared__</span> <span class=n>uint</span> <span class=n>circleIsInBox</span><span class=p>[</span><span class=n>BLOCK_SIZE</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=n>__shared__</span> <span class=n>uint</span> <span class=n>circleIndex</span><span class=p>[</span><span class=n>BLOCK_SIZE</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=n>__shared__</span> <span class=n>uint</span> <span class=n>scratch</span><span class=p>[</span><span class=mi>2</span> <span class=o>*</span> <span class=n>BLOCK_SIZE</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=n>__shared__</span> <span class=kt>int</span> <span class=n>inBoxCircles</span><span class=p>[</span><span class=n>BLOCK_SIZE</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>boxL</span> <span class=o>=</span> <span class=n>blockIdx</span><span class=p>.</span><span class=n>x</span> <span class=o>*</span> <span class=n>BLOCK_DIM</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>boxB</span> <span class=o>=</span> <span class=n>blockIdx</span><span class=p>.</span><span class=n>y</span> <span class=o>*</span> <span class=n>BLOCK_DIM</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>boxR</span> <span class=o>=</span> <span class=n>min</span><span class=p>(</span><span class=n>boxL</span> <span class=o>+</span> <span class=n>BLOCK_DIM</span><span class=p>,</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>imageWidth</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>boxT</span> <span class=o>=</span> <span class=n>min</span><span class=p>(</span><span class=n>boxB</span> <span class=o>+</span> <span class=n>BLOCK_DIM</span><span class=p>,</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>imageHeight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>invWidth</span> <span class=o>=</span> <span class=mf>1.f</span> <span class=o>/</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>imageWidth</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>invHeight</span> <span class=o>=</span> <span class=mf>1.f</span> <span class=o>/</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>imageHeight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>boxLNorm</span> <span class=o>=</span> <span class=n>boxL</span> <span class=o>*</span> <span class=n>invWidth</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>boxRNorm</span> <span class=o>=</span> <span class=n>boxR</span> <span class=o>*</span> <span class=n>invWidth</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>boxTNorm</span> <span class=o>=</span> <span class=n>boxT</span> <span class=o>*</span> <span class=n>invHeight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>boxBNorm</span> <span class=o>=</span> <span class=n>boxB</span> <span class=o>*</span> <span class=n>invHeight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>index</span> <span class=o>=</span> <span class=n>threadIdx</span><span class=p>.</span><span class=n>y</span> <span class=o>*</span> <span class=n>BLOCK_DIM</span> <span class=o>+</span> <span class=n>threadIdx</span><span class=p>.</span><span class=n>x</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>pixelX</span> <span class=o>=</span> <span class=n>boxL</span> <span class=o>+</span> <span class=n>threadIdx</span><span class=p>.</span><span class=n>x</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>pixelY</span> <span class=o>=</span> <span class=n>boxB</span> <span class=o>+</span> <span class=n>threadIdx</span><span class=p>.</span><span class=n>y</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>pixelId</span> <span class=o>=</span> <span class=n>pixelY</span> <span class=o>*</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>imageWidth</span> <span class=o>+</span> <span class=n>pixelX</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>numCircles</span><span class=p>;</span> <span class=n>i</span> <span class=o>+=</span> <span class=n>BLOCK_SIZE</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>circleId</span> <span class=o>=</span> <span class=n>i</span> <span class=o>+</span> <span class=n>index</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>circleId</span> <span class=o>&lt;</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>numCircles</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>float3</span> <span class=n>p</span> <span class=o>=</span> <span class=o>*</span><span class=k>reinterpret_cast</span><span class=o>&lt;</span><span class=n>float3</span><span class=o>*&gt;</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=o>&amp;</span><span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>position</span><span class=p>[</span><span class=mi>3</span> <span class=o>*</span> <span class=n>circleId</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>            <span class=n>circleIsInBox</span><span class=p>[</span><span class=n>index</span><span class=p>]</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>                <span class=n>circleInBox</span><span class=p>(</span><span class=n>p</span><span class=p>.</span><span class=n>x</span><span class=p>,</span> <span class=n>p</span><span class=p>.</span><span class=n>y</span><span class=p>,</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>radius</span><span class=p>[</span><span class=n>circleId</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                            <span class=n>boxLNorm</span><span class=p>,</span> <span class=n>boxRNorm</span><span class=p>,</span> <span class=n>boxTNorm</span><span class=p>,</span> <span class=n>boxBNorm</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>circleIsInBox</span><span class=p>[</span><span class=n>index</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>__syncthreads</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>sharedMemExclusiveScan</span><span class=p>(</span><span class=n>index</span><span class=p>,</span> <span class=n>circleIsInBox</span><span class=p>,</span> <span class=n>circleIndex</span><span class=p>,</span> <span class=n>scratch</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                               <span class=n>BLOCK_SIZE</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>circleIsInBox</span><span class=p>[</span><span class=n>index</span><span class=p>])</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>inBoxCircles</span><span class=p>[</span><span class=n>circleIndex</span><span class=p>[</span><span class=n>index</span><span class=p>]]</span> <span class=o>=</span> <span class=n>circleId</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>__syncthreads</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>numCirclesInBox</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>            <span class=n>circleIndex</span><span class=p>[</span><span class=n>BLOCK_SIZE</span> <span class=o>-</span> <span class=mi>1</span><span class=p>]</span> <span class=o>+</span> <span class=n>circleIsInBox</span><span class=p>[</span><span class=n>BLOCK_SIZE</span> <span class=o>-</span> <span class=mi>1</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=n>__syncthreads</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>pixelX</span> <span class=o>&lt;</span> <span class=n>boxR</span> <span class=o>&amp;&amp;</span> <span class=n>pixelY</span> <span class=o>&lt;</span> <span class=n>boxT</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>float4</span><span class=o>*</span> <span class=n>imgPtr</span> <span class=o>=</span> <span class=k>reinterpret_cast</span><span class=o>&lt;</span><span class=n>float4</span><span class=o>*&gt;</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=o>&amp;</span><span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>imageData</span><span class=p>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>pixelId</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>numCirclesInBox</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>circleId</span> <span class=o>=</span> <span class=n>inBoxCircles</span><span class=p>[</span><span class=n>j</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                <span class=n>shadePixel</span><span class=p>(</span><span class=n>circleId</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                           <span class=n>make_float2</span><span class=p>((</span><span class=n>pixelX</span> <span class=o>+</span> <span class=mf>0.5</span><span class=p>)</span> <span class=o>*</span> <span class=n>invWidth</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                       <span class=p>(</span><span class=n>pixelY</span> <span class=o>+</span> <span class=mf>0.5</span><span class=p>)</span> <span class=o>*</span> <span class=n>invHeight</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                           <span class=o>*</span><span class=k>reinterpret_cast</span><span class=o>&lt;</span><span class=n>float3</span><span class=o>*&gt;</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                               <span class=o>&amp;</span><span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>position</span><span class=p>[</span><span class=mi>3</span> <span class=o>*</span> <span class=n>circleId</span><span class=p>]),</span>
+</span></span><span class=line><span class=cl>                           <span class=n>imgPtr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>struct GlobalConstants {
+</span></span></span><span class=line><span class=cl><span class=cm>    SceneName sceneName;
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>    int numCircles;
+</span></span></span><span class=line><span class=cl><span class=cm>    float* position;
+</span></span></span><span class=line><span class=cl><span class=cm>    float* velocity;
+</span></span></span><span class=line><span class=cl><span class=cm>    float* color;
+</span></span></span><span class=line><span class=cl><span class=cm>    float* radius;
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>    int imageWidth;
+</span></span></span><span class=line><span class=cl><span class=cm>    int imageHeight;
+</span></span></span><span class=line><span class=cl><span class=cm>    float* imageData;
+</span></span></span><span class=line><span class=cl><span class=cm>} cuConstRendererParams;
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span><span class=line><span class=cl><span class=n>__global__</span> <span class=kt>void</span> <span class=nf>kernelRenderCircles_1</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>invWidth</span> <span class=o>=</span> <span class=mf>1.f</span> <span class=o>/</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>imageWidth</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>invHeight</span> <span class=o>=</span> <span class=mf>1.f</span> <span class=o>/</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>imageHeight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>x_idx</span> <span class=o>=</span> <span class=n>blockIdx</span><span class=p>.</span><span class=n>x</span> <span class=o>*</span> <span class=n>blockDim</span><span class=p>.</span><span class=n>x</span> <span class=o>+</span> <span class=n>threadIdx</span><span class=p>.</span><span class=n>x</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>y_idx</span> <span class=o>=</span> <span class=n>blockIdx</span><span class=p>.</span><span class=n>y</span> <span class=o>*</span> <span class=n>blockDim</span><span class=p>.</span><span class=n>y</span> <span class=o>+</span> <span class=n>threadIdx</span><span class=p>.</span><span class=n>y</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>x_idx</span> <span class=o>&gt;=</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>imageWidth</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>y_idx</span> <span class=o>&gt;=</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>imageHeight</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 减少原本要访问 圆个数次 全局内存 不知道为什么也没有影响，
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 可能再重写下 shadePixel?
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// float4 img_local_value = *(imgPtr);
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// float4* imgPtr_local = &amp;img_local_value;
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>numCircles</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>i3</span> <span class=o>=</span> <span class=mi>3</span> <span class=o>*</span> <span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>float3</span> <span class=n>p</span> <span class=o>=</span> <span class=o>*</span><span class=p>(</span><span class=n>float3</span><span class=o>*</span><span class=p>)(</span><span class=o>&amp;</span><span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>position</span><span class=p>[</span><span class=n>i3</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>        <span class=kt>float</span> <span class=n>rad</span> <span class=o>=</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>radius</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=n>float2</span> <span class=n>pixelCenterNorm</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>            <span class=n>make_float2</span><span class=p>(</span><span class=n>invWidth</span> <span class=o>*</span> <span class=p>(</span><span class=k>static_cast</span><span class=o>&lt;</span><span class=kt>float</span><span class=o>&gt;</span><span class=p>(</span><span class=n>x_idx</span><span class=p>)</span> <span class=o>+</span> <span class=mf>0.5f</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                        <span class=n>invHeight</span> <span class=o>*</span> <span class=p>(</span><span class=k>static_cast</span><span class=o>&lt;</span><span class=kt>float</span><span class=o>&gt;</span><span class=p>(</span><span class=n>y_idx</span><span class=p>)</span> <span class=o>+</span> <span class=mf>0.5f</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=n>float4</span><span class=o>*</span> <span class=n>imgPtr</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>            <span class=p>(</span><span class=n>float4</span><span class=o>*</span><span class=p>)(</span><span class=o>&amp;</span><span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>imageData</span>
+</span></span><span class=line><span class=cl>                           <span class=p>[</span><span class=mi>4</span> <span class=o>*</span> <span class=p>(</span><span class=n>y_idx</span> <span class=o>*</span> <span class=n>cuConstRendererParams</span><span class=p>.</span><span class=n>imageWidth</span> <span class=o>+</span>
+</span></span><span class=line><span class=cl>                                 <span class=n>x_idx</span><span class=p>)]);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 宽松在圆外、严格在圆外
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>if</span> <span class=p>(</span><span class=n>circleInBoxConservative</span><span class=p>(</span><span class=n>p</span><span class=p>.</span><span class=n>x</span><span class=p>,</span> <span class=n>p</span><span class=p>.</span><span class=n>y</span><span class=p>,</span> <span class=n>rad</span><span class=p>,</span> <span class=n>pixelCenterNorm</span><span class=p>.</span><span class=n>x</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                    <span class=n>pixelCenterNorm</span><span class=p>.</span><span class=n>x</span><span class=p>,</span> <span class=n>pixelCenterNorm</span><span class=p>.</span><span class=n>y</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                    <span class=n>pixelCenterNorm</span><span class=p>.</span><span class=n>y</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span> <span class=o>||</span>
+</span></span><span class=line><span class=cl>            <span class=n>circleInBox</span><span class=p>(</span><span class=n>p</span><span class=p>.</span><span class=n>x</span><span class=p>,</span> <span class=n>p</span><span class=p>.</span><span class=n>y</span><span class=p>,</span> <span class=n>rad</span><span class=p>,</span> <span class=n>pixelCenterNorm</span><span class=p>.</span><span class=n>x</span><span class=p>,</span> <span class=n>pixelCenterNorm</span><span class=p>.</span><span class=n>x</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                        <span class=n>pixelCenterNorm</span><span class=p>.</span><span class=n>y</span><span class=p>,</span> <span class=n>pixelCenterNorm</span><span class=p>.</span><span class=n>y</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>shadePixel</span><span class=p>(</span><span class=n>i</span><span class=p>,</span> <span class=n>pixelCenterNorm</span><span class=p>,</span> <span class=n>p</span><span class=p>,</span> <span class=n>imgPtr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// shadePixel(i, pixelCenterNorm, p, imgPtr_local);
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// *imgPtr = img_local_value;
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>renderCircles</span><span class=p>(</span><span class=kt>int</span> <span class=n>width</span><span class=p>,</span> <span class=kt>int</span> <span class=n>height</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// MySolution::
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//     kernelRenderCircles_1&lt;&lt;&lt;dim3((width + BLOCK_DIM - 1) / BLOCK_DIM,
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//                                (height + BLOCK_DIM - 1) / BLOCK_DIM),
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//                           dim3(BLOCK_DIM, BLOCK_DIM)&gt;&gt;&gt;();
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>MySolution</span><span class=o>::</span><span class=n>kernelRenderCircles_MizukiCry</span><span class=o>&lt;&lt;&lt;</span>
+</span></span><span class=line><span class=cl>        <span class=n>dim3</span><span class=p>((</span><span class=n>width</span> <span class=o>+</span> <span class=n>BLOCK_DIM</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> <span class=o>/</span> <span class=n>BLOCK_DIM</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>             <span class=p>(</span><span class=n>height</span> <span class=o>+</span> <span class=n>BLOCK_DIM</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> <span class=o>/</span> <span class=n>BLOCK_DIM</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>        <span class=n>dim3</span><span class=p>(</span><span class=n>BLOCK_DIM</span><span class=p>,</span> <span class=n>BLOCK_DIM</span><span class=p>)</span><span class=o>&gt;&gt;&gt;</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=n>cudaCheckError</span><span class=p>(</span><span class=n>cudaDeviceSynchronize</span><span class=p>());</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>  <span class=c1>// namespace MySolution
+</span></span></span></code></pre></td></tr></table></div></div></section><footer class=article-footer><section class=article-tags><a href=/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/>学习笔记</a>
+<a href=/tags/cs149/>CS149</a>
+<a href=/tags/%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97/>并行计算</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section><section class=article-lastmod><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<span>最后更新于 2025 年 9 月 6 日 14:35 CST</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/p/cs149_2024_asst5_writeup/><div class=article-image><img src=/p/cs149_2024_asst5_writeup/cover.6e334527582f43c21afa8b753f42b50c_hu_4c45e10e34ec4af0.jpeg width=250 height=150 loading=lazy alt="Featured image of post 『学习笔记』CS149 (2024): Assignment 5" data-key=CS149_2024_asst5_writeup data-hash="md5-bjNFJ1gvQ8Ia+ot1P0K1DA=="></div><div class=article-details><h2 class=article-title>『学习笔记』CS149 (2024): Assignment 5</h2></div></a></article><article class=has-image><a href=/p/cs149_2023_asst4_writeup/><div class=article-image><img src=/p/cs149_2023_asst4_writeup/cover.453a3cd0fcebc0cb8b795998eb6cf804_hu_205eea90320f6d46.jpeg width=250 height=150 loading=lazy alt="Featured image of post 『学习笔记』CS149 (2023): Assignment 4" data-key=CS149_2023_asst4_writeup data-hash="md5-RTo80PzrwMuLeVmY62z4BA=="></div><div class=article-details><h2 class=article-title>『学习笔记』CS149 (2023): Assignment 4</h2></div></a></article><article class=has-image><a href=/p/cs149_2024_asst2_writeup/><div class=article-image><img src=/p/cs149_2024_asst2_writeup/cover.ed99683fe0aa2485b30fae87122488f3_hu_d95c17e058883c72.jpg width=250 height=150 loading=lazy alt="Featured image of post 『学习笔记』CS149 (2024): Assignment 2" data-key=CS149_2024_asst2_writeup data-hash="md5-7ZloP+CqJIWzD66HEiSI8w=="></div><div class=article-details><h2 class=article-title>『学习笔记』CS149 (2024): Assignment 2</h2></div></a></article><article class=has-image><a href=/p/cs149_2024_asst1_writeup/><div class=article-image><img src=/p/cs149_2024_asst1_writeup/cover.7bf451ad35840d07dd26719063b8bb38_hu_da9fe0c3b76dc74b.jpg width=250 height=150 loading=lazy alt="Featured image of post 『学习笔记』CS149 (2024): Assignment 1" data-key=CS149_2024_asst1_writeup data-hash="md5-e/RRrTWEDQfdJnGQY7i7OA=="></div><div class=article-details><h2 class=article-title>『学习笔记』CS149 (2024): Assignment 1</h2></div></a></article><article class=has-image><a href=/p/cs149_2024_note/><div class=article-image><img src=/p/cs149_2024_note/cover.664e6dffed8260e16a7d442976d4323f_hu_9dada7ff6176f365.jpeg width=250 height=150 loading=lazy alt="Featured image of post 『学习笔记』CS149 (2024)" data-key=CS149_2024_note data-hash="md5-Zk5t/+2CYOFqfUQpdtQyPw=="></div><div class=article-details><h2 class=article-title>『学习笔记』CS149 (2024)</h2></div></a></article></div></div></aside><script src=https://giscus.app/client.js data-repo=Livinfly/Livinfly.github.io data-repo-id=R_kgDON6qCKA data-category=Announcements data-category-id=DIC_kwDON6qCKM4CnBxR data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=top data-theme=light data-lang=zh-CN data-loading crossorigin=anonymous async></script><script>function setGiscusTheme(e){let t=document.querySelector("iframe.giscus-frame");t&&t.contentWindow.postMessage({giscus:{setConfig:{theme:e}}},"https://giscus.app")}(function(){addEventListener("message",t=>{if(event.origin!=="https://giscus.app")return;e()}),window.addEventListener("onColorSchemeChange",e);function e(){setGiscusTheme(document.documentElement.dataset.scheme==="light"?"light":"dark")}})()</script><footer class=site-footer><section class=copyright>&copy;
+2022 -
+2025 Livinfly's Blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.32.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.c922af694cc257bf1ecc41c0dd7b0430f9114ec280ccf67cd2c6ad55f5316c4e.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

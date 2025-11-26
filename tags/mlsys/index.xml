@@ -1,0 +1,3429 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MLsys on Livinfly's Blog</title><link>https://livinfly.github.io/tags/mlsys/</link><description>Recent content in MLsys on Livinfly's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 25 Nov 2025 19:45:15 +0800</lastBuildDate><atom:link href="https://livinfly.github.io/tags/mlsys/index.xml" rel="self" type="application/rss+xml"/><item><title>nano-vLLM 简单梳理</title><link>https://livinfly.github.io/p/nano_vllm_combing/</link><pubDate>Tue, 25 Nov 2025 11:27:18 +0000</pubDate><guid>https://livinfly.github.io/p/nano_vllm_combing/</guid><description>&lt;img src="https://livinfly.github.io/p/nano_vllm_combing/cover.jpg" alt="Featured image of post nano-vLLM 简单梳理" /&gt;&lt;blockquote&gt;
+&lt;p&gt;封面来源：&lt;a class="link" href="https://x.com/takeez3/status/1958149162303930704" target="_blank" rel="noopener"
+&gt;@takeez3&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;nano-vLLM 作为 Python 简洁实现的朴素 vLLM，对 vLLM 的主要结构能有一个简单的认识。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;项目代码简洁，除了少数几个地方变量可能需要琢磨下，其他地方阅读通畅，非常建议阅读源码！&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;仓库代码：&lt;a class="link" href="https://github.com/GeeeekExplorer/nano-vllm" target="_blank" rel="noopener"
+&gt;GeeeekExplorer/nano-vllm: Nano vLLM&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+我 fork 的带有少量英文注释的仓库代码：&lt;a class="link" href="https://github.com/Livinfly/nano-vllm/tree/private/mengmm" target="_blank" rel="noopener"
+&gt;Livinfly/nano-vllm at private/mengmm&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;p&gt;相关文章：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;附代码注释
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://zhuanlan.zhihu.com/p/1939065889937929048" target="_blank" rel="noopener"
+&gt;nano vllm Sequence 以及 BlockManager 解析 - 知乎&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://zhuanlan.zhihu.com/p/1940531910418862756" target="_blank" rel="noopener"
+&gt;nano vllm Scheduler、ModelRunner以及LLMEngine 解析 - 知乎&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://zhuanlan.zhihu.com/p/1925942233745585068" target="_blank" rel="noopener"
+&gt;nano vllm源码阅读——TP并行 - 知乎&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/nano_vllm_combing/assets/file-20251125192343897.png"
+width="1431"
+height="1579"
+srcset="https://livinfly.github.io/p/nano_vllm_combing/assets/file-20251125192343897_hu_4e1b77d5fc5264e3.png 480w, https://livinfly.github.io/p/nano_vllm_combing/assets/file-20251125192343897_hu_7578b1e1289946.png 1024w"
+loading="lazy"
+alt="nano-vLLM"
+class="gallery-image"
+data-flex-grow="90"
+data-flex-basis="217px"
+&gt;&lt;/p&gt;
+&lt;p&gt;目前 nano-vLLM 仅支持单机多卡 TP。&lt;/p&gt;
+&lt;p&gt;config 为了简洁，基本是硬编码。&lt;/p&gt;
+&lt;p&gt;下面将按照文件结构进行介绍，对照上图阅读。&lt;/p&gt;
+&lt;h2 id="entrypoint"&gt;entrypoint
+&lt;/h2&gt;&lt;p&gt;最初可以先看 &lt;code&gt;example.py&lt;/code&gt;、&lt;code&gt;bench.py&lt;/code&gt;，了解配置、参数流的传输路径。&lt;/p&gt;
+&lt;p&gt;经过形式上的 &lt;code&gt;llm.py&lt;/code&gt; 进入 engine。&lt;/p&gt;
+&lt;h2 id="engine"&gt;engine
+&lt;/h2&gt;&lt;h3 id="llm-engine"&gt;LLM Engine
+&lt;/h3&gt;&lt;p&gt;从 &lt;code&gt;__init__()&lt;/code&gt; 或者 &lt;code&gt;generate()&lt;/code&gt; 看起，下面为了介绍方便，从 &lt;code&gt;__init__()&lt;/code&gt; 开始介绍。&lt;/p&gt;
+&lt;p&gt;LLM Engine，具体由以下几部分组成，他们的初始化在 &lt;code&gt;__init()&lt;/code&gt; 中完成。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;config&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;模型、kv cache、分布式并行、调度等相关配置。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;multiprocessing&lt;/code&gt; 分布式配置
+&lt;ul&gt;
+&lt;li&gt;主要是启动了多个执行 &lt;code&gt;ModelRunner&lt;/code&gt; 的进程，后续用于做单机多卡的 TP。&lt;/li&gt;
+&lt;li&gt;基本逻辑见后续 &lt;code&gt;step()&lt;/code&gt; 中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Model Runner&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;模型运行的执行者。&lt;/li&gt;
+&lt;li&gt;主进程，拥有所有其他 GPU 的 &lt;code&gt;event&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;event&lt;/code&gt;，因为不是很懂分布式，可以简单理解成给主进程了个调用的方式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Tokenizer&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;分词器，用于 &lt;code&gt;text&lt;/code&gt; 文本和 &lt;code&gt;token_ids&lt;/code&gt; 词元编码的编解码，简单理解成人类的语言和大模型的语言相互翻译。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Scheduler&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;调度器，负责调度模型处理的请求。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;然后，我们看外界调用的接口 &lt;code&gt;generate()&lt;/code&gt;，收起忽略掉 &lt;code&gt;if use_tqdm:&lt;/code&gt; 的 debug 调试信息，核心逻辑如下。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;把新请求的 &lt;code&gt;prompt&lt;/code&gt; 请求加入调度器的队列。
+具体地，在正式加入调度器之前，会使用 &lt;code&gt;Tokenizer&lt;/code&gt; 进行编码，转变成适合模型处理的形式。&lt;/li&gt;
+&lt;li&gt;加入完毕，逐个 &lt;code&gt;step&lt;/code&gt; 处理出完成的结果 &lt;code&gt;output&lt;/code&gt;，增量更新整体的结果 &lt;code&gt;outputs&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;返回 &lt;code&gt;text&lt;/code&gt; 和 &lt;code&gt;token_ids&lt;/code&gt;，作为结果和方便调试的输出。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;接下来，我们看具体处理输出的函数 &lt;code&gt;step()&lt;/code&gt;。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;先用我们先前加入 &lt;code&gt;prompt&lt;/code&gt; 的 &lt;code&gt;Scheduler&lt;/code&gt; 进行 &lt;code&gt;schedule()&lt;/code&gt; 调度，得到本次 &lt;code&gt;step&lt;/code&gt; 需要处理的 &lt;code&gt;seqs&lt;/code&gt; 序列，即需要处理的请求；同时返回本次 &lt;code&gt;step&lt;/code&gt; 处理的序列的类型，是 prefill 还是 decode。&lt;/li&gt;
+&lt;li&gt;传入 &lt;code&gt;model_runner&lt;/code&gt;，&lt;code&gt;call&lt;/code&gt; 分布式调用 &lt;code&gt;run&lt;/code&gt;，模型处理出本次输出的 &lt;code&gt;token_ids&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Scheduler&lt;/code&gt; 把新生成的 &lt;code&gt;token_ids&lt;/code&gt; 加入 &lt;code&gt;seq&lt;/code&gt; 中，并且对 &lt;code&gt;seq&lt;/code&gt; 生成是否结束做出判断，同时进行对应的更新。&lt;/li&gt;
+&lt;li&gt;把生成结束的 &lt;code&gt;seq&lt;/code&gt; 返回为 &lt;code&gt;output&lt;/code&gt;，同时输出测试使用的 &lt;code&gt;num_tokens&lt;/code&gt; 表示处理了多少个 &lt;code&gt;token&lt;/code&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;至此，整个框架的主要结构、流程已经介绍完毕，接下来将是一些细节上的实现。&lt;/p&gt;
+&lt;h3 id="scheduler"&gt;scheduler
+&lt;/h3&gt;&lt;p&gt;我们由主要逻辑 &lt;code&gt;generate()&lt;/code&gt; 出发，首先了解 &lt;code&gt;scheduler&lt;/code&gt; 的实现细节。&lt;/p&gt;
+&lt;p&gt;首先从 &lt;code&gt;__init__&lt;/code&gt; 开始。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;涉及到一次能调度多少 &lt;code&gt;seqs&lt;/code&gt;、&lt;code&gt;tokens&lt;/code&gt; 的配置&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Block Manager&lt;/code&gt;，设置好 &lt;code&gt;num_kvcache_blocks&lt;/code&gt;、&lt;code&gt;kvcache_block_size&lt;/code&gt;，后续在调度过程中，判断 kv cache 是否够分配，分配、回收块的内存。
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;num_kvcache_blocks&lt;/code&gt; 在 &lt;code&gt;scheduler&lt;/code&gt; 初始化前的 &lt;code&gt;model_runner&lt;/code&gt; 初始化的时候确认的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;调度序列
+&lt;ul&gt;
+&lt;li&gt;waiting 等待调度序列&lt;/li&gt;
+&lt;li&gt;running 运行中序列（处理过，有 kv cache）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;核心逻辑 &lt;code&gt;schedule()&lt;/code&gt;。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;调度 prefill
+&lt;ul&gt;
+&lt;li&gt;对 &lt;code&gt;seq&lt;/code&gt; 进行 kv cache 分配的可行判断，分配。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;seq&lt;/code&gt; 状态的更新，&lt;code&gt;schedule&lt;/code&gt; 调度序列的更新。&lt;/li&gt;
+&lt;li&gt;如果存在 prefill 的 &lt;code&gt;seq&lt;/code&gt; 调度完，直接返回，prefill 优先，一次调度只调度一种计算类型的 &lt;code&gt;seq&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;调度 decode
+&lt;ul&gt;
+&lt;li&gt;显然只有 prefill 调度完了，或者放不下了，才会到 decode&lt;/li&gt;
+&lt;li&gt;对 running 的序列做进一步处理&lt;/li&gt;
+&lt;li&gt;判断是否可以 append，即 decode 后生成一个 token 的内存占用&lt;/li&gt;
+&lt;li&gt;不能就 &lt;code&gt;preempt()&lt;/code&gt; 抢占后续 running 中的 &lt;code&gt;seq&lt;/code&gt;，供自己使用
+&lt;ul&gt;
+&lt;li&gt;具体地，抢占就是把 &lt;code&gt;seq&lt;/code&gt; 放回 waiting 中，释放它的 kv cache。&lt;/li&gt;
+&lt;li&gt;如果没有能再抢占的序列了，还是不能满足它，则结束 decode 的调度。&lt;/li&gt;
+&lt;li&gt;特别地，如果此时没有一个 &lt;code&gt;seq&lt;/code&gt; 被调度，则报错。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;可以就正常分配内存。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;把新调度的 &lt;code&gt;seq&lt;/code&gt; 放到 &lt;code&gt;running&lt;/code&gt; 的最前面。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;scheduler 调度策略是原 vLLM v0 的默认策略，只支持一个 step prefill 或 decode。
+具体地，nano-vLLM 优先 prefill，抢占式调度。&lt;/p&gt;
+&lt;h3 id="block_manager"&gt;block_manager
+&lt;/h3&gt;&lt;p&gt;既然 &lt;code&gt;scheduler&lt;/code&gt; 中有提到 &lt;code&gt;block_manager&lt;/code&gt;，因为都是很硬的内存分配、共享块的代码，比较琐碎，简单带过。&lt;/p&gt;
+&lt;p&gt;为了能减少内存碎片，进行 share-prefix 前缀共享，&lt;code&gt;Block&lt;/code&gt; 涉及了 hash, ref_count。&lt;/p&gt;
+&lt;p&gt;具体的内存分配的话，就是先判断能不能，然后再具体分配；追加到最后的块里，还是新开辟一个块。&lt;/p&gt;
+&lt;h3 id="sequence"&gt;sequence
+&lt;/h3&gt;&lt;p&gt;琐碎，同样简单带过。&lt;/p&gt;
+&lt;p&gt;为了序列化、反序列化传输方便，只有必要的序列信息和与块相关的信息。&lt;/p&gt;
+&lt;h3 id="model_runner"&gt;model_runner
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;__init__()&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;模型载入&lt;/li&gt;
+&lt;li&gt;分布式的通信的配置
+&lt;ul&gt;
+&lt;li&gt;前面提到的 &lt;code&gt;call&lt;/code&gt; 调用 &lt;code&gt;run&lt;/code&gt; 的具体实现，就是主进程监听 &lt;code&gt;step()&lt;/code&gt; 的 &lt;code&gt;call&lt;/code&gt;，收到后广播给其余进程，具体是通过进程 Shared Memory 共享内存，来写、读的。&lt;/li&gt;
+&lt;li&gt;模型的 TP，在配置完 rank、world_size 后，在模型结构侧自动进行切分。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Sampler
+&lt;ul&gt;
+&lt;li&gt;最后模型输出概率的采样器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;warmup，找到模型运行的峰值内存等信息&lt;/li&gt;
+&lt;li&gt;allocate_kv_cache，根据 warmup 得到的内存信息，进行分配 kv cache。&lt;/li&gt;
+&lt;li&gt;cuda graph 相关设置（我目前只知道，会 padding）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;首先先来看下，&lt;code&gt;allocate_kv_cache()&lt;/code&gt;，逻辑简单。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;根据模型信息、本地内存信息、TP 信息，算出合理的 &lt;code&gt;config.num_kvcache_blocks&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;分配当前 rank 模型的 kv_cache，同时绑定到 / 被引用，每层 attention 的 k_cache, v_cache 中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;然后，我们看核心 &lt;code&gt;run()&lt;/code&gt;。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;prepare_(prefill / decode)&lt;/code&gt;，为 &lt;code&gt;run_model&lt;/code&gt; 准备上下文，&lt;code&gt;input_ids&lt;/code&gt; 新增 token 和 &lt;code&gt;position&lt;/code&gt; 位置编码，同时，&lt;code&gt;prepare_block_tables&lt;/code&gt; 在 Q 和 KV 没对齐的时候，block 长度对齐。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;prepare_sample&lt;/code&gt;，为每个 seqs 确定采样 temperature&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;run_model&lt;/code&gt;，运行模型，算出 logits&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sample&lt;/code&gt;，采样出 token_ids&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="layers"&gt;layers
+&lt;/h2&gt;&lt;p&gt;都是一些算子的实现，主要提以下几个：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;attention&lt;/code&gt;，k 和 v 在forward 时候，在进入 attention 算子计算前，进行存储。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;QKVParallelLinear&lt;/code&gt;，&lt;code&gt;ColumnParallelLinear&lt;/code&gt;，&lt;code&gt;RowParallelLinear&lt;/code&gt;，涉及 TP，Q / K / V/ O 的运算。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="models"&gt;models
+&lt;/h2&gt;&lt;p&gt;模型具体并行涉及 TP 相关知识，核心层在 &lt;code&gt;QKVParallelLinear&lt;/code&gt;，&lt;code&gt;RowParallelLinear&lt;/code&gt;，可以参考 &lt;a class="link" href="https://zhuanlan.zhihu.com/p/1925942233745585068" target="_blank" rel="noopener"
+&gt;nano vllm源码阅读——TP并行 - 知乎&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;p&gt;模型 loader 有些转化，看 &lt;code&gt;Qwen3ForCausalLM.packed_modules_mapping&lt;/code&gt; 和 &lt;code&gt;utils.loader&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;模型结构比较简单，到最后会回到我在 layers 中提到的几个核心算子。&lt;/p&gt;</description></item><item><title>『学习笔记』MIT6.5940-TinyML-and-Efficient-Deep-Learning-Computing</title><link>https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/</link><pubDate>Sat, 14 Jun 2025 10:17:32 +0000</pubDate><guid>https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/</guid><description>&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/cover.jpg" alt="Featured image of post 『学习笔记』MIT6.5940-TinyML-and-Efficient-Deep-Learning-Computing" /&gt;&lt;blockquote&gt;
+&lt;p&gt;封面来源：&lt;a class="link" href="https://x.com/giname93076/" target="_blank" rel="noopener"
+&gt;X(Twitter)@giname93076&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id="lec01-引入"&gt;Lec01 引入
+&lt;/h2&gt;&lt;h2 id="lec02-基础"&gt;Lec02 基础
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Fully-Connected Layer (Linear Layer)&lt;/p&gt;
+&lt;p&gt;The output neuron is connected to all input neurons.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Convolution Layer&lt;/p&gt;
+&lt;p&gt;The output neuron is connected to input neurons in the receptive field.&lt;/p&gt;
+&lt;p&gt;1D conv, 2D conv, 还要在加上 channel 的维度&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;feature map 特征图的大小变化（公式）&lt;/li&gt;
+&lt;li&gt;Padding 填充，zero padding, others (reflection, replication, constant &amp;hellip;)&lt;/li&gt;
+&lt;li&gt;receptive field 感受野（公式）&lt;/li&gt;
+&lt;li&gt;strided，在不增加深度的情况下增大感受野&lt;/li&gt;
+&lt;li&gt;grouped conv, 减少计算量，初始版本，所有的 channel_i 和 channel_o 都是相连的，参数量会减少到原来的 g 倍（组数倍）&lt;/li&gt;
+&lt;li&gt;depthsise conv, 分组卷积的极限情况，&lt;/li&gt;
+&lt;li&gt;pooling layer，得到小的特征图，对高分辨率的图，max, average&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Normalization Layer&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;BN, CNN, HW B&lt;/li&gt;
+&lt;li&gt;LN, atention, HW c&lt;/li&gt;
+&lt;li&gt;IN, HW&lt;/li&gt;
+&lt;li&gt;GN, HW g&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Activation Function&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;sigmoid, 易于量化quantize，梯度消失&lt;/li&gt;
+&lt;li&gt;ReLU, 输入为正不会梯度消失，为负死了，易于实现稀疏性sparsify，不易量化&lt;/li&gt;
+&lt;li&gt;ReLU6，最大为6的ReLU，相对易于量化&lt;/li&gt;
+&lt;li&gt;Leaky ReLU，为负，失去稀疏性&lt;/li&gt;
+&lt;li&gt;Swish，x / (1 + e&amp;amp;-x)，硬件实现困难&lt;/li&gt;
+&lt;li&gt;Hard Swish
+&lt;ul&gt;
+&lt;li&gt;0, &amp;lt;= -3&lt;/li&gt;
+&lt;li&gt;x, &amp;gt;= 3&lt;/li&gt;
+&lt;li&gt;x * (x + 3) / 6&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="lab0"&gt;Lab0
+&lt;/h2&gt;&lt;p&gt;熟悉pytorch用法&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;lr_lambda&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;step&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;interp&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;step&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;steps_per_epoch&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;num_epochs&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mf"&gt;0.3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;num_epochs&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;steps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;arange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;steps_per_epoch&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;num_epochs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;plot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;steps&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;lr_lambda&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;step&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mf"&gt;0.4&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;step&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;steps&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;scheduler&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;LambdaLR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;optimizer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lr_lambda&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="lec03---04-剪枝"&gt;Lec03 - 04 剪枝
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Pruning at different granularities&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;fine-grained / unstructured, 细粒度剪枝，灵活，剪枝比率高，不好并行化&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;coarse-grained / structured,&lt;/p&gt;
+&lt;p&gt;1. pattern-based，提供几种模式，模式旋转等方式，规律性&lt;/p&gt;
+&lt;p&gt;N2M，N:M sparsity，不如 2:4，M个为一组，至少有N个被置零。&lt;/p&gt;
+&lt;p&gt;需要用两位来表示非零，为了稀疏，需要花费额外的内存来存储索引&lt;/p&gt;
+&lt;p&gt;2. vector-level 行&lt;/p&gt;
+&lt;p&gt;3. Kernel-level 一块&lt;/p&gt;
+&lt;p&gt;4. channel-level，拿掉一整个通道，加速简单，剪枝率低。&lt;/p&gt;
+&lt;p&gt;设计不同层的稀疏度，uniform shrink 均匀压缩；xxx&lt;/p&gt;
+&lt;p&gt;如何得到最佳稀疏度分配？AMC&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pruning Criteria 剪枝标准&lt;/p&gt;
+&lt;p&gt;选最不重要的，heuristic 启发式&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;magnitude-based pruning，基于权重大小，绝对值最小的&lt;/li&gt;
+&lt;li&gt;scaling-based pruning，给每一个滤波器一个缩放参数，或者是channel，学n个参数就行，然后再去除靠近零的filter，因为Batch Normalization 中有缩放因子scaling factor，可以用来复用&lt;/li&gt;
+&lt;li&gt;second-order-based pruning，泰勒展开 - 海森矩阵 - 近似&lt;/li&gt;
+&lt;li&gt;neurons to prune，实际是去掉一行，一块核&lt;/li&gt;
+&lt;li&gt;percentage-of-zero-based pruning，用ReLU的时候，会出现零，然后看激活值的零的占比，去掉占比最高的，需要运行，得到activation tensor&lt;/li&gt;
+&lt;li&gt;regression-based pruning，&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Finding pruning ratios&lt;/p&gt;
+&lt;p&gt;大部分都是假设层与层之间是独立的&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;analyze the sensitivity of each layer，对每一层进行不同程度的剪枝，看准确率下降情况，设定降低5%~10%，画线对应过去，得到横坐标就是剪枝率&lt;/li&gt;
+&lt;li&gt;automatic pruning，自动剪枝
+&lt;ol&gt;
+&lt;li&gt;AMC: AutoML for Model Compression，RL&lt;/li&gt;
+&lt;li&gt;NetAdapt, rule-based iterative/progressive method，设定减小的延迟latency，每一层看需要剪枝多少才能达成，后面进行short-term fine-tune，在能够得到一样的结果──减小设定的延迟的情况下，选择fine-tune后准确率最高的剪枝，不断迭代，最后整体进行 long-term fune-tune&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Fine-tuning pruned neural networks&lt;/p&gt;
+&lt;p&gt;经验值，把学习率降低10~100倍&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;iterative pruning，迭代剪枝，边剪枝边微调，为了70%，经过 30% - 50% - 70%&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;System &amp;amp; Hardware Support for Sparsity&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;EiE，权重稀疏 + 激活值稀疏？&lt;/p&gt;
+&lt;p&gt;对稀疏模型的硬件加速器设计&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Tensor Core, M:N Weight Sparsity，相对规则，需要用2bit索引，乘法，用mask掩码&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;TorchSparsity &amp;amp; PointAcc，激活值稀疏，点云，稀疏卷积，不扩散，保持和输入的稀疏模式一致&lt;/p&gt;
+&lt;p&gt;自适应分组，MM &amp;amp; BMM&lt;/p&gt;
+&lt;p&gt;稀疏卷积硬件加速，归并排序找重叠部分&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="lab1"&gt;Lab1
+&lt;/h2&gt;&lt;p&gt;实现 VGG 在 Cifar-10 模型的fine-grained pruning细颗粒剪枝与channel pruning通道剪枝。&lt;/p&gt;
+&lt;p&gt;同时应用了，sensitive敏感性排序，参数量排序等实际优化剪枝的方法&lt;/p&gt;
+&lt;h2 id="lec05-量化"&gt;Lec05 量化
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;data type 数据类型，怎么样表示的&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;IEEE FP32 1符号 + 8指数 + 23尾数，single precision&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;IEEE FP16 1符号 + 5指数 + 10尾数，half precision&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Google BF16 ，1符号 + 8指数 + 7尾数，Brain Float，有时 FP32 -&amp;gt; FP16 训练不稳定，可以换成 BF 16&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Nvidia FP8 (E4M3)，1符号 + 4指数 + 3尾数，hopper&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Nvidia FP8 (E5M2)，1符号 + 5指数 + 2尾数&lt;/p&gt;
+&lt;p&gt;指数（数值范围、动态跨度大小），尾数（精度）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Nvidia INF4，1符号 + 3尾数，BlackWell&lt;/p&gt;
+&lt;p&gt;FP4 (E1M2), (E2M1), (E3M0)&lt;/p&gt;
+&lt;p&gt;E1M2 和 INT8一致，但是浪费应该 +- 0&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Quantization 量化&lt;/p&gt;
+&lt;p&gt;把输入从连续集合转换成离散数值集合的过程，之间的差异，称为量化误差，目标是最小化差异&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;存储、计算：浮点数，浮点数&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;K-Means-based Quantization，code book&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;概念&lt;/p&gt;
+&lt;p&gt;存储、计算：整数，浮点数&lt;/p&gt;
+&lt;p&gt;节省空间；计算量不变&lt;/p&gt;
+&lt;p&gt;存储的是代码本（k-means的质心）和分类的下标&lt;/p&gt;
+&lt;p&gt;N-bit quantization 量化，#parameters = M &amp;raquo; 2^N&lt;/p&gt;
+&lt;p&gt;32 bit x M = 32 M bit; N bit x M = NM bit + 32bit x 2^N = NM + 2^(N+5) bit&lt;/p&gt;
+&lt;p&gt;where 2^(N+5) bit can be ignored&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;量化后微调 fine-tune&lt;/p&gt;
+&lt;p&gt;得到梯度矩阵，把原本权重的分组，用在梯度矩阵上，求和，在权重的code book上去对应颜色的减掉 （乘学习率）&lt;/p&gt;
+&lt;p&gt;这个图有点神奇的，两个结合，但是得到了更好的结果：&lt;/p&gt;
+&lt;img src="note.assets/image-20250406022031670.png" alt="image-20250406022031670" style="zoom:50%;" /&gt;
+&lt;p&gt;先 剪枝 后 量化，降低量化工作量，降低量化误差&lt;/p&gt;
+&lt;p&gt;低精度计算单元&lt;/p&gt;
+&lt;p&gt;经验值，Conv，在4bits后，才下降明显；FC，在2bits后才下降明显；所以4bits保持不错&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;其他的编码方式&lt;/p&gt;
+&lt;p&gt;Huffman Coding 哈夫曼编码&lt;/p&gt;
+&lt;p&gt;不同的权重出现的频率不同，变长编码策略&lt;/p&gt;
+&lt;p&gt;出现多的，用短编码&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;three-stage pipeline Deep compression&lt;/p&gt;
+&lt;p&gt;深度压缩三阶段流水线&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;剪枝，减少权重数量&lt;/li&gt;
+&lt;li&gt;量化，用k-means聚类算法，权重分组&lt;/li&gt;
+&lt;li&gt;编码，huffman coding，出现频率&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start="3"&gt;
+&lt;li&gt;
+&lt;p&gt;Linear Quantization&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;概念&lt;/p&gt;
+&lt;p&gt;存储、计算：整数，整数&lt;/p&gt;
+&lt;p&gt;节省空间；减少计算量&lt;/p&gt;
+&lt;p&gt;原始参数权重 =&amp;gt;&lt;/p&gt;
+&lt;p&gt;（量化后的参数权重 - zero point (int) ）* scale(float)&lt;/p&gt;
+&lt;p&gt;r(fp) = (q(int) - z(int)) * s(fp)&lt;/p&gt;
+&lt;p&gt;q_min max 是确定的，&lt;/p&gt;
+&lt;p&gt;s = (r_max - r_min) / (q_max - q_min)&lt;/p&gt;
+&lt;p&gt;z = round(q_min - r_min / S)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;矩阵乘法运算&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406024808127.png"
+width="1956"
+height="960"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406024808127_hu_3f799dbfe6d15a6.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406024808127_hu_92e6d94c59de2d5e.png 1024w"
+loading="lazy"
+alt="image-20250406024808127"
+class="gallery-image"
+data-flex-grow="203"
+data-flex-basis="489px"
+&gt;&lt;/p&gt;
+&lt;p&gt;为了防止溢出，计算是需要类型转换&lt;/p&gt;
+&lt;p&gt;括号内后两项是常数（输入的零点，权重的量化值），包括括号外一项是常数，可以提前算&lt;/p&gt;
+&lt;p&gt;零点不变，量化权重不变&lt;/p&gt;
+&lt;p&gt;经验值，缩放因子在 (0, 1)，权重w的分布，遵循正态分布，Z_w = 0，为什么（？）&lt;/p&gt;
+&lt;p&gt;当 Z = 0，S = r_min / (q_min - Z) = - |r|_max / 2^(N-1)&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406025931073.png"
+width="1956"
+height="959"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406025931073_hu_8321b7dd25241c56.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406025931073_hu_a57f1014fd1999db.png 1024w"
+loading="lazy"
+alt="image-20250406025931073"
+class="gallery-image"
+data-flex-grow="203"
+data-flex-basis="489px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406032859998.png"
+width="2148"
+height="883"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406032859998_hu_c06488ecb2056d75.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406032859998_hu_43a5e04f2e165625.png 1024w"
+loading="lazy"
+alt="image-20250406032859998"
+class="gallery-image"
+data-flex-grow="243"
+data-flex-basis="583px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406032936357.png"
+width="1767"
+height="1006"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406032936357_hu_a63f5c0dc3bcf1f1.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406032936357_hu_5146e2601fb6b8a8.png 1024w"
+loading="lazy"
+alt="image-20250406032936357"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="421px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406033029856.png"
+width="1594"
+height="952"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406033029856_hu_dc435b33aedec7a9.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406033029856_hu_f977d1683c0a763c.png 1024w"
+loading="lazy"
+alt="image-20250406033029856"
+class="gallery-image"
+data-flex-grow="167"
+data-flex-basis="401px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="lec06-量化提高结果"&gt;Lec06 量化提高结果
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Post-Training Quantization (PTQ)&lt;/p&gt;
+&lt;p&gt;quantization granularity&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Quantization-Aware Training (QAT)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;更低的量化位数&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;binary quantization&lt;/li&gt;
+&lt;li&gt;ternary quantization&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;automatic mixed-precision quantization 混合精度量化&lt;/p&gt;
+&lt;p&gt;每一层不一定要一样的精度&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="post-training-quantization"&gt;Post-training Quantization
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Quantization Granularity&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Per-Tensor Quantization&lt;/p&gt;
+&lt;p&gt;对整个张量用一个缩放因子&lt;/p&gt;
+&lt;p&gt;大模型上效果好，小模型精度下降&lt;/p&gt;
+&lt;p&gt;原因：不同的channel的权重范围不一样&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Per-Channel Quantization&lt;/p&gt;
+&lt;p&gt;更精细，误差更小，存储更多的值&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Group Quantization，在4bit及以下，很重要&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;VS-Quant: Per-Vector Quantization&lt;/p&gt;
+&lt;p&gt;全局浮点缩放因子，局部整数缩放因子&lt;/p&gt;
+&lt;p&gt;Multi-level scaling scheme 多级缩放&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Shared Micro-exponent(MX) data type&lt;/p&gt;
+&lt;p&gt;L0 和 datatype 是共享的&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406103525669.png"
+width="2169"
+height="429"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406103525669_hu_7c885041ecad1b1a.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406103525669_hu_19a72b08ee6b4e26.png 1024w"
+loading="lazy"
+alt="image-20250406103525669"
+class="gallery-image"
+data-flex-grow="505"
+data-flex-basis="1213px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Dynamic Range Clipping 动态范围裁剪&lt;/p&gt;
+&lt;p&gt;收集激活值的统计信息，在部署模型之前&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;During Training 在训练的同时&lt;/p&gt;
+&lt;p&gt;Exponential Moving Averages (EMA)&lt;/p&gt;
+&lt;p&gt;维护 r_min, r_max，r(t) = alpha * r(t) + (1-alpha) * r(t-1)，平滑维护动态范围&lt;/p&gt;
+&lt;p&gt;（必须参与在训练）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;calibration batch 训练后&lt;/p&gt;
+&lt;p&gt;不过可以使用多训练一个batch，用calibration校准数据集，估算动态范围&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;可能不希望用真正的最大值&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;最小化 MSE 均方误差&lt;/p&gt;
+&lt;p&gt;假设是高斯分布或者拉普拉斯分布，最两端的地方数量其实少，有对应封闭解&lt;/p&gt;
+&lt;p&gt;但实际符合这样分布的输入数据很少&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;最小化损失的信息&lt;/p&gt;
+&lt;p&gt;使用 KL divergence散度来校准量化范围&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Rounding 舍入&lt;/p&gt;
+&lt;p&gt;权重之间是相关的，舍入到最近的值不一定是最好的&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Round-to-Nearest&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;AdaRound&lt;/p&gt;
+&lt;p&gt;引入可学习的 delta 然后再四舍五入&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="quantization-aware-training-qat"&gt;Quantization-Aware Training (QAT)
+&lt;/h3&gt;&lt;p&gt;量化感知训练，fine-tuning 恢复精度&lt;/p&gt;
+&lt;p&gt;K-means-based 量化，fine-tuning，更新质心即可&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;线性量化？&lt;/p&gt;
+&lt;p&gt;Simulated quantization 模拟量化，fake quantization 伪量化&lt;/p&gt;
+&lt;p&gt;在训练的时候，维护一个全精度的参数权重，能累计非常小的梯度&lt;/p&gt;
+&lt;p&gt;再加上对激活值的量化的过程&lt;/p&gt;
+&lt;p&gt;增加这两个量化节点 Q(W), Q(Y)&lt;/p&gt;
+&lt;p&gt;训练好后，全精度参数权重就被抛弃&lt;/p&gt;
+&lt;p&gt;量化激活，阶跃的，梯度是0&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Straight-Through Estimator (STE)&lt;/p&gt;
+&lt;p&gt;把weight-quantization node看成恒定函数 Y = X，传递梯度&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="binaryternary-quantization"&gt;Binary/Ternary Quantization
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;概念&lt;/p&gt;
+&lt;p&gt;Binary Weight Networks (BWN)&lt;/p&gt;
+&lt;p&gt;储存，计算：Binary/Ternary，Bit Operations&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;deterministic binarization 确定性二值化&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;stochastic binarization 随机性二值化&lt;/p&gt;
+&lt;p&gt;需要随机数生成硬件&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;精度下降大，量化误差大，再次引入缩放因子，1/n * |W|_1&lt;/p&gt;
+&lt;p&gt;啊？量化误差变化不大，精度能提升，从-21.2% 能到 0.2%？&lt;/p&gt;
+&lt;p&gt;激活值的二值化？&lt;/p&gt;
+&lt;p&gt;XNOR 同或，用他来代替乘法&lt;/p&gt;
+&lt;p&gt;默认值，0 是 -1，1 是 +2，起因也是有 XNOR 硬件计算快&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406133544987.png"
+width="2412"
+height="1092"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406133544987_hu_a213636e07f04119.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406133544987_hu_8212bc1126c7b102.png 1024w"
+loading="lazy"
+alt="image-20250406133544987"
+class="gallery-image"
+data-flex-grow="220"
+data-flex-basis="530px"
+&gt;&lt;/p&gt;
+&lt;p&gt;y = -n + popcount(W_i xnor x) &amp;laquo; 1&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Ternary Weight Networks (TWN)&lt;/p&gt;
+&lt;p&gt;和 delta 比较，得到 +1 -1 0，经验值，0.7 * E(W)&lt;/p&gt;
+&lt;p&gt;同样缩放系数&lt;/p&gt;
+&lt;p&gt;Trained Ternary Quantization (TTQ)&lt;/p&gt;
+&lt;p&gt;可以再引入，正缩放系数 Wp 与负缩放系数 Wn&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;降低精度的时候，内存是线性下降，计算量，模型表达能力，二次下降&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="mixed-precision-quantization"&gt;Mixed-Precision Quantization
+&lt;/h3&gt;&lt;p&gt;混合精度量化&lt;/p&gt;
+&lt;p&gt;设计的空间很大&lt;/p&gt;
+&lt;p&gt;Hardward-aware automated quantization with mixed precision (HAQ)&lt;/p&gt;
+&lt;h2 id="lab2"&gt;Lab2
+&lt;/h2&gt;&lt;p&gt;K-means Quantization&lt;/p&gt;
+&lt;p&gt;QAT，简化，k-means直接用权重再更新&lt;/p&gt;
+&lt;p&gt;训练/微调的时候是伪量化，部署时才是真量化&lt;/p&gt;
+&lt;p&gt;Linear Quantization&lt;/p&gt;
+&lt;h2 id="lec07-nas-神经网络结构搜索"&gt;Lec07 NAS 神经网络结构搜索
+&lt;/h2&gt;&lt;p&gt;Neural Architecture Search (NAS)&lt;/p&gt;
+&lt;p&gt;不同于前面的训练、推理的优化，这是模型结构的优化&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;ResNet，1x1 卷积，bottleneck block&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406221950762.png"
+width="2010"
+height="858"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406221950762_hu_3847943bb3f661ac.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406221950762_hu_660c8b7a3a0bc52b.png 1024w"
+loading="lazy"
+alt="image-20250406221950762"
+class="gallery-image"
+data-flex-grow="234"
+data-flex-basis="562px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ResNeXt，1x1 分出来channel，分组卷积&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406222006296.png"
+width="2421"
+height="668"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406222006296_hu_31198f564f4a78ac.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406222006296_hu_36679652dab8a1d7.png 1024w"
+loading="lazy"
+alt="image-20250406222006296"
+class="gallery-image"
+data-flex-grow="362"
+data-flex-basis="869px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;MobileNet: depthwise-separable block&lt;/p&gt;
+&lt;p&gt;空间信息depthwise和通道信息pointwise，分开区分&lt;/p&gt;
+&lt;p&gt;depthwise conv 表达能力弱&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406222411507.png"
+width="989"
+height="656"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406222411507_hu_98c0b63e8df9b085.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406222411507_hu_301b97eb076864e0.png 1024w"
+loading="lazy"
+alt="image-20250406222411507"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="361px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;MobileNetV2: inverted bottleneck block&lt;/p&gt;
+&lt;p&gt;和bottleneck相反，中间增大&lt;/p&gt;
+&lt;p&gt;激活值的特性不好&lt;/p&gt;
+&lt;p&gt;可以用来减小模型大小和计算量，但激活内存不能（训练常常是激活内存为瓶颈）&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406222421463.png"
+width="937"
+height="587"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406222421463_hu_bf8bfed1cdd6bd13.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250406222421463_hu_225b887efaaf1782.png 1024w"
+loading="lazy"
+alt="image-20250406222421463"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="383px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ShuffleNet&lt;/p&gt;
+&lt;p&gt;混洗shuffle，促进不同通道的信息的流动&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Transformer&lt;/p&gt;
+&lt;p&gt;Multi-Head Self-Attention (MHSA)&lt;/p&gt;
+&lt;p&gt;感受野一层就可以全了&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Search Space&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Cell-level search space&lt;/p&gt;
+&lt;p&gt;重复使用两种、&lt;/p&gt;
+&lt;p&gt;reduction cell 归约单元，降低分辨率&lt;/p&gt;
+&lt;p&gt;normal cell 普通单元&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Network-level search space&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;TinyML，内存更关键，在同样的内存限制下有更高FLOPs更好&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;搜索策略&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Grid search 网格搜索&lt;/p&gt;
+&lt;p&gt;需要训练，根据各个指标剔除&lt;/p&gt;
+&lt;p&gt;compound scaling 复合缩放&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Random search&lt;/p&gt;
+&lt;p&gt;同样的搜索空间，但是随机变化，快速评估&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Reinforcement learning&lt;/p&gt;
+&lt;p&gt;决策序列&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Gradient descent&lt;/p&gt;
+&lt;p&gt;指标考虑，计算选择概率&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Evoluitionary search 进化算法&lt;/p&gt;
+&lt;p&gt;变异、交叉等&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Performance Estimation Strategy&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Train from scratch&lt;/p&gt;
+&lt;p&gt;成本高&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Inherit weight&lt;/p&gt;
+&lt;p&gt;从预训练的基础上，继承权重，拆分点，保持数学等价，改变深度、宽度&lt;/p&gt;
+&lt;p&gt;降低成本 net-to-net&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250407120550665.png"
+width="2291"
+height="975"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250407120550665_hu_865a82921487f21c.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250407120550665_hu_188897bdda597596.png 1024w"
+loading="lazy"
+alt="image-20250407120550665"
+class="gallery-image"
+data-flex-grow="234"
+data-flex-basis="563px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Hypernetwork&lt;/p&gt;
+&lt;p&gt;用网络来预测网络参数，层作为node embedding&lt;/p&gt;
+&lt;p&gt;init embedding =&amp;gt; final embedding 生成权重&lt;/p&gt;
+&lt;p&gt;用来降低训练成本&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="lec08-nas-更高效"&gt;Lec08 NAS 更高效
+&lt;/h2&gt;&lt;p&gt;定制模型&lt;/p&gt;
+&lt;p&gt;前面的 NAS 太贵，选择proxy task代理任务，如更小的数据集，更少的训练轮数，FLOPs，参数量等&lt;/p&gt;
+&lt;p&gt;但是proxy task的相关性可能也没这么好。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;ProxylessNAS&lt;/p&gt;
+&lt;p&gt;路径级二值化，指走概率最高的路径&lt;/p&gt;
+&lt;p&gt;训练按概率，推理选概率最高&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412000504067.png"
+width="2271"
+height="1085"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412000504067_hu_80806bdc0fad10a.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412000504067_hu_56a41b41cff6d39d.png 1024w"
+loading="lazy"
+alt="image-20250412000504067"
+class="gallery-image"
+data-flex-grow="209"
+data-flex-basis="502px"
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;MACs 不等于真实硬件效率&lt;/p&gt;
+&lt;p&gt;需要用真实硬件，效率低？并行！太贵？用延迟预测模型『架构，延迟』，最简单的模型是查询表，算子和延迟（一层一层的测延迟，相加）&lt;/p&gt;
+&lt;p&gt;GPU会有 kernel fusion，两个kernel 可能会变成一个kernel 而变快&lt;/p&gt;
+&lt;p&gt;计算密集型的两个，通畅不能kernel fusion，如两个矩阵乘法&lt;/p&gt;
+&lt;p&gt;但矩阵乘法 + 非线性激活函数是可以的，计算密集型 + 内存密集型&lt;/p&gt;
+&lt;p&gt;GPU会在更浅、更宽的表现好，CPU在更深、更细的表现好（对自己设备来说）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每个设备都要重新训练一个太贵，Once-For-All approach&lt;/p&gt;
+&lt;p&gt;同时训练多个模型？&lt;/p&gt;
+&lt;p&gt;用一个单一模型，包含许多子网络，稀疏激活&lt;/p&gt;
+&lt;p&gt;相比之前的重新训练，现在只需要在小型网络中抽取不同的subnetwork子网络就行了&lt;/p&gt;
+&lt;p&gt;设备不同，电量不同（适应不同能耗）等&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;共享参数，不同子网络之间相互干扰？elastic 弹性的&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;卷积核大小，不采用单独不同的卷积核大小，而是选择用变换矩阵处理，只用一个 7x7 的参数就好，小的参数都在7x7的内部&lt;/li&gt;
+&lt;li&gt;深度，shrink the depth 归约深度&lt;/li&gt;
+&lt;li&gt;通道，通过不同channel的magnitude幅值，对重要性进行排序，选择前 i 个通道&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412003747820.png"
+width="2265"
+height="1223"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412003747820_hu_d3d109dc2a9fa7da.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412003747820_hu_bfd68f8dba67072b.png 1024w"
+loading="lazy"
+alt="image-20250412003747820"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="444px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Roofline Analysis 屋顶线分析&lt;/p&gt;
+&lt;p&gt;折线图，X-获得一个字节的操作数，Y-GFLOPS 浮点算力&lt;/p&gt;
+&lt;p&gt;computation is cheap; memory is expensive.&lt;/p&gt;
+&lt;p&gt;内存瓶颈，计算瓶颈。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Zero-shot NAS&lt;/p&gt;
+&lt;p&gt;原本需要需要训练才知道评估acc准确率，变成只要看它的结构，推测是否能拿到高的准确率&lt;/p&gt;
+&lt;p&gt;ZenNAS, GradSign（感觉很直觉地开始套娃）&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;ZenNAS 启发式&lt;/p&gt;
+&lt;p&gt;random weights 随机权重，粗略估计，结果不错&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;随机初始化输入，符合正态分布&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;加入小的扰动&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;再把所有的权重，映射到正态分布&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;论文指出，z = log(f(x&amp;rsquo;) - f(x))，如果模型效果好，应该对模型输入感到敏感，也就是说两个输出的差值应该大&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;+ batch normalization variance 批归一化（另一种启发式）&lt;/p&gt;
+&lt;p&gt;对于不同的批次，方差大好&lt;/p&gt;
+&lt;p&gt;计算每层的方差均值，加起来，希望这个方差越大越好&lt;/p&gt;
+&lt;p&gt;这样，不同的输出，容易得到不同的结果&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;GradSign&lt;/p&gt;
+&lt;p&gt;好的模型会非常密集的sample-wise样本级局部最小值，两个局部最小值应该非常接近&lt;/p&gt;
+&lt;p&gt;在图中，绿色是梯度符号相同的部分，好的模型绿色部分应该更大，红色部分小&lt;/p&gt;
+&lt;p&gt;在初始点附近，随机选择些点，计数梯度符号相同的数量。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412010255963.png"
+width="2558"
+height="1075"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412010255963_hu_a00edb8bda7c411f.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412010255963_hu_9ad5294ac72016f6.png 1024w"
+loading="lazy"
+alt="image-20250412010255963"
+class="gallery-image"
+data-flex-grow="237"
+data-flex-basis="571px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Neural-hardware achitecture co-search，设计硬件&lt;/p&gt;
+&lt;p&gt;不仅搜索神经网络架构，也搜索加速器架构&lt;/p&gt;
+&lt;p&gt;硬件结构上会有些「非数值参数」需要设计，如连接性&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;temporal mapping 时间映射&lt;/p&gt;
+&lt;p&gt;顺序处理&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;spatial parallelism 空间映射&lt;/p&gt;
+&lt;p&gt;空间并行处理&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;两种 embedding，选择并行维度与顺序维度，分别按照重要性排序&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412031738639.png"
+width="2032"
+height="1183"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412031738639_hu_61e7b9a6cdb26569.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412031738639_hu_1a1d55c3aba128ac.png 1024w"
+loading="lazy"
+alt="image-20250412031738639"
+class="gallery-image"
+data-flex-grow="171"
+data-flex-basis="412px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;应用&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Once-for-ALL for Transformer and NLP&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;HAT&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;3D建模&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;GAN&lt;/p&gt;
+&lt;p&gt;小模型预览结果，大模型输出结果&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pose estimation&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Quantum AI 量子&lt;/p&gt;
+&lt;p&gt;搜索最佳电路门&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="lec09-知识蒸馏-kd"&gt;Lec09 知识蒸馏 KD
+&lt;/h2&gt;&lt;p&gt;Temperature 温度，高的温度，不同的区别越小，smooth，T在softmax的x =&amp;gt; x / T&lt;/p&gt;
+&lt;h3 id="匹配对齐什么"&gt;匹配/对齐什么？
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;对齐中间权重 matching intermediate weights&lt;/p&gt;
+&lt;p&gt;难点，维度不一样低秩近似/全连接/&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;中间特征 intermediate future / activation matching&lt;/p&gt;
+&lt;p&gt;激活值，中间的结果，也是相似的&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;梯度 Gradients&lt;/p&gt;
+&lt;p&gt;计算权重梯度或计算激活值梯度匹配&lt;/p&gt;
+&lt;p&gt;表现好的模型的注意力图是相似的&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;稀疏模式 sparsity patterns&lt;/p&gt;
+&lt;p&gt;来源于激活函数 ReLU 例如。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Relational information&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;不同的层之间 C_in x C_out&lt;/li&gt;
+&lt;li&gt;不同样本之间，同一个模型，不同样本输入的不同输出之间的关系&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="online-distillation-在线蒸馏"&gt;online distillation 在线蒸馏
+&lt;/h3&gt;&lt;h4 id="self-distillation"&gt;self-distillation
+&lt;/h4&gt;&lt;p&gt;教师模型和学生模型架构一致&lt;/p&gt;
+&lt;p&gt;教师模型正常训练，学生模型用教师模型的交叉熵概率来训。&lt;/p&gt;
+&lt;p&gt;用前一步的作为教师模型，后一个以前一个为结果，&lt;/p&gt;
+&lt;p&gt;最后把所有模型ensemble，得一个更好的结果&lt;/p&gt;
+&lt;h4 id="deep-mutual-learning-互学习-dml"&gt;Deep Mutual Learning 互学习 DML
+&lt;/h4&gt;&lt;p&gt;两个不一定相同的模型架构，互为师生，N1训练时，N2指导，反之亦然。&lt;/p&gt;
+&lt;p&gt;真实标签的交叉熵误差 + KL散度 两者结果&lt;/p&gt;
+&lt;p&gt;不需要预先训练，教师模型不一定要比学生模型大。&lt;/p&gt;
+&lt;h5 id="combined-前面两种方法结合-be-your-own-teacher-deep-supervision--distillation"&gt;Combined 前面两种方法结合 Be Your Own Teacher: deep supervision + distillation
+&lt;/h5&gt;&lt;p&gt;用深层网络输出，作为浅层网络的教师，来自统一模型的不同部分。&lt;/p&gt;
+&lt;p&gt;蒸馏损失，在对真实标签的结果上，教师模型比学生模型的效果好时才能作为教师&lt;/p&gt;
+&lt;p&gt;物体识别，也可以看成（区域）分类&lt;/p&gt;
+&lt;h5 id="增强小模型的效果"&gt;增强小模型的效果
+&lt;/h5&gt;&lt;p&gt;容易过拟合，做数据增强 cut out, mixup, dropout&lt;/p&gt;
+&lt;p&gt;容易欠拟合，做网络增强，NetAug，基础模型扩展&lt;/p&gt;
+&lt;h2 id="lec10-mcunet-tinyml"&gt;Lec10 MCUnet TinyML
+&lt;/h2&gt;&lt;h3 id="瓶颈"&gt;瓶颈
+&lt;/h3&gt;&lt;p&gt;参数数量，峰值激活，与，内存&lt;/p&gt;
+&lt;h3 id="tinynas"&gt;TinyNAS
+&lt;/h3&gt;&lt;p&gt;Resolution 分辨率 和 Width Multipler 宽度调节因子&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Automated search space optimization 自动搜索空间优化&lt;/p&gt;
+&lt;p&gt;分析满足限制的模型的FLOPs分布，在各自的搜索空间中，高FLOPs=&amp;gt;高模型能力=&amp;gt;更可能高ACC&lt;/p&gt;
+&lt;p&gt;在同样的内存限制下，能有更高的运算量的设计空间更好&lt;/p&gt;
+&lt;p&gt;Flash 存储权重，SRAM 存储激活值&lt;/p&gt;
+&lt;p&gt;（最好的配比）&lt;/p&gt;
+&lt;p&gt;Flash↑，宽度调节因子（通道数）↑，分辨率↓，否则在 SRAM 中存不下 分辨率 x 通道数&lt;/p&gt;
+&lt;p&gt;SRAM↑，宽度调节因子基本不变，分辨率↑&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Resource-constrained model specialization 资源有限的模型特化&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;层的内存的峰值最小&lt;/p&gt;
+&lt;h4 id="patch-based-inference-分块"&gt;Patch-based Inference 分块
+&lt;/h4&gt;&lt;p&gt;不再是 per-layer 整层输入输出，改为 per-patch，分成几部分输入输出&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;坏处，增加了latency延迟，限制了并行能力（不过微控制器的并行能力是弱的）&lt;/p&gt;
+&lt;p&gt;卷积的重复计算，感受野，多了重叠的部分。感受野扩展&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;可以调整（减小早期的感受野，1x1，减少分块阶段的卷积层），总的需要不一样，在后面增加回卷积层，消除影响&lt;/p&gt;
+&lt;p&gt;早期用 分块推理，后期降下来，是正常推理&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412221709215.png"
+width="1942"
+height="1064"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412221709215_hu_d5ceb53149cb9134.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250412221709215_hu_b31c4b62f807e858.png 1024w"
+loading="lazy"
+alt="image-20250412221709215"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="438px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;再把这种分块推理的方式，放入搜索空间，推理调度&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;可以支持更大的输入分辨率&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="应用"&gt;应用
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Tiny Vision&lt;/p&gt;
+&lt;p&gt;classification, visual wake words，检测任务 分辨率敏感（相比分类），所以分块推理，能使得分辨率提高&lt;/p&gt;
+&lt;p&gt;on-device training&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Tiny Audio&lt;/p&gt;
+&lt;p&gt;二维语音，（时间，频率）功率，conv，相邻的频率、时间关联&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Tiny time series/anomaly detection 微型时间序列异常检测&lt;/p&gt;
+&lt;p&gt;异常事件、产品（autoencoder，符合正常分布，重建误差小，不符合，误差大）&lt;/p&gt;
+&lt;p&gt;VLA，多个任务&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="lec11-tinyengine"&gt;Lec11 TinyEngine
+&lt;/h2&gt;&lt;h3 id="loop-optimization-循环优化"&gt;Loop optimization 循环优化
+&lt;/h3&gt;&lt;h4 id="loop-reordering-循环重排"&gt;Loop reordering 循环重排
+&lt;/h4&gt;&lt;p&gt;让访问内存更符合 cache line，连续访问&lt;/p&gt;
+&lt;p&gt;矩阵乘法 i, j, k =&amp;gt; i, k, j，虽然输出访问变得不连续，但是还是会被cover掉&lt;/p&gt;
+&lt;h4 id="loop-tiling-循环分块"&gt;Loop tiling 循环分块
+&lt;/h4&gt;&lt;p&gt;内存访问就 N*N =&amp;gt; N*Tiling_size =&amp;gt; Tiling_size * Tiling_size&lt;/p&gt;
+&lt;p&gt;内存局部性，降低缓存未命中&lt;/p&gt;
+&lt;p&gt;一般循环内层往外吧（？）&lt;/p&gt;
+&lt;p&gt;for ti, N block&lt;/p&gt;
+&lt;p&gt;​ for ti, ti + block&lt;/p&gt;
+&lt;h5 id="两层缓存"&gt;两层缓存？
+&lt;/h5&gt;&lt;p&gt;设置第二层分块大小，多层次的分块 Tile2，和L2 cache 大小设计&lt;/p&gt;
+&lt;h3 id="loop-unrolling-循环展开"&gt;Loop unrolling 循环展开
+&lt;/h3&gt;&lt;p&gt;分支预测，for 条件判定，循环展开，减少分支；但会增加重复代码，增加二进制文件大小&lt;/p&gt;
+&lt;h3 id="simd-single-instruction-multiple-data-programming-单指令多数据"&gt;SIMD (single instruction, multiple data) programming 单指令多数据
+&lt;/h3&gt;&lt;h4 id="isa-instruction-set-architecture-指令集架构"&gt;ISA (Instruction set architecture) 指令集架构
+&lt;/h4&gt;&lt;h5 id="cisc-complex-instruction-set-computer-复杂指令集计算机"&gt;CISC (Complex Instruction Set Computer) 复杂指令集计算机
+&lt;/h5&gt;&lt;p&gt;Intel x86&lt;/p&gt;
+&lt;p&gt;并行处理范式&lt;/p&gt;
+&lt;p&gt;Vector Register，向量寄存器&lt;/p&gt;
+&lt;p&gt;Vector Operation，向量运算&lt;/p&gt;
+&lt;p&gt;提高吞吐量，速度&lt;/p&gt;
+&lt;h5 id="risc-reduced-instruction-set-computer-精简指令计算机"&gt;RISC (Reduced Instruction Set Computer) 精简指令计算机
+&lt;/h5&gt;&lt;p&gt;Arm, RISC-V&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415131811589.png"
+width="2487"
+height="1203"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415131811589_hu_bfac195046a81881.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415131811589_hu_27822bc7dcd050c4.png 1024w"
+loading="lazy"
+alt="image-20250415131811589"
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="496px"
+&gt;&lt;/p&gt;
+&lt;h3 id="multithreading-多线程"&gt;Multithreading 多线程
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;pthread_t&lt;/span&gt; &lt;span class="n"&gt;threads&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ThreadData&lt;/span&gt; &lt;span class="n"&gt;thread_data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;pthread_create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;threads&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="k"&gt;nullptr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;thread_data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;pthread_join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;threads&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="k"&gt;nullptr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="openmp"&gt;OpenMP
+&lt;/h4&gt;&lt;p&gt;编译器指令&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;omp_set_num_threads&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#pragma omp parallel for
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;&lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="cuda"&gt;CUDA
+&lt;/h4&gt;&lt;p&gt;MMA 矩阵累加&lt;/p&gt;
+&lt;h3 id="inference-optimization"&gt;Inference Optimization
+&lt;/h3&gt;&lt;h4 id="image-to-column-im2col-convolution"&gt;Image to Column (Im2col) convolution
+&lt;/h4&gt;&lt;h4 id="in-place-depth-wise-convolution"&gt;In-place depth-wise convolution
+&lt;/h4&gt;&lt;h4 id="nhwc-for-point-wise-convolution-nchw-for-depth-wise-convolution"&gt;NHWC for point-wise convolution, NCHW for depth-wise convolution
+&lt;/h4&gt;&lt;h4 id="winograd-convolution"&gt;Winograd convolution
+&lt;/h4&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415144734112.png"
+width="1382"
+height="867"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415144734112_hu_fc3707c01f873052.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415144734112_hu_95f7a35d306d4505.png 1024w"
+loading="lazy"
+alt="image-20250415144734112"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="382px"
+&gt;&lt;/p&gt;
+&lt;h2 id="lec12-transfomer--llm"&gt;Lec12 Transfomer &amp;amp; LLM
+&lt;/h2&gt;&lt;h3 id="transformer-基础"&gt;Transformer 基础
+&lt;/h3&gt;&lt;p&gt;&amp;hellip;&lt;/p&gt;
+&lt;h3 id="transfomer-design-variants-变体"&gt;Transfomer Design Variants 变体
+&lt;/h3&gt;&lt;h4 id="encoder-decoder-t5"&gt;Encoder-Decoder (T5)
+&lt;/h4&gt;&lt;h4 id="encoder-only-bert-bidirectional-encoder-representations-from-transformers"&gt;Encoder-only (BERT, Bidirectional Encoder Representations from Transformers)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;Masked Language Model (MLM)&lt;/li&gt;
+&lt;li&gt;Next Sentence Prediction (NSP)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="decoder-only-gpt-generative-pre-trained-transformer"&gt;Decoder-only (GPT, Generative Pre-trained Transformer)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;Next word prediction&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="absoluterelative-positional-encoding"&gt;Absolute/Relative Positional Encoding
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;绝对位置编码&lt;/p&gt;
+&lt;p&gt;嵌入输入中&lt;/p&gt;
+&lt;p&gt;贯穿整个Transfomer过程&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;相对位置编码&lt;/p&gt;
+&lt;p&gt;只在注意力机制的部分&lt;/p&gt;
+&lt;p&gt;能处理更长的上下文，train short, test long&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;ALiBi (Attention with Linear Biases)&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415165626626.png"
+width="2434"
+height="1096"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415165626626_hu_a3a80bca31e310eb.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415165626626_hu_cce4a7c5cdd601d8.png 1024w"
+loading="lazy"
+alt="image-20250415165626626"
+class="gallery-image"
+data-flex-grow="222"
+data-flex-basis="532px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;RoPE (Rotary Positional Embedding)&lt;/p&gt;
+&lt;p&gt;LLaMa&lt;/p&gt;
+&lt;p&gt;把长的嵌入转为二维的形式，(d1, d2)&lt;/p&gt;
+&lt;p&gt;interpolating 插值，当 m 翻倍，为了保持还能正常表示，theta / 2&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415165948390.png"
+width="2482"
+height="1175"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415165948390_hu_b0c9e7b064708d70.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415165948390_hu_4cd97e10a119947b.png 1024w"
+loading="lazy"
+alt="image-20250415165948390"
+class="gallery-image"
+data-flex-grow="211"
+data-flex-basis="506px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="kv-cache-optimization"&gt;KV cache optimization
+&lt;/h3&gt;&lt;p&gt;需要 KV，才能在 Q 的时候，算出对应的 注意力&lt;/p&gt;
+&lt;p&gt;新token进来，没有 KV cache，则需要重算 KV？？？&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416021940775.png"
+width="2060"
+height="836"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416021940775_hu_276de9e596bb8ffc.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416021940775_hu_b44a45eb58ddff04.png 1024w"
+loading="lazy"
+alt="image-20250416021940775"
+class="gallery-image"
+data-flex-grow="246"
+data-flex-basis="591px"
+&gt;&lt;/p&gt;
+&lt;h4 id="multi-head-attention-mha"&gt;Multi-Head Attention (MHA)
+&lt;/h4&gt;&lt;p&gt;n heads for query, n heads for key/value&lt;/p&gt;
+&lt;p&gt;KV cache 大小会乘以 n_kv，太大&lt;/p&gt;
+&lt;h4 id="multi-query-attention-mqa"&gt;Multi-Query Attention (MQA)
+&lt;/h4&gt;&lt;p&gt;n heads for query, 1 head for key/value&lt;/p&gt;
+&lt;p&gt;会大大削弱模型能力&lt;/p&gt;
+&lt;h4 id="grouped-query-attention-gqa"&gt;Grouped-Query Attention (GQA)
+&lt;/h4&gt;&lt;p&gt;折中&lt;/p&gt;
+&lt;p&gt;n heads for query, G heads for key/value (typically G = N/8)&lt;/p&gt;
+&lt;p&gt;在大模型下，准确率和 MHA 差不多&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415185619993.png"
+width="1511"
+height="650"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415185619993_hu_cdbe65e25534f891.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415185619993_hu_7c7dd0e81fdd934.png 1024w"
+loading="lazy"
+alt="image-20250415185619993"
+class="gallery-image"
+data-flex-grow="232"
+data-flex-basis="557px"
+&gt;&lt;/p&gt;
+&lt;h3 id="ffn--swiglu-gated-linear-units"&gt;FFN =&amp;gt; SwiGLU (Gated Linear Units)
+&lt;/h3&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415190529371.png"
+width="2478"
+height="1256"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415190529371_hu_6d748348cb105390.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415190529371_hu_bc9c8a894461c46c.png 1024w"
+loading="lazy"
+alt="image-20250415190529371"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="473px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415190557019.png"
+width="1671"
+height="636"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415190557019_hu_fbc13de481d682a9.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415190557019_hu_ed46eb22937941b9.png 1024w"
+loading="lazy"
+alt="image-20250415190557019"
+class="gallery-image"
+data-flex-grow="262"
+data-flex-basis="630px"
+&gt;&lt;/p&gt;
+&lt;h3 id="llm"&gt;LLM
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;LLaMa&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;LLaMa&lt;/p&gt;
+&lt;p&gt;Decoder-only, Pre-norm,SwiGLU(swish,gatedlinearunits), rotary positional embedding (RoPE)&lt;/p&gt;
+&lt;p&gt;7B model_d 4096, 32 heads&lt;/p&gt;
+&lt;p&gt;65B model_d 8192, 64 heads&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;LLaMa 2&lt;/p&gt;
+&lt;p&gt;上下文更长 2k =&amp;gt; 4k&lt;/p&gt;
+&lt;p&gt;GQA 分组询问注意力&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;LLaMa 3&lt;/p&gt;
+&lt;p&gt;多语言 token&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Mistral-7B&lt;/p&gt;
+&lt;p&gt;滑动窗口注意力机制，扩展上下文&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;数据和模型参数一起变大。&lt;/p&gt;
+&lt;h2 id="lec13-llm-deployment-techniques"&gt;Lec13 LLM Deployment Techniques
+&lt;/h2&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416154932613.png"
+width="1500"
+height="405"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416154932613_hu_4629dca5a5e3d1f6.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416154932613_hu_a89f0ce5220f84ae.png 1024w"
+loading="lazy"
+alt="image-20250416154932613"
+class="gallery-image"
+data-flex-grow="370"
+data-flex-basis="888px"
+&gt;&lt;/p&gt;
+&lt;h3 id="quantization"&gt;Quantization
+&lt;/h3&gt;&lt;h4 id="weight-activation-quantization-smoothquant"&gt;Weight-Activation Quantization: SmoothQuant
+&lt;/h4&gt;&lt;p&gt;前面提到的哪些朴素的量化方法对LLM，其实效果不好&lt;/p&gt;
+&lt;p&gt;原因：outliers 异常值，某些激活值很大，破坏精度&lt;/p&gt;
+&lt;p&gt;激活值，个别异常高的channel，蓝色部分将被舍入零；&lt;/p&gt;
+&lt;p&gt;权重值，一般都比较小，ez。&lt;/p&gt;
+&lt;p&gt;取舍，smooth bond：&lt;/p&gt;
+&lt;p&gt;考虑到权重和激活值是线性矩阵运算，所以，比如激活值乘 0.1，权重乘 10，结果不变。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415203628745.png"
+width="2357"
+height="716"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415203628745_hu_c8019d96b6258a98.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415203628745_hu_7301060d77b88839.png 1024w"
+loading="lazy"
+alt="image-20250415203628745"
+class="gallery-image"
+data-flex-grow="329"
+data-flex-basis="790px"
+&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Calibration Stage&lt;/p&gt;
+&lt;p&gt;找到激活值 col_max，找到权重 row_max，相除得到缩放因子 s = \sqrt(col_max / row_max)&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415204653698.png"
+width="1846"
+height="740"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415204653698_hu_8ed85037706828ec.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415204653698_hu_27d9d8bdc794959c.png 1024w"
+loading="lazy"
+alt="image-20250415204653698"
+class="gallery-image"
+data-flex-grow="249"
+data-flex-basis="598px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Smoothing Stage&lt;/p&gt;
+&lt;p&gt;应用缩放因子&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415204804801.png"
+width="2009"
+height="997"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415204804801_hu_cb8f097f8318385e.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415204804801_hu_2d84a295e22df8c5.png 1024w"
+loading="lazy"
+alt="image-20250415204804801"
+class="gallery-image"
+data-flex-grow="201"
+data-flex-basis="483px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Inference (deployed model) 部署&lt;/p&gt;
+&lt;p&gt;没有再缩放，编译的时候处理了（fuse 到前一层）&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;为什么单节点比分布式好，communication overhead&lt;/p&gt;
+&lt;h4 id="weight-only-quantization-awq-and-tinychat"&gt;Weight-Only Quantization: AWQ and TinyChat
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;W4A16&lt;/strong&gt; for Single-batch single user server&lt;/p&gt;
+&lt;p&gt;单用户，就是 batchsize 是 1，计算瓶颈是 weight&lt;/p&gt;
+&lt;p&gt;weight在边缘设备的LLM推理中的影响&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;上下文与生成阶段，生成阶段是瓶颈&lt;/li&gt;
+&lt;li&gt;生成阶段受限于内存通讯&lt;/li&gt;
+&lt;li&gt;weight的占用内存的大小，比activation大多了&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415213903708.png"
+width="2480"
+height="912"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415213903708_hu_4317370f47500f48.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415213903708_hu_c7e14618b1682f9d.png 1024w"
+loading="lazy"
+alt="image-20250415213903708"
+class="gallery-image"
+data-flex-grow="271"
+data-flex-basis="652px"
+&gt;&lt;/p&gt;
+&lt;h5 id="awq-activation-aware-weight-quantization"&gt;AWQ: Activation-aware Weight Quantization
+&lt;/h5&gt;&lt;p&gt;传统 RTN（Round To Nearest）FP16 =&amp;gt; INT3，clip()，降低很多。&lt;/p&gt;
+&lt;p&gt;？？？&lt;/p&gt;
+&lt;p&gt;只要保留一行，即1%channel，的关键权重，幻觉显著下降！&lt;/p&gt;
+&lt;p&gt;怎么找出这 1% 呢？&lt;/p&gt;
+&lt;p&gt;在量化权重的过程中，不关注权重的情况，而是关注激活值的情况！&lt;/p&gt;
+&lt;p&gt;因为下一层的激活值，是由权重与上一层的激活值相乘得出，所以，激活值大的，保留，&lt;/p&gt;
+&lt;p&gt;也是前面说的少量的异常值outlier&lt;/p&gt;
+&lt;p&gt;但是同个张量中出现fp16 和 int8，很难实现，会引入&lt;strong&gt;混合精度&lt;/strong&gt;的计算，变得麻烦。&lt;/p&gt;
+&lt;p&gt;其实是不必要引入的，借用前面SmoothQuant中用到的方法，把权重的敏感性转给我们保持不变的激活值&lt;/p&gt;
+&lt;p&gt;相当于增加一位的精度&lt;/p&gt;
+&lt;p&gt;不需要反向传播，不需要基于回归的方法，只需要 calibration 校准数据集。&lt;/p&gt;
+&lt;p&gt;（Perplexity 困惑度 是衡量语言模型质量的一个指标，和真是输出的比较，越小越好）&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415215452151.png"
+width="987"
+height="735"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415215452151_hu_abd5625cd096b908.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250415215452151_hu_9f49148ab4a7987d.png 1024w"
+loading="lazy"
+alt="image-20250415215452151"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="322px"
+&gt;&lt;/p&gt;
+&lt;h5 id="tinychat-llm-inference-engine-on-edge"&gt;TinyChat: LLM Inference Engine on Edge
+&lt;/h5&gt;&lt;h6 id="hardware-aware-packing"&gt;Hardware-aware packing
+&lt;/h6&gt;&lt;p&gt;怎么解决 4bit 和 1字节 对不齐的问题？&lt;/p&gt;
+&lt;p&gt;改变存储方式，为了更好地解码，交错存储&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416005829003.png"
+width="2120"
+height="1223"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416005829003_hu_e53f3da8838e0869.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416005829003_hu_9d95431e6f77e382.png 1024w"
+loading="lazy"
+alt="image-20250416005829003"
+class="gallery-image"
+data-flex-grow="173"
+data-flex-basis="416px"
+&gt;&lt;/p&gt;
+&lt;h6 id="kernel-fusion"&gt;Kernel Fusion
+&lt;/h6&gt;&lt;p&gt;Kernel call 很贵，做融合，BMM，批量矩阵乘法&lt;/p&gt;
+&lt;h4 id="qserve-w4a8kv4"&gt;QServe (W4A8KV4)
+&lt;/h4&gt;&lt;h5 id="背景-融合两者的优点"&gt;背景-融合两者的优点
+&lt;/h5&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416011051694.png"
+width="2262"
+height="1186"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416011051694_hu_1e4762963fa833ea.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416011051694_hu_11f4bc1cc52011e5.png 1024w"
+loading="lazy"
+alt="image-20250416011051694"
+class="gallery-image"
+data-flex-grow="190"
+data-flex-basis="457px"
+&gt;&lt;/p&gt;
+&lt;h5 id="smoothattention"&gt;SmoothAttention
+&lt;/h5&gt;&lt;p&gt;类似与SmoothQuant，Q 是平滑的，K 会有某些通道有outlier异常值&lt;/p&gt;
+&lt;h5 id="反量化由于溢出可能要调整计算方式"&gt;反量化，由于溢出可能要调整计算方式
+&lt;/h5&gt;&lt;p&gt;改变位数之后，负数的话，乘一个数，可能下溢出了，所以可以先乘再加减&lt;/p&gt;
+&lt;p&gt;先缩放还是先加减。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416015019363.png"
+width="2553"
+height="1068"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416015019363_hu_bd68e0615a9d4888.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416015019363_hu_4bc965debe1f9f59.png 1024w"
+loading="lazy"
+alt="image-20250416015019363"
+class="gallery-image"
+data-flex-grow="239"
+data-flex-basis="573px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416015228315.png"
+width="2280"
+height="841"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416015228315_hu_bb97ce608897171f.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416015228315_hu_f49349b7f1960417.png 1024w"
+loading="lazy"
+alt="image-20250416015228315"
+class="gallery-image"
+data-flex-grow="271"
+data-flex-basis="650px"
+&gt;&lt;/p&gt;
+&lt;h3 id="pruning--sparsity"&gt;Pruning &amp;amp; Sparsity
+&lt;/h3&gt;&lt;h4 id="weight-sparsity-wanda"&gt;Weight Sparsity: Wanda
+&lt;/h4&gt;&lt;p&gt;传统：看权重本身magnitude&lt;/p&gt;
+&lt;p&gt;Wanda：关注最终激活值小的，对应的权重&lt;/p&gt;
+&lt;h4 id="contextual-sparsity"&gt;Contextual Sparsity
+&lt;/h4&gt;&lt;h5 id="dejavu-input-dependednt-sparsity"&gt;DejaVu (input dependednt sparsity)
+&lt;/h5&gt;&lt;p&gt;？&lt;/p&gt;
+&lt;h5 id="moe-mixture-of-experts"&gt;MoE (Mixture-of-Experts)
+&lt;/h5&gt;&lt;p&gt;提高总参数，不提高推理代价&lt;/p&gt;
+&lt;p&gt;router路由器分配workload工作&lt;/p&gt;
+&lt;h6 id="路由机制"&gt;路由机制
+&lt;/h6&gt;&lt;p&gt;token选择expert&lt;/p&gt;
+&lt;p&gt;expert选择token&lt;/p&gt;
+&lt;p&gt;全局expert分配&lt;/p&gt;
+&lt;h4 id="attention-sparsity"&gt;Attention Sparsity
+&lt;/h4&gt;&lt;h5 id="spatten-token-pruning--head-pruning"&gt;SpAtten (token pruning &amp;amp; head pruning)
+&lt;/h5&gt;&lt;p&gt;Q-K，K列的attention sum，大 = 重要&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416020822222.png"
+width="1109"
+height="746"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416020822222_hu_c41a80c45078338.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416020822222_hu_ea14401ca7bf8051.png 1024w"
+loading="lazy"
+alt="image-20250416020822222"
+class="gallery-image"
+data-flex-grow="148"
+data-flex-basis="356px"
+&gt;&lt;/p&gt;
+&lt;h5 id="h2o-token-pruning-in-kv-cache"&gt;H2O: token pruning in KV cache
+&lt;/h5&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416021040545.png"
+width="1175"
+height="461"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416021040545_hu_b7e60311140dc4b4.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416021040545_hu_ea227e730cbd177c.png 1024w"
+loading="lazy"
+alt="image-20250416021040545"
+class="gallery-image"
+data-flex-grow="254"
+data-flex-basis="611px"
+&gt;&lt;/p&gt;
+&lt;h3 id="llm-serving-systems"&gt;LLM Serving Systems
+&lt;/h3&gt;&lt;h4 id="important-metrics-指标-for-llm-serving"&gt;Important Metrics 指标 for LLM Serving
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;Time To First Token (TTFT)，响应速度，实时互动&lt;/li&gt;
+&lt;li&gt;Time Per Output Token (TPOT)，每个token所需时间 100 ms/token, 10 token/s&lt;/li&gt;
+&lt;li&gt;Latency = (TTFT) + (TPOT * number of token to be generated)，总延迟&lt;/li&gt;
+&lt;li&gt;Throughput，对所有请求的每秒产生的 token 数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="优化目标"&gt;优化目标
+&lt;/h4&gt;&lt;p&gt;最小 TTFT，最大 throughput，减小 TPOT，后两个需要 tradeoff，常矛盾&lt;/p&gt;
+&lt;p&gt;常用启发式：输出长度，输入长度，模型大小&lt;/p&gt;
+&lt;h4 id="paged-attention-vllm"&gt;Paged Attention (vLLM)
+&lt;/h4&gt;&lt;h5 id="kv-cache--的资源浪费"&gt;KV Cache 的资源浪费
+&lt;/h5&gt;&lt;ol&gt;
+&lt;li&gt;Internal fragmentation：内部碎片化，由于不知道输出长度，过度分配空间&lt;/li&gt;
+&lt;li&gt;Reservation：预留碎片化，现在步骤没用，未来会用&lt;/li&gt;
+&lt;li&gt;External fragmentation：多个request，不知道sequence长度，要空出位置&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416022438962.png"
+width="2560"
+height="544"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416022438962_hu_dc7a22d451f3a388.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416022438962_hu_30335e7ea2f2f239.png 1024w"
+loading="lazy"
+alt="image-20250416022438962"
+class="gallery-image"
+data-flex-grow="470"
+data-flex-basis="1129px"
+&gt;&lt;/p&gt;
+&lt;h5 id="解决--pagedattention的好处"&gt;解决 / PagedAttention的好处
+&lt;/h5&gt;&lt;p&gt;由 OS 操作系统的 virtual memory and paging 虚拟内存和分页机制启发&lt;/p&gt;
+&lt;p&gt;交替使用 KV blocks&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;解决 &lt;strong&gt;KV-cache&lt;/strong&gt; 内存碎片化，支持&lt;strong&gt;多访问&lt;/strong&gt; requests&lt;/li&gt;
+&lt;li&gt;动态块映射 使得 能够 &lt;strong&gt;共享 Prompt&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416022728222.png"
+width="2453"
+height="1014"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416022728222_hu_a1e4d8e3ac93974c.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416022728222_hu_ad9e4bcc996de33d.png 1024w"
+loading="lazy"
+alt="image-20250416022728222"
+class="gallery-image"
+data-flex-grow="241"
+data-flex-basis="580px"
+&gt;&lt;/p&gt;
+&lt;h4 id="flashattention"&gt;FlashAttention
+&lt;/h4&gt;&lt;p&gt;生成attention注意力矩阵时，NxN 很大&lt;/p&gt;
+&lt;p&gt;tiling + kernel fusion&lt;/p&gt;
+&lt;h4 id="speculative-decoding-推测性解码"&gt;Speculative Decoding 推测性解码
+&lt;/h4&gt;&lt;p&gt;小模型 Draft model，生成&lt;/p&gt;
+&lt;p&gt;大模型 Target model，验证&lt;/p&gt;
+&lt;p&gt;小模型自回归生成，大模型并行验证（因为大模型运行比较贵）&lt;/p&gt;
+&lt;p&gt;纠正，重新生成&lt;/p&gt;
+&lt;h4 id="batching"&gt;Batching
+&lt;/h4&gt;&lt;p&gt;增加吞吐量&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;no batching，不做批处理&lt;/li&gt;
+&lt;li&gt;static batching，静态批处理，固定批次大小&lt;/li&gt;
+&lt;li&gt;dynamic batching，动态批处理，批次大小到了，或者时间到了&lt;/li&gt;
+&lt;li&gt;continuous batch (in-flight batch)，连续批处理，token级别&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="lec-14-llm-post-training"&gt;Lec 14 LLM Post-Training
+&lt;/h2&gt;&lt;h3 id="llm-fine-tuning-微调"&gt;LLM Fine-Tuning 微调
+&lt;/h3&gt;&lt;h4 id="supervised-fine-tuning-sft-监督微调"&gt;Supervised Fine-Tuning (SFT) 监督微调
+&lt;/h4&gt;&lt;p&gt;对齐人类价值观/偏好，比如说话更加友好，更加善解人意&lt;/p&gt;
+&lt;p&gt;helpfulness &amp;amp; safety&lt;/p&gt;
+&lt;h4 id="reinforcement-learning-from-human-feedback-rlhf-基于人类反馈的强化学习"&gt;Reinforcement Learning from Human Feedback (RLHF) 基于人类反馈的强化学习
+&lt;/h4&gt;&lt;p&gt;BLEU、ROUGE的测试，客观答案，RLHF 更加主观，人类定义的创造性、可信的、有用的&lt;/p&gt;
+&lt;h5 id="朴素的"&gt;朴素的
+&lt;/h5&gt;&lt;p&gt;奖励模型训练──数据生成结果，人类对不同结果排序，比较函数，排序前的大大大于后的&lt;/p&gt;
+&lt;p&gt;两方面&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;调整后的模型，不会过拟合奖励模型，和原始模型的内容不能偏差过多&lt;/li&gt;
+&lt;li&gt;奖励模型下的结果不错，符合人类偏好&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;三个模型，两个损失值&lt;/p&gt;
+&lt;h5 id="direct-preference-optimization-dpo-直接偏好优化"&gt;Direct Preference Optimization (DPO) 直接偏好优化
+&lt;/h5&gt;&lt;p&gt;简化流程，转化为单流程的 SFT 任务&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416123850866.png"
+width="1516"
+height="290"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416123850866_hu_297eae2994f1aebf.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250416123850866_hu_c911b00705af73b3.png 1024w"
+loading="lazy"
+alt="image-20250416123850866"
+class="gallery-image"
+data-flex-grow="522"
+data-flex-basis="1254px"
+&gt;&lt;/p&gt;
+&lt;h4 id="parameter-efficient-fine-tuning-peft"&gt;Parameter Efficient Fine-Tuning (PEFT)
+&lt;/h4&gt;&lt;h5 id="bitfit-fine-tune-only-the-bias-terms-只微调偏置项"&gt;BitFit (Fine-tune only the bias terms) 只微调偏置项
+&lt;/h5&gt;&lt;p&gt;微调权重需要存储激活值，但微调偏置项不需要存储激活值&lt;/p&gt;
+&lt;h5 id="tinytl-lite-residual-learning"&gt;TinyTL: Lite Residual Learning
+&lt;/h5&gt;&lt;p&gt;在主干网络计算量较大的基础上，添加轻量级的侧分支，只更新侧分支，学习残差&lt;/p&gt;
+&lt;p&gt;下采样 group conv, 1x1 conv，上采样，激活规模小&lt;/p&gt;
+&lt;h5 id="adapter-插入适配器层"&gt;Adapter 插入适配器层
+&lt;/h5&gt;&lt;p&gt;Adapter Layer：残差，下采样 激活 上采样，bottleneck&lt;/p&gt;
+&lt;p&gt;对每个任务，只添加一些可训练的参数&lt;/p&gt;
+&lt;p&gt;会增加模型深度，增加计算开销，延迟增加&lt;/p&gt;
+&lt;p&gt;不改变模型？&lt;/p&gt;
+&lt;h5 id="prompt-tuning"&gt;Prompt Tuning
+&lt;/h5&gt;&lt;p&gt;可以训练连续的prompt，学习prompt&lt;/p&gt;
+&lt;h5 id="prefix-tuning"&gt;Prefix-Tuning
+&lt;/h5&gt;&lt;p&gt;Prompt-Tuning 只对第一层有提示 =&amp;gt; 对每一层有提示&lt;/p&gt;
+&lt;p&gt;增加输入损失，KV cache 使用变大，延迟变大&lt;/p&gt;
+&lt;p&gt;不引入额外推理延迟？&lt;/p&gt;
+&lt;h5 id="lora"&gt;LoRA
+&lt;/h5&gt;&lt;p&gt;同样训练侧分支&lt;/p&gt;
+&lt;p&gt;从 d 维 =&amp;gt; 低秩 r 维（高斯分布初始化），低秩 r 维 =&amp;gt; d 维（零初始化）&lt;/p&gt;
+&lt;p&gt;最初添加，不会有影响&lt;/p&gt;
+&lt;p&gt;h = x @ W + x @ A @ B = x @ (W + A @ B) = x @ W'&lt;/p&gt;
+&lt;p&gt;没有非线性激活，所以可以fuse到原本的矩阵乘法&lt;/p&gt;
+&lt;h5 id="qlora"&gt;QLoRA
+&lt;/h5&gt;&lt;p&gt;同样 LoRA 的设计原则，加上对骨架模型的量化&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;引入 NormalFloat (NF4)，centroid 不是学到的，是固定的&lt;/li&gt;
+&lt;li&gt;双重量化 Double quantization，缩放因子也被量化&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;CPU卸载功能的分页优化器，优化状态不用时，存放在CPU，节省内存&lt;/p&gt;
+&lt;h5 id="bit-delta"&gt;Bit-Delta
+&lt;/h5&gt;&lt;p&gt;Your Fine-Tune May Only Be Worth One Bit&lt;/p&gt;
+&lt;p&gt;出发点是，模型已经学得很好了，微调只需要加一点点参数就好&lt;/p&gt;
+&lt;p&gt;能不能就微调 1 位，把增量量化至一位，还有一个缩放因子&lt;/p&gt;
+&lt;p&gt;二值化delta，sin(delta) &amp;gt; 0 =&amp;gt; 1 else -1&lt;/p&gt;
+&lt;h3 id="multi-model-llms"&gt;Multi-model LLMs
+&lt;/h3&gt;&lt;h4 id="cross-attention-based-flamingo"&gt;Cross-Attention Based: Flamingo
+&lt;/h4&gt;&lt;p&gt;将视觉信息注入inject到语言模型&lt;/p&gt;
+&lt;p&gt;LLM 参数固定，加入cross-attention layers&lt;/p&gt;
+&lt;p&gt;视觉信息 KV，文本信息 Q&lt;/p&gt;
+&lt;h4 id="visual-tokens-as-input-palm-e-vila"&gt;Visual Tokens as Input: PaLM-E, VILA
+&lt;/h4&gt;&lt;p&gt;全部都 tokenize，视觉信息tokens&lt;/p&gt;
+&lt;p&gt;解冻LLM参数；&lt;/p&gt;
+&lt;p&gt;交错使用图文，而不是图文对，否则LLM性能下降严重；&lt;/p&gt;
+&lt;p&gt;混合数据，还是需要纯文本数据&lt;/p&gt;
+&lt;p&gt;分辨率重要&lt;/p&gt;
+&lt;p&gt;高分辨率的处理，分块多少，看任务，OCR 分块多好；知识推理不一定&lt;/p&gt;
+&lt;p&gt;QKV，把低分辨率作为 Q，高分辨率作为 KV&lt;/p&gt;
+&lt;h4 id="enabling-visual-outputs-vila-u"&gt;Enabling Visual Outputs: VILA-U
+&lt;/h4&gt;&lt;p&gt;统一图像和文字理解&lt;/p&gt;
+&lt;h3 id="prompt-engineering"&gt;Prompt Engineering
+&lt;/h3&gt;&lt;h4 id="in-context-learning-icl"&gt;In-Context Learning (ICL)
+&lt;/h4&gt;&lt;p&gt;zero-shot few-shot&lt;/p&gt;
+&lt;h4 id="chain-of-thought-cot"&gt;Chain-of-Thought (CoT)
+&lt;/h4&gt;&lt;p&gt;let&amp;rsquo;s think step by step&lt;/p&gt;
+&lt;h4 id="retrieval-augmented-generation-rag"&gt;ReTrieval Augmented Generation (RAG)
+&lt;/h4&gt;&lt;h2 id="lec15-long-context-llm"&gt;Lec15 Long-Context LLM
+&lt;/h2&gt;&lt;h3 id="context-extension"&gt;Context Extension
+&lt;/h3&gt;&lt;h4 id="pope"&gt;PoPE
+&lt;/h4&gt;&lt;p&gt;增加频率，扩展上下文，然后还需要去微调 Fine-tune&lt;/p&gt;
+&lt;h4 id="longlora"&gt;LongLoRA
+&lt;/h4&gt;&lt;p&gt;性能瓶颈：注意力机制。二次增长&lt;/p&gt;
+&lt;p&gt;偏移稀疏注意力，不同模式，作为一个注意力头&lt;/p&gt;
+&lt;p&gt;怎么Fine-Tune embedding 和 normalization 层的？&lt;/p&gt;
+&lt;p&gt;两个模式都用，比单用一个模式好。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250425163300680.png"
+width="2463"
+height="1101"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250425163300680_hu_6079ce95bb3f2080.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250425163300680_hu_cf1ca00561cfb455.png 1024w"
+loading="lazy"
+alt="image-20250425163300680"
+class="gallery-image"
+data-flex-grow="223"
+data-flex-basis="536px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250425164007742.png"
+width="1927"
+height="246"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250425164007742_hu_b6a2065cc5c2cde3.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250425164007742_hu_6520be9708dbb469.png 1024w"
+loading="lazy"
+alt="image-20250425164007742"
+class="gallery-image"
+data-flex-grow="783"
+data-flex-basis="1880px"
+&gt;&lt;/p&gt;
+&lt;h3 id="evaluation-of-long-context-llms-长上下文大模型的评估标准"&gt;Evaluation of Long-Context LLMs 长上下文大模型的评估标准
+&lt;/h3&gt;&lt;h4 id="the-lost-in-the-middle-phenomenon-中间丢失现象"&gt;The Lost-in-the-Middle Phenomenon 中间丢失现象
+&lt;/h4&gt;&lt;p&gt;当相关信息在开头和结尾时，准确率高，中间准确率低。&lt;/p&gt;
+&lt;p&gt;**生成一段流畅的长上下文回复，不意味着模型真正记住了里面的内容，**所以只用困惑度是不够的。&lt;/p&gt;
+&lt;h4 id="long-context-benchmarks-长上下文的基准测试-niah-longbench"&gt;Long-Context Benchmarks 长上下文的基准测试: NIAH, LongBench
+&lt;/h4&gt;&lt;h5 id="niah-needle-in-a-haystack-大海捞针"&gt;NIAH (Needle In A Haystack) 大海捞针
+&lt;/h5&gt;&lt;p&gt;aa在bb干了cc。做询问&lt;/p&gt;
+&lt;p&gt;随着上下文的变长，询问在文章xx%的位置的内容needle，检索Retrival准确率。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;人为设计的合成基准测试&lt;/strong&gt;&lt;/p&gt;
+&lt;h5 id="longbench"&gt;LongBench
+&lt;/h5&gt;&lt;p&gt;多种任务，发现上下文压缩等技术不如位置编码。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;现实世界的测试&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id="efficient-attention-mechanismskv-cache-过大的问题"&gt;Efficient Attention Mechanisms，KV cache 过大的问题
+&lt;/h3&gt;&lt;h4 id="kv-cache"&gt;KV Cache
+&lt;/h4&gt;&lt;p&gt;BS * layers * kv-heads * n_emd * length * 2 * type，每个token&lt;/p&gt;
+&lt;h4 id="streamingllm-and-attention-sinks"&gt;StreamingLLM and Attention Sinks
+&lt;/h4&gt;&lt;p&gt;保持恒定内存，Window Attention 的问题，第一个token被移出时，PPL上升&lt;/p&gt;
+&lt;p&gt;Dense Attention 的问题，在token长度超过预训练长度时，PPL上升 perplex&lt;/p&gt;
+&lt;p&gt;滑动窗口 + Re-computation 重计算&lt;/p&gt;
+&lt;h6 id="attention-sink-注意力汇聚-现象"&gt;Attention Sink 注意力汇聚 现象
+&lt;/h6&gt;&lt;p&gt;对&lt;strong&gt;第一个token&lt;/strong&gt;的注意力会高。&lt;/p&gt;
+&lt;p&gt;用了softmax，注意力得分和为1，就算有些不需要关注，而自回归模型中，首个token是全局可见的，所以把这些冗余的注意力得分给它。&lt;/p&gt;
+&lt;p&gt;是因为semantic &lt;strong&gt;语义&lt;/strong&gt;，还是position &lt;strong&gt;位置&lt;/strong&gt;？是位置。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;保留来一个可训练的注意力汇聚点 / 四个注意力汇聚点。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;（实验得出四个是 sweet point）&lt;/p&gt;
+&lt;p&gt;ViT 的注意力汇聚点出现在语义信息比较少的区域。&lt;/p&gt;
+&lt;p&gt;Bert 在句子末尾的分隔符标记&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;streamingLLM不等同于长上下文，查询早期的是查不到的，在kv cache中淘汰了。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;(DuoAttention 是来解决这个问题)&lt;/p&gt;
+&lt;h4 id="duoattention-retrieval-heads-and-streaming-heads"&gt;DuoAttention: Retrieval Heads and Streaming Heads
+&lt;/h4&gt;&lt;p&gt;Duo = Two，&lt;strong&gt;同样不能无限长，但是能够减缓&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;retrieval head 和 streaming head&lt;/p&gt;
+&lt;p&gt;retrieval head，最初的 dense attention&lt;/p&gt;
+&lt;p&gt;streaming head，只关注 recent token &amp;amp; reduced tokens&lt;/p&gt;
+&lt;p&gt;每个注意力头都需要训alpha&lt;/p&gt;
+&lt;p&gt;因为是要用更少的内存，所以，我们对&lt;strong&gt;这个注意力结果做蒸馏distill&lt;/strong&gt;，使得和最终的差值最小。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;需要训练多少个alpha？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;layers x heads&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;训练材料？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;类似于NIAH，设置一系列 passkey。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;推理的时候怎么办？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;设置阈值threshold，大于dense，小于streaming。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;decoding&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;两种 kv cache 一个是全部，一个是sink point + 最近几个token&lt;/p&gt;
+&lt;p&gt;计算是正常的多头。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;prefilling&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;分块注意力&lt;/p&gt;
+&lt;p&gt;time complexity $O(L^2) \to O(LK)$&lt;/p&gt;
+&lt;p&gt;memory complexity $O(L) \to O(K)$&lt;/p&gt;
+&lt;p&gt;希望 streaming head 越多，节省的越多。&lt;/p&gt;
+&lt;p&gt;实验中，有一半可以作为streaming head。&lt;/p&gt;
+&lt;p&gt;实际上是&lt;strong&gt;对attention的剪枝、稀疏化&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250430150408915.png"
+width="2045"
+height="499"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250430150408915_hu_6fc78555e7c8a5f0.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250430150408915_hu_e53338f72f47b63.png 1024w"
+loading="lazy"
+alt="image-20250430150408915"
+class="gallery-image"
+data-flex-grow="409"
+data-flex-basis="983px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250430150615629.png"
+width="2282"
+height="654"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250430150615629_hu_bff49cc4150d77b0.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250430150615629_hu_f989fa1b169dc28b.png 1024w"
+loading="lazy"
+alt="image-20250430150615629"
+class="gallery-image"
+data-flex-grow="348"
+data-flex-basis="837px"
+&gt;&lt;/p&gt;
+&lt;h4 id="quest-query-aware-sparsity"&gt;Quest: Query-Aware Sparsity
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;Dense Attention&lt;/li&gt;
+&lt;li&gt;Query-Agnostic Sparsity 查询无关，要是在前一个token除移除了kv，后面的不会再有这个toekn&lt;/li&gt;
+&lt;li&gt;Query-Aware Sparsity，查询感知，前一个移除了，不影响后面还是可以有；基于正在解码的新词元。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;因为确实会有某个token对前一个来说不重要，但对下一个很重要的情况，所以我们要全都存下来kv cache，&lt;strong&gt;因此没有节省内存，只是节省移动的内存开销&lt;/strong&gt;，只抓取重要的 kv cache，其他的留在内存中。&lt;/p&gt;
+&lt;p&gt;同样的对 attention page 求和/求平均，只抓取重要的page，其余的留在内存&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250501025912215.png"
+width="1721"
+height="758"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250501025912215_hu_57f92e3e7fa6bb40.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250501025912215_hu_d4eb82400d9a689c.png 1024w"
+loading="lazy"
+alt="image-20250501025912215"
+class="gallery-image"
+data-flex-grow="227"
+data-flex-basis="544px"
+&gt;&lt;/p&gt;
+&lt;h3 id="beyond-transformers"&gt;Beyond Transformers
+&lt;/h3&gt;&lt;h4 id="state-space-models-ssms-mamba"&gt;State-Space Models (SSMs): Mamba
+&lt;/h4&gt;&lt;p&gt;注意力机制两大任务，不同之间，单个内部。 &lt;strong&gt;还是不懂#&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Mamba，加基础上引入 Selective State Spafe)&lt;/p&gt;
+&lt;p&gt;固定的kv cache，不线性增长。&lt;/p&gt;
+&lt;h4 id="hybrid-models-jamba"&gt;Hybrid Models: Jamba
+&lt;/h4&gt;&lt;p&gt;混合模型。&lt;/p&gt;
+&lt;h2 id="lec16-vit"&gt;Lec16 ViT
+&lt;/h2&gt;&lt;h3 id="basics-of-vision-transformer-vit"&gt;Basics of Vision Transformer (ViT)
+&lt;/h3&gt;&lt;p&gt;Patch（CNN, patch_size, 3, hidden_dim），Position Encoding，然后就和语言模型一样了&lt;/p&gt;
+&lt;p&gt;对比CNN，数据量小的时候，CNN好，大的时候，ViT好。&lt;/p&gt;
+&lt;h3 id="efficient-vit--accerleration-techniques"&gt;Efficient ViT &amp;amp; accerleration techniques
+&lt;/h3&gt;&lt;p&gt;超分辨率，有实时应用场景；&lt;/p&gt;
+&lt;p&gt;高分辨率，对自动驾驶重要。&lt;/p&gt;
+&lt;p&gt;高分辨率，对比CNN，ViT 的计算量提升很快，是二次方的提升，分辨率也是二次方，所以就是四次方。&lt;/p&gt;
+&lt;p&gt;Segment Anything&lt;/p&gt;
+&lt;h4 id="windows-attention"&gt;Windows attention
+&lt;/h4&gt;&lt;p&gt;注意力机制只在窗口window内发生，固定token大小，计算复杂度的是线性的。&lt;/p&gt;
+&lt;p&gt;但这样一来，注意力就在局部流通，全局没有了？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Swin Transformer&lt;/strong&gt; 引入 &lt;strong&gt;shift window&lt;/strong&gt;，shift operation，让下一层的窗口移动，使得能注意到相邻窗口的内容。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527163636223.png"
+width="902"
+height="521"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527163636223_hu_9bb43053f771ff19.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527163636223_hu_65cf25c84bdeef2.png 1024w"
+loading="lazy"
+alt="image-20250527163636223"
+class="gallery-image"
+data-flex-grow="173"
+data-flex-basis="415px"
+&gt;&lt;/p&gt;
+&lt;h5 id="sparse-windows-attention"&gt;Sparse Windows attention
+&lt;/h5&gt;&lt;p&gt;并不是所有的windows都是有用的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;FlatFormer&lt;/strong&gt;，相比于 等窗口组合，用 等大小组合 ，可以更加硬件友好，更好地并行，不多等待。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527163650238.png"
+width="1899"
+height="645"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527163650238_hu_19d57f9b8c96a3ca.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527163650238_hu_83dd10e65d49ddf6.png 1024w"
+loading="lazy"
+alt="image-20250527163650238"
+class="gallery-image"
+data-flex-grow="294"
+data-flex-basis="706px"
+&gt;&lt;/p&gt;
+&lt;h4 id="linear-attention"&gt;Linear attention
+&lt;/h4&gt;&lt;p&gt;替换。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527164046256.png"
+width="2434"
+height="1103"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527164046256_hu_b0d3d8b3dc1accff.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527164046256_hu_5f009dcd26ad77b.png 1024w"
+loading="lazy"
+alt="image-20250527164046256"
+class="gallery-image"
+data-flex-grow="220"
+data-flex-basis="529px"
+&gt;&lt;/p&gt;
+&lt;p&gt;然后发现效果差很多，注意力不突出了。&lt;/p&gt;
+&lt;p&gt;擅长捕捉全局上下文信息，但局部信息不行。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527165047146.png"
+width="2503"
+height="1088"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527165047146_hu_6e43812a2f1135c.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527165047146_hu_220d57c1a5531eb7.png 1024w"
+loading="lazy"
+alt="image-20250527165047146"
+class="gallery-image"
+data-flex-grow="230"
+data-flex-basis="552px"
+&gt;&lt;/p&gt;
+&lt;p&gt;想到CNN是提取局部信息的好工具，在原先的基础上，加上CNN&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527205318607.png"
+width="2424"
+height="688"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527205318607_hu_219d85b78f22a9e3.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527205318607_hu_c3c32659b636d10.png 1024w"
+loading="lazy"
+alt="image-20250527205318607"
+class="gallery-image"
+data-flex-grow="352"
+data-flex-basis="845px"
+&gt;&lt;/p&gt;
+&lt;p&gt;结果提升。（分析新的注意力分布与原本的注意力分布特征的区别，得出的解决方案）&lt;/p&gt;
+&lt;h4 id="sparse-attention"&gt;Sparse attention
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;SparseViT&lt;/strong&gt;，用 L2 激活值来确定窗口的重要程度。&lt;/p&gt;
+&lt;p&gt;分出不同的重要程度，可以在不同层使用不同的稀疏度。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527205729628.png"
+width="2495"
+height="969"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527205729628_hu_46d1510dec38fac5.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527205729628_hu_f0fada0766d3f7c8.png 1024w"
+loading="lazy"
+alt="image-20250527205729628"
+class="gallery-image"
+data-flex-grow="257"
+data-flex-basis="617px"
+&gt;&lt;/p&gt;
+&lt;h3 id="self-supervised-learning-for-vit"&gt;Self-supervised learning for ViT
+&lt;/h3&gt;&lt;p&gt;怎么利用unlabeled data&lt;/p&gt;
+&lt;h4 id="contrastive-learning"&gt;Contrastive learning
+&lt;/h4&gt;&lt;p&gt;拿同一张图片的不同 crop，去做同一的、拉近的 loss，不同的图片做拉远的 loss。&lt;/p&gt;
+&lt;p&gt;在小数据集上训的时候，SL，更大的模型可能得不到更好的结果，但是用了对比学习自监督self-SL（CL）会更好&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527213845273.png"
+width="2154"
+height="1308"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527213845273_hu_3ecd920e2eecce9a.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527213845273_hu_3431e3c37c1c0094.png 1024w"
+loading="lazy"
+alt="image-20250527213845273"
+class="gallery-image"
+data-flex-grow="164"
+data-flex-basis="395px"
+&gt;&lt;/p&gt;
+&lt;p&gt;多模态对比学习 &lt;strong&gt;CLIP&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527214423449.png"
+width="1936"
+height="1175"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527214423449_hu_6a8f7867d22e3f40.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527214423449_hu_5f38de318095fbfd.png 1024w"
+loading="lazy"
+alt="image-20250527214423449"
+class="gallery-image"
+data-flex-grow="164"
+data-flex-basis="395px"
+&gt;&lt;/p&gt;
+&lt;h4 id="masked-image-modeling"&gt;Masked image modeling
+&lt;/h4&gt;&lt;p&gt;类似与bert的重建遮挡，Mask Language Models, MLM。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527215151473.png"
+width="2446"
+height="1185"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527215151473_hu_c9f6bc9a3f567fdc.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527215151473_hu_85855e8fd97ee5f0.png 1024w"
+loading="lazy"
+alt="image-20250527215151473"
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="495px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Heavy encoder只编码未遮的图片，lite会编码所有。&lt;/p&gt;
+&lt;p&gt;mask 70~75% sweet spot&lt;/p&gt;
+&lt;p&gt;作为对比，bert 比率是 15%，图片冗余大。&lt;/p&gt;
+&lt;h3 id="vit--autoregressive-image-generation"&gt;ViT &amp;amp; Autoregressive Image Generation
+&lt;/h3&gt;&lt;p&gt;Autoregressive AR。&lt;/p&gt;
+&lt;h4 id="hybrid-autoregressive-transformer-hart"&gt;Hybrid Autoregressive Transformer (HART)
+&lt;/h4&gt;&lt;p&gt;和新目标是减少迭代次数来加速。&lt;/p&gt;
+&lt;p&gt;有三种不同的生成方式。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527220043178.png"
+width="2560"
+height="1147"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527220043178_hu_7be52bf7a8cf119a.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527220043178_hu_b80baa76c9a6dd8b.png 1024w"
+loading="lazy"
+alt="image-20250527220043178"
+class="gallery-image"
+data-flex-grow="223"
+data-flex-basis="535px"
+&gt;&lt;/p&gt;
+&lt;p&gt;文字生成和图像生成的不同，语言有词汇表，离散的，而图像是连续的。&lt;/p&gt;
+&lt;p&gt;要用一种AR架构把这两种模态统一起来，就需要一种离散的图像标记，就可以使用同样的loss了。&lt;/p&gt;
+&lt;p&gt;具体的，加入vector quantized, VQ encoder/decoder和 codebook，一个像素的vector量化是一个标量（量化）。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527220442830.png"
+width="2249"
+height="1158"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527220442830_hu_13e1d2a242348d6e.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527220442830_hu_1df5e57a10919bf4.png 1024w"
+loading="lazy"
+alt="image-20250527220442830"
+class="gallery-image"
+data-flex-grow="194"
+data-flex-basis="466px"
+&gt;&lt;/p&gt;
+&lt;p&gt;经验法则：一次性生成更多的标记token。&lt;/p&gt;
+&lt;p&gt;Visual Autoregressive，&lt;strong&gt;VAR&lt;/strong&gt;，引入新的标记生成方法。&lt;/p&gt;
+&lt;p&gt;先为一张图像生成一个token，和分成2x2&amp;hellip;，多个粒度。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527221348853.png"
+width="2345"
+height="1136"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527221348853_hu_581321086b9e42b9.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527221348853_hu_6ae4d039a8969ad3.png 1024w"
+loading="lazy"
+alt="image-20250527221348853"
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="495px"
+&gt;&lt;/p&gt;
+&lt;p&gt;他的 attention mask，也有变化（没特别理解&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527221517972.png"
+width="2461"
+height="1014"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527221517972_hu_261d90ba519cb7e1.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527221517972_hu_4200f1478c90e94.png 1024w"
+loading="lazy"
+alt="image-20250527221517972"
+class="gallery-image"
+data-flex-grow="242"
+data-flex-basis="582px"
+&gt;&lt;/p&gt;
+&lt;p&gt;不过效果没那么好。&lt;/p&gt;
+&lt;p&gt;Hybrid Image Tokenization，&lt;strong&gt;HART&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;小的duffusion model，&lt;strong&gt;residual duffusion&lt;/strong&gt;残差扩散，来学习离散token和连续token的区别（因为离散token自己学细粒度的很困难）&lt;/p&gt;
+&lt;p&gt;训练时候采样50% 50%，让两者在 decoder 中处于同一空间&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527221835339.png"
+width="2528"
+height="1193"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527221835339_hu_dfbb8c936074bfcf.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527221835339_hu_980cd3d3f6daeb0c.png 1024w"
+loading="lazy"
+alt="image-20250527221835339"
+class="gallery-image"
+data-flex-grow="211"
+data-flex-basis="508px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527222340548.png"
+width="2560"
+height="801"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527222340548_hu_a07e2ce693b561b0.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527222340548_hu_9db7c94c679df433.png 1024w"
+loading="lazy"
+alt="image-20250527222340548"
+class="gallery-image"
+data-flex-grow="319"
+data-flex-basis="767px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527222609940.png"
+width="2425"
+height="894"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527222609940_hu_fd3c3664d2e5644.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250527222609940_hu_8b67a659dbdc0890.png 1024w"
+loading="lazy"
+alt="image-20250527222609940"
+class="gallery-image"
+data-flex-grow="271"
+data-flex-basis="651px"
+&gt;&lt;/p&gt;
+&lt;h2 id="lec17-gan-video-point-cloud"&gt;Lec17 GAN, Video, Point Cloud
+&lt;/h2&gt;&lt;h3 id="efficient-gan"&gt;Efficient GAN
+&lt;/h3&gt;&lt;p&gt;显然为了加速推理，压缩 generator&lt;/p&gt;
+&lt;p&gt;un/conditional GAN&lt;/p&gt;
+&lt;p&gt;提供条件（class, segmentation map, strokes/随机噪声&lt;/p&gt;
+&lt;p&gt;GAN 比识别的模型贵&lt;/p&gt;
+&lt;h4 id="gan-compression"&gt;GAN Compression
+&lt;/h4&gt;&lt;p&gt;重建reconstruction loss，蒸馏（中间特征图）distillation loss，cGAN loss（真实图片和生成图片）&lt;/p&gt;
+&lt;h4 id="anycost-gan"&gt;AnyCost GAN
+&lt;/h4&gt;&lt;p&gt;StyleGAN2只采样最高分辨率，MSG-GAN采样所有分辨率，随机采样&lt;/p&gt;
+&lt;p&gt;不同通道数量，增加蒸馏损失，可以使得删去通道后的图片样式类似&lt;/p&gt;
+&lt;p&gt;同样的判别器对于不同的分辨率效果不一定都好&lt;/p&gt;
+&lt;h4 id="differentiable-augmentation-for-data-efficient-gans"&gt;Differentiable Augmentation for Data-Efficient GANs
+&lt;/h4&gt;&lt;p&gt;需要收集很多数据，贵&lt;/p&gt;
+&lt;p&gt;图片增强&lt;/p&gt;
+&lt;p&gt;只对真实图片增强，颜色改变，图片位置shift，部分cutout，会导致生成的图片也长这样，所以不好&lt;/p&gt;
+&lt;p&gt;（训练D的时候）在生成后都应用，判别器对转换后的图片的判别率高，对原图片 G，效果不好&lt;/p&gt;
+&lt;p&gt;在训练（G和D的时候）都判别前运用图片转换&lt;/p&gt;
+&lt;h3 id="efficient-video-understanding"&gt;Efficient Video Understanding
+&lt;/h3&gt;&lt;p&gt;temporal modeling 时间建模&lt;/p&gt;
+&lt;h4 id="2d-cnn"&gt;2D CNN
+&lt;/h4&gt;&lt;p&gt;采样图片，再aggregate，average max&lt;/p&gt;
+&lt;p&gt;双流网络 spatial + temporal，optical flow&lt;/p&gt;
+&lt;p&gt;2D CNN + Post-fusion(e.g. LSTM) ，low level 是独立处理的&lt;/p&gt;
+&lt;p&gt;好处，计算高效，重复利用图片识别2D CNN&lt;/p&gt;
+&lt;p&gt;坏处，时间信息，光流计算量大，late fusion 无法建模 low level&lt;/p&gt;
+&lt;h4 id="3d-cnn"&gt;3D CNN
+&lt;/h4&gt;&lt;p&gt;C3D，参数量变大&lt;/p&gt;
+&lt;p&gt;I3D，用2D CNN来初始化3D CNN，inflation，就重复&lt;/p&gt;
+&lt;p&gt;好处，时空信息一起 ，各个级别的信息都可以建模&lt;/p&gt;
+&lt;p&gt;坏处，模型大小，计算量都变大&lt;/p&gt;
+&lt;h4 id="tsm-temporal-shift-module"&gt;TSM (Temporal Shift module)
+&lt;/h4&gt;&lt;p&gt;不用计算量、参数来为时间建模&lt;/p&gt;
+&lt;p&gt;offline，bi-direction 可以做双向&lt;/p&gt;
+&lt;p&gt;online，uni-direction 做单向&lt;/p&gt;
+&lt;p&gt;shift 的比例，不能太多也不能太少&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250601153930427.png"
+width="1436"
+height="536"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250601153930427_hu_6ad4098158a39e88.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250601153930427_hu_ea789585a809da1b.png 1024w"
+loading="lazy"
+alt="image-20250601153930427"
+class="gallery-image"
+data-flex-grow="267"
+data-flex-basis="642px"
+&gt;&lt;/p&gt;
+&lt;h3 id="efficient-point-cloud-understanding"&gt;Efficient Point Cloud Understanding
+&lt;/h3&gt;&lt;p&gt;稀疏，非规整；应用场景算力限制&lt;/p&gt;
+&lt;h4 id="pvcnn--spvcnn"&gt;PVCNN / SPVCNN
+&lt;/h4&gt;&lt;p&gt;Point-Voxel，Point local，Voxel global（稀疏掉0，让 point 去做高粒度）&lt;/p&gt;
+&lt;p&gt;3D NAS SPV&lt;/p&gt;
+&lt;h4 id="bevfusion-birds-eye-view"&gt;BEVFusion (Bird&amp;rsquo;s-Eye View)
+&lt;/h4&gt;&lt;p&gt;Dense 摄像头，Sparse 雷达，产生BEV + 3D 对象检查&lt;/p&gt;
+&lt;h2 id="lec18-diffusion-model"&gt;Lec18 Diffusion Model
+&lt;/h2&gt;&lt;h3 id="basics-of-diffusion-model"&gt;Basics of diffusion model
+&lt;/h3&gt;&lt;h4 id="denoising-diffusion-models"&gt;Denoising diffusion models
+&lt;/h4&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612144431428.png"
+width="2460"
+height="1317"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612144431428_hu_4c9849eb4d03cc76.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612144431428_hu_fe1f8a0e686762e5.png 1024w"
+loading="lazy"
+alt="image-20250612144431428"
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="448px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612144612691.png"
+width="2143"
+height="530"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612144612691_hu_af8dd42a3d6e0904.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612144612691_hu_496728e371b5621b.png 1024w"
+loading="lazy"
+alt="image-20250612144612691"
+class="gallery-image"
+data-flex-grow="404"
+data-flex-basis="970px"
+&gt;&lt;/p&gt;
+&lt;p&gt;训练算法&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612144858452.png"
+width="2363"
+height="1065"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612144858452_hu_386987a032bd871c.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612144858452_hu_ad5c432142e70e58.png 1024w"
+loading="lazy"
+alt="image-20250612144858452"
+class="gallery-image"
+data-flex-grow="221"
+data-flex-basis="532px"
+&gt;&lt;/p&gt;
+&lt;p&gt;采样算法&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612145637150.png"
+width="2535"
+height="1206"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612145637150_hu_4b99adf85c10d09.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612145637150_hu_3a37a941badb5d28.png 1024w"
+loading="lazy"
+alt="image-20250612145637150"
+class="gallery-image"
+data-flex-grow="210"
+data-flex-basis="504px"
+&gt;&lt;/p&gt;
+&lt;h4 id="conditional-diffusion-models"&gt;Conditional diffusion models
+&lt;/h4&gt;&lt;h5 id="scalar-condition"&gt;Scalar condition
+&lt;/h5&gt;&lt;p&gt;Class ID，encode，embedding，加到特征图上（或者embedding scale 和 bias更加复杂）
+&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150234787.png"
+width="2339"
+height="1143"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150234787_hu_71da306afb27c118.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150234787_hu_966cfad1a55d2501.png 1024w"
+loading="lazy"
+alt="image-20250612150234787"
+class="gallery-image"
+data-flex-grow="204"
+data-flex-basis="491px"
+&gt;&lt;/p&gt;
+&lt;h5 id="text-condition"&gt;Text condition
+&lt;/h5&gt;&lt;h6 id="cross-attention"&gt;Cross Attention
+&lt;/h6&gt;&lt;p&gt;图像和文本并不对称，图片 Q，文本 K V&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150219729.png"
+width="2315"
+height="988"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150219729_hu_667fab28f0805788.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150219729_hu_fd9b09f37ef00e9e.png 1024w"
+loading="lazy"
+alt="image-20250612150219729"
+class="gallery-image"
+data-flex-grow="234"
+data-flex-basis="562px"
+&gt;&lt;/p&gt;
+&lt;h6 id="joint-attention"&gt;Joint Attention
+&lt;/h6&gt;&lt;p&gt;文本和图像对称&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150515135.png"
+width="2467"
+height="1023"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150515135_hu_110f64eff5f7e32f.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150515135_hu_704b293914362bd9.png 1024w"
+loading="lazy"
+alt="image-20250612150515135"
+class="gallery-image"
+data-flex-grow="241"
+data-flex-basis="578px"
+&gt;&lt;/p&gt;
+&lt;h6 id="single-self-attention"&gt;Single Self Attention
+&lt;/h6&gt;&lt;p&gt;Early fusion&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150613830.png"
+width="1778"
+height="922"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150613830_hu_9486d50f30767f82.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150613830_hu_9cb1c012468a4a20.png 1024w"
+loading="lazy"
+alt="image-20250612150613830"
+class="gallery-image"
+data-flex-grow="192"
+data-flex-basis="462px"
+&gt;&lt;/p&gt;
+&lt;h5 id="pixel-wise-condition"&gt;Pixel-wise condition
+&lt;/h5&gt;&lt;p&gt;Control Net&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150841930.png"
+width="2480"
+height="928"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150841930_hu_b3d5a4ab739d27e5.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612150841930_hu_a281c2b82c87a8e6.png 1024w"
+loading="lazy"
+alt="image-20250612150841930"
+class="gallery-image"
+data-flex-grow="267"
+data-flex-basis="641px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612151008236.png"
+width="2309"
+height="1188"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612151008236_hu_3b2bd718a74684a6.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612151008236_hu_41410bd422f6b51e.png 1024w"
+loading="lazy"
+alt="image-20250612151008236"
+class="gallery-image"
+data-flex-grow="194"
+data-flex-basis="466px"
+&gt;&lt;/p&gt;
+&lt;p&gt;关于多样性和质量，增加 c 的分类器，强度&lt;/p&gt;
+&lt;p&gt;classifier-free guidance&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612151941365.png"
+width="2476"
+height="1188"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612151941365_hu_d407e2b5001a1c17.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612151941365_hu_336ef96be56acc34.png 1024w"
+loading="lazy"
+alt="image-20250612151941365"
+class="gallery-image"
+data-flex-grow="208"
+data-flex-basis="500px"
+&gt;&lt;/p&gt;
+&lt;h4 id="latent-diffusion-models"&gt;Latent diffusion models
+&lt;/h4&gt;&lt;p&gt;较少计算量&lt;/p&gt;
+&lt;p&gt;预训练 VAE，编码到潜空间 diffusion，最后再解码&lt;/p&gt;
+&lt;p&gt;学习目标是一样的，预测噪音&lt;/p&gt;
+&lt;p&gt;采样也是类似&lt;/p&gt;
+&lt;p&gt;分辨率压缩的越多，运行的越快&lt;/p&gt;
+&lt;h5 id="deep-compression-autoencoder-dc-ae-f64"&gt;Deep Compression Autoencoder (DC-AE) f64
+&lt;/h5&gt;&lt;p&gt;压缩 64 倍，考虑 Attention 平方，减少的计算有 4k 倍&lt;/p&gt;
+&lt;p&gt;具体地，通过显式 space-to-channel / channel-to-space，残差自编码，使得更加稳定&lt;/p&gt;
+&lt;p&gt;因为自编码器要的计算量变大，为了减少计算量，使用分层稀疏调优的方式，减少计算量&lt;/p&gt;
+&lt;p&gt;还有 Linear Attention，使用小 LLM 作为文本编码器，kernel fusion，flow based PPM 求解器&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612154044926.png"
+width="2110"
+height="1057"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612154044926_hu_7c42e0313c571d0e.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612154044926_hu_461e724981ea8eb1.png 1024w"
+loading="lazy"
+alt="image-20250612154044926"
+class="gallery-image"
+data-flex-grow="199"
+data-flex-basis="479px"
+&gt;&lt;/p&gt;
+&lt;h4 id="image-editing"&gt;Image editing
+&lt;/h4&gt;&lt;h5 id="stroke-base-editing"&gt;Stroke-Base Editing
+&lt;/h5&gt;&lt;p&gt;通过增加噪声，使得草图和图像接近，然后解出来（具体训练是怎么样的？）&lt;/p&gt;
+&lt;p&gt;SDEdit&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612155420892.png"
+width="2375"
+height="811"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612155420892_hu_8e4cc2a362f5e20c.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612155420892_hu_d064d7abb01559cd.png 1024w"
+loading="lazy"
+alt="image-20250612155420892"
+class="gallery-image"
+data-flex-grow="292"
+data-flex-basis="702px"
+&gt;&lt;/p&gt;
+&lt;h4 id="model-personalization"&gt;Model personalization
+&lt;/h4&gt;&lt;p&gt;人物一致性&lt;/p&gt;
+&lt;p&gt;DreamBooth，通过 finetune，用特别的标识符来代表这个类别&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612155712527.png"
+width="2381"
+height="1152"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612155712527_hu_67bded98bfde30bd.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612155712527_hu_14afe4c4e8004013.png 1024w"
+loading="lazy"
+alt="image-20250612155712527"
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="496px"
+&gt;&lt;/p&gt;
+&lt;p&gt;但是，只能对每一个新的类别都需要去finetune，costly&lt;/p&gt;
+&lt;p&gt;后续也有 training-free 的技术&lt;/p&gt;
+&lt;h3 id="fast-sampling-techniques"&gt;Fast sampling techniques
+&lt;/h3&gt;&lt;p&gt;能否增大步幅，减少步骤&lt;/p&gt;
+&lt;h4 id="denoising-diffusion-implicit-models"&gt;Denoising diffusion implicit models
+&lt;/h4&gt;&lt;p&gt;之前的马尔可夫Markovian 只依赖前一个步骤，增加和 x0 的关系&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612160144368.png"
+width="2213"
+height="1117"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612160144368_hu_eefef8c252c397ba.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612160144368_hu_105f32547e4feaa7.png 1024w"
+loading="lazy"
+alt="image-20250612160144368"
+class="gallery-image"
+data-flex-grow="198"
+data-flex-basis="475px"
+&gt;&lt;/p&gt;
+&lt;h4 id="distillation"&gt;Distillation
+&lt;/h4&gt;&lt;p&gt;渐进蒸馏，教师模型一步一步，学生模型从教师模型的两步里面蒸馏学习成一步，然后渐进蒸馏，就可以减少步数&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612160241743.png"
+width="2130"
+height="1325"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612160241743_hu_e135cefd6a1da6a6.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612160241743_hu_c36cdf870d34dbb1.png 1024w"
+loading="lazy"
+alt="image-20250612160241743"
+class="gallery-image"
+data-flex-grow="160"
+data-flex-basis="385px"
+&gt;&lt;/p&gt;
+&lt;h3 id="acceleration-techniques"&gt;Acceleration techniques
+&lt;/h3&gt;&lt;h4 id="sparsity"&gt;Sparsity
+&lt;/h4&gt;&lt;p&gt;编辑只编辑了一些，但需要对所有像素进行运算&lt;/p&gt;
+&lt;p&gt;SDEdit，只重新计算改变的部分，别的部分复用&lt;/p&gt;
+&lt;p&gt;Sparse Incremental Generative Engine (SIGE)&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612160639455.png"
+width="2441"
+height="1247"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612160639455_hu_d6a9aebfe5f15ed3.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612160639455_hu_5d5fee72aeea92fb.png 1024w"
+loading="lazy"
+alt="image-20250612160639455"
+class="gallery-image"
+data-flex-grow="195"
+data-flex-basis="469px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Image Inpainting，类似，同时可以实现交互式&lt;/p&gt;
+&lt;h4 id="quantization-1"&gt;Quantization
+&lt;/h4&gt;&lt;p&gt;SVDQuant&lt;/p&gt;
+&lt;p&gt;和 LLM 不同，Diffusion Model 是compute-bound，所以 weight-only quantization 没办法加速扩散模型&lt;/p&gt;
+&lt;p&gt;使用类似 SmoothQuant 的方式，把激活值的 outlier 转移到权重上，然后权重使用 side (low rank) branch 去全精度保持精度损失，经过 SVD，异常值减少W4A4&lt;/p&gt;
+&lt;p&gt;同时，如果使用 LoRA funetuning，就不需要重新量化，在原本的全精度上追加秩就行了&lt;/p&gt;
+&lt;p&gt;简单实现，会带来不小的其他开销，kernel fusion 把旁支的 kernel 合在原本的 kernel 中，由于他们共享输入/输出&lt;/p&gt;
+&lt;h4 id="parallelism"&gt;Parallelism
+&lt;/h4&gt;&lt;p&gt;DistriFusion，相邻时间戳的输入实际上很相似，可以通过通信旧的激活值，来 overlap 通信与计算&lt;/p&gt;
+&lt;p&gt;同时，在更高的分辨率下，加速比更高，因为通信开销更大。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612161913159.png"
+width="2363"
+height="1041"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612161913159_hu_ed18db285ee356b.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250612161913159_hu_ac76f82f3f8298a.png 1024w"
+loading="lazy"
+alt="image-20250612161913159"
+class="gallery-image"
+data-flex-grow="226"
+data-flex-basis="544px"
+&gt;&lt;/p&gt;
+&lt;h2 id="lec19-distributed-training-1"&gt;Lec19 Distributed Training 1
+&lt;/h2&gt;&lt;h3 id="background-and-motivation"&gt;Background and motivation
+&lt;/h3&gt;&lt;p&gt;模型大，对于单 GPU 来说训练时间太长，需要多 GPU 协同训练&lt;/p&gt;
+&lt;h3 id="parallelization-methods-for-distributed-trainging"&gt;Parallelization methods for distributed trainging
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Data parallelism&lt;/p&gt;
+&lt;p&gt;拆分数据，多个 GPU 上的模型权重是共享的&lt;/p&gt;
+&lt;p&gt;partition data, sharing model&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pipeline Parallelism&lt;/p&gt;
+&lt;p&gt;拆分模型，一份数据。&lt;/p&gt;
+&lt;p&gt;按 layer-dimension 划分&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Tensor Parallelism&lt;/p&gt;
+&lt;p&gt;拆分模型，一份数据。&lt;/p&gt;
+&lt;p&gt;按 激活值 来划分&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Sequence Parallelism&lt;/p&gt;
+&lt;p&gt;data parallelism 是 batch，sequence parallelism 是 token&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="communication-primitives"&gt;Communication primitives
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;One-to-One: Send and Recv&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613165612939.png"
+width="1962"
+height="1081"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613165612939_hu_d4fcbd4f319089e7.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613165612939_hu_133f2af03898a92d.png 1024w"
+loading="lazy"
+alt="image-20250613165612939"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="435px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;One-to-Many and Many-to-One: Scatter and Gather&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613165825185.png"
+width="2322"
+height="1055"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613165825185_hu_a5d6eda6815286c6.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613165825185_hu_f0fac2f144570faa.png 1024w"
+loading="lazy"
+alt="image-20250613165825185"
+class="gallery-image"
+data-flex-grow="220"
+data-flex-basis="528px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Many-to-One and One-to-Many: Reduce and Broadcast&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Reduce 可以看作是 Gather + Reduce 归约操作&lt;/p&gt;
+&lt;p&gt;Broadcast 是把张量的全部都分发给所有节点，Scatter 是把不同部分分发给不同节点&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613172900306.png"
+width="2323"
+height="1156"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613172900306_hu_b9aaa7151ea0703a.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613172900306_hu_7b5f438c01c4650c.png 1024w"
+loading="lazy"
+alt="image-20250613172900306"
+class="gallery-image"
+data-flex-grow="200"
+data-flex-basis="482px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Many-to-Many: All-Reduce and All-Gather&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;All-Reduce 对所有 workers 做 Reduce&lt;/p&gt;
+&lt;p&gt;All-Gather 对所有 workers 做 Gather&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="data-parallelism"&gt;Data Parallelism
+&lt;/h3&gt;&lt;h4 id="parameter-server"&gt;Parameter Server
+&lt;/h4&gt;&lt;p&gt;中心化&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Workers pull model from Server&lt;/li&gt;
+&lt;li&gt;Workers push &amp;amp; sum to Server gradient&lt;/li&gt;
+&lt;li&gt;Server update model using gradient&lt;/li&gt;
+&lt;li&gt;Workers replicate / pull the updated model to update local copy&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613164631712.png"
+width="2508"
+height="1297"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613164631712_hu_44a83d3756b6b902.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613164631712_hu_e1bda9e5ec8296cc.png 1024w"
+loading="lazy"
+alt="image-20250613164631712"
+class="gallery-image"
+data-flex-grow="193"
+data-flex-basis="464px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613200509743.png"
+width="2323"
+height="975"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613200509743_hu_f270c48467681b30.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613200509743_hu_d759adaabd3ad813.png 1024w"
+loading="lazy"
+alt="image-20250613200509743"
+class="gallery-image"
+data-flex-grow="238"
+data-flex-basis="571px"
+&gt;&lt;/p&gt;
+&lt;h4 id="去中心化的方法"&gt;去中心化的方法
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Naive All-Reduce, Sequential&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613200734771.png"
+width="2194"
+height="1125"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613200734771_hu_e4150071f0ac17f1.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613200734771_hu_ed4c3329af763a79.png 1024w"
+loading="lazy"
+alt="image-20250613200734771"
+class="gallery-image"
+data-flex-grow="195"
+data-flex-basis="468px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Better All-Reduce, Ring&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613200800292.png"
+width="2473"
+height="1113"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613200800292_hu_a57ce8d6af8016.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613200800292_hu_3e3c58361e0f1fcd.png 1024w"
+loading="lazy"
+alt="image-20250613200800292"
+class="gallery-image"
+data-flex-grow="222"
+data-flex-basis="533px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Naive All-Reduce, Parallel Reduce&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613201020226.png"
+width="2413"
+height="1114"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613201020226_hu_55e97c8644f0f44d.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613201020226_hu_d84e6a8de0c13d0f.png 1024w"
+loading="lazy"
+alt="image-20250613201020226"
+class="gallery-image"
+data-flex-grow="216"
+data-flex-basis="519px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613201121123.png"
+width="1884"
+height="634"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613201121123_hu_92926dfef16c07c1.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613201121123_hu_16e804aed20a0525.png 1024w"
+loading="lazy"
+alt="image-20250613201121123"
+class="gallery-image"
+data-flex-grow="297"
+data-flex-basis="713px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Recursive Halving All Reduce (Butterfly All Reduce)&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613201351600.png"
+width="2458"
+height="1135"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613201351600_hu_5135e62de8c3a435.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613201351600_hu_25fadad1749f3052.png 1024w"
+loading="lazy"
+alt="image-20250613201351600"
+class="gallery-image"
+data-flex-grow="216"
+data-flex-basis="519px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="reducing-memory-in-data-parallelism-zero-123-and-fsdp"&gt;Reducing memory in data parallelism: Zero-1/2/3 and FSDP
+&lt;/h3&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613202114941.png"
+width="2448"
+height="1267"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613202114941_hu_5f384b2a345bcd48.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613202114941_hu_919c0cd187b17a6e.png 1024w"
+loading="lazy"
+alt="image-20250613202114941"
+class="gallery-image"
+data-flex-grow="193"
+data-flex-basis="463px"
+&gt;&lt;/p&gt;
+&lt;h3 id="pipeline-parallelism"&gt;Pipeline parallelism
+&lt;/h3&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613212924989.png"
+width="2404"
+height="1172"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613212924989_hu_8e53d8ff76c7119e.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613212924989_hu_c4c6c32adc158858.png 1024w"
+loading="lazy"
+alt="image-20250613212924989"
+class="gallery-image"
+data-flex-grow="205"
+data-flex-basis="492px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613213026648.png"
+width="2409"
+height="1158"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613213026648_hu_8f9e5f90e1a80b69.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613213026648_hu_a4cd5a6ad7dded2b.png 1024w"
+loading="lazy"
+alt="image-20250613213026648"
+class="gallery-image"
+data-flex-grow="208"
+data-flex-basis="499px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613213054283.png"
+width="2379"
+height="994"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613213054283_hu_84a1d2cdabd6bd19.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613213054283_hu_dacd269c8198030f.png 1024w"
+loading="lazy"
+alt="image-20250613213054283"
+class="gallery-image"
+data-flex-grow="239"
+data-flex-basis="574px"
+&gt;&lt;/p&gt;
+&lt;h3 id="tensor-parallelism"&gt;Tensor parallelism
+&lt;/h3&gt;&lt;p&gt;从 d_dim 维度切，垂直切，再水平切&lt;/p&gt;
+&lt;p&gt;Scatter and All-Reduce&lt;/p&gt;
+&lt;p&gt;broadcast activation&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613214711506.png"
+width="2400"
+height="1306"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613214711506_hu_a07381a63091d056.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613214711506_hu_2230fb72f7835f79.png 1024w"
+loading="lazy"
+alt="image-20250613214711506"
+class="gallery-image"
+data-flex-grow="183"
+data-flex-basis="441px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613214001072.png"
+width="2094"
+height="1064"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613214001072_hu_240946dd6073a058.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613214001072_hu_446ff4c39cc4f32c.png 1024w"
+loading="lazy"
+alt="image-20250613214001072"
+class="gallery-image"
+data-flex-grow="196"
+data-flex-basis="472px"
+&gt;&lt;/p&gt;
+&lt;h3 id="sequence-parallelism"&gt;Sequence parallelism
+&lt;/h3&gt;&lt;p&gt;处理长下文&lt;/p&gt;
+&lt;p&gt;比如把一本书的不同章节分别做，但是注意力不能互相计算，只是局部的话，会缺失上下文。&lt;/p&gt;
+&lt;h4 id="deepspeed-ulysses-solution-1-re-partition-data-in-attention-layers"&gt;DeepSpeed Ulysses (Solution 1: Re-partition data in Attention layers)
+&lt;/h4&gt;&lt;p&gt;All-to-All 全对全通信开销大，节点之间通信成本高；&lt;/p&gt;
+&lt;p&gt;最大并行度？会受到模型的多头注意力的头的个数&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613215341718.png"
+width="2478"
+height="1347"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613215341718_hu_5139d54be6ec48cc.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613215341718_hu_b1fde7d1ed26c759.png 1024w"
+loading="lazy"
+alt="image-20250613215341718"
+class="gallery-image"
+data-flex-grow="183"
+data-flex-basis="441px"
+&gt;&lt;/p&gt;
+&lt;h4 id="ring-attentionsolution-2-ring-attention"&gt;Ring Attention(Solution 2: Ring Attention)
+&lt;/h4&gt;&lt;p&gt;交换 KV1 KV2 KV3&lt;/p&gt;
+&lt;p&gt;并行度不再受 head_num 限制&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613220222536.png"
+width="2248"
+height="1042"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613220222536_hu_6a4567cf0091b1c7.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250613220222536_hu_ca81ca5fb67b545d.png 1024w"
+loading="lazy"
+alt="image-20250613220222536"
+class="gallery-image"
+data-flex-grow="215"
+data-flex-basis="517px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Longvilla，结合这两种方法，在一个节点中，用 Ulysses，节点之间用 Ring Attention。&lt;/p&gt;
+&lt;p&gt;（节点内部通信高）&lt;/p&gt;
+&lt;h2 id="lec20-distributed-training-2"&gt;Lec20 Distributed Training 2
+&lt;/h2&gt;&lt;h3 id="hybrid-mixed-parallelism-and-how-to-auto-parallelize"&gt;Hybrid (mixed) parallelism and how to auto-parallelize
+&lt;/h3&gt;&lt;h4 id="2d-parallelism"&gt;2D Parallelism
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Outer: DP&lt;/p&gt;
+&lt;p&gt;Inner: PP&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Outer: PP&lt;/p&gt;
+&lt;p&gt;Inner: TP&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Intra-node: all-to-all repartition&lt;/p&gt;
+&lt;p&gt;Inter-node: ring attention&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614012437333.png"
+width="1910"
+height="1107"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614012437333_hu_6f693826f0f91bda.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614012437333_hu_10197c568b844492.png 1024w"
+loading="lazy"
+alt="image-20250614012437333"
+class="gallery-image"
+data-flex-grow="172"
+data-flex-basis="414px"
+&gt;&lt;/p&gt;
+&lt;h4 id="3d-parallelism"&gt;3D Parallelism
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;PP + TP + DP&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="how-to-auto-parallelize"&gt;How to Auto Parallelize
+&lt;/h4&gt;&lt;p&gt;模型太大，不能放单机；PP&lt;/p&gt;
+&lt;p&gt;模型层太大，不能方单机；TP&lt;/p&gt;
+&lt;h4 id="alpa-a-unified-compiler-for-distributed-training"&gt;Alpa: A Unified Compiler for Distributed Training
+&lt;/h4&gt;&lt;p&gt;搜索空间大，分层搜索空间 Hierarchical Space。&lt;/p&gt;
+&lt;p&gt;Inter-op Parallelism&lt;/p&gt;
+&lt;p&gt;Intra-op Parallelism&lt;/p&gt;
+&lt;p&gt;Cost，计算成本、通信成本、数据重分布成本&lt;/p&gt;
+&lt;p&gt;（那还有说法吗？这个设计）&lt;/p&gt;
+&lt;h3 id="understand-the-bandwidth-and-latency-bottleneck-of-distributed-training"&gt;Understand the bandwidth and latency bottleneck of distributed training
+&lt;/h3&gt;&lt;p&gt;通信很重要。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614013903028.png"
+width="2121"
+height="467"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614013903028_hu_ca07c8b785348800.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614013903028_hu_40298beacfbd3352.png 1024w"
+loading="lazy"
+alt="image-20250614013903028"
+class="gallery-image"
+data-flex-grow="454"
+data-flex-basis="1090px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;估算延迟&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614014017059.png"
+width="2213"
+height="1198"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614014017059_hu_f58ca66a5b265b56.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614014017059_hu_4313c5c87ac60be7.png 1024w"
+loading="lazy"
+alt="image-20250614014017059"
+class="gallery-image"
+data-flex-grow="184"
+data-flex-basis="443px"
+&gt;&lt;/p&gt;
+&lt;h3 id="gradient-compression-overcome-the-bandwidth-bottleneck"&gt;Gradient compression: overcome the bandwidth bottleneck
+&lt;/h3&gt;&lt;h4 id="gradient-prunning"&gt;Gradient Prunning
+&lt;/h4&gt;&lt;h5 id="sparse-communication-稀疏通信"&gt;Sparse Communication 稀疏通信
+&lt;/h5&gt;&lt;p&gt;结合局部梯度累积的梯度剪枝&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;只 send top-k 梯度 by magnitude&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;保持未 send（没有到 top-k 的）作为 error feedback (residual)&lt;/p&gt;
+&lt;p&gt;保留残差，直到累积到阈值 （梯度裁切）&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614021915785.png"
+width="1153"
+height="542"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614021915785_hu_df335455ec4a0161.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614021915785_hu_59ba5690634140fb.png 1024w"
+loading="lazy"
+alt="image-20250614021915785"
+class="gallery-image"
+data-flex-grow="212"
+data-flex-basis="510px"
+&gt;&lt;/p&gt;
+&lt;p&gt;导致性能下降。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Momentum 动量机制&lt;/p&gt;
+&lt;p&gt;直接累积梯度，会导致优化方向的偏移&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;应该累积速度，而非梯度&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614014930010.png"
+width="1773"
+height="869"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614014930010_hu_c0dd3cf88bcd543d.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614014930010_hu_a1213cc14908ac35.png 1024w"
+loading="lazy"
+alt="image-20250614014930010"
+class="gallery-image"
+data-flex-grow="204"
+data-flex-basis="489px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614015158377.png"
+width="1695"
+height="788"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614015158377_hu_500013976071b3f5.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614015158377_hu_61c41ce8123f8908.png 1024w"
+loading="lazy"
+alt="image-20250614015158377"
+class="gallery-image"
+data-flex-grow="215"
+data-flex-basis="516px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id="deep-gradient-compression"&gt;Deep Gradient Compression
+&lt;/h5&gt;&lt;p&gt;warm up training&lt;/p&gt;
+&lt;p&gt;在训练早期，权重改变大；warm up learning rate&lt;/p&gt;
+&lt;p&gt;累积梯度会加剧问题；warm up sparsity&lt;/p&gt;
+&lt;p&gt;指数逐渐增大，保持稳定。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614015736570.png"
+width="725"
+height="529"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614015736570_hu_18c15fdca4c025cd.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614015736570_hu_ec110903f60e0cb9.png 1024w"
+loading="lazy"
+alt="image-20250614015736570"
+class="gallery-image"
+data-flex-grow="137"
+data-flex-basis="328px"
+&gt;&lt;/p&gt;
+&lt;p&gt;梯度压缩比可以到很高，99.9%，没有1000x？索引开销、bias 偏置没有剪枝，&lt;strong&gt;偏置对残差训练很重要&lt;/strong&gt;。&lt;/p&gt;
+&lt;h5 id="powersgd-low-rank-gradient-compression"&gt;PowerSGD: Low-Rank Gradient Compression
+&lt;/h5&gt;&lt;p&gt;&lt;strong&gt;问题：稀疏梯度，在 all-reduce 环节会变得越来密集&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;采用固定稀疏模式，粗粒度稀疏。&lt;/p&gt;
+&lt;p&gt;用低秩分解，来固定稀疏模式，粗粒度稀疏。&lt;/p&gt;
+&lt;h4 id="gradient-quantization"&gt;Gradient Quantization
+&lt;/h4&gt;&lt;h5 id="1-bit-sgd"&gt;1-Bit SGD
+&lt;/h5&gt;&lt;p&gt;把梯度量化为 1 bit，零阈值，同时保留 delta 值作为残差，缓解误差（累积到阈值，直接加回）。&lt;/p&gt;
+&lt;p&gt;每一列都增加一个 fp32 的缩放因子&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022206527.png"
+width="1340"
+height="550"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022206527_hu_33e3a6a0be2b784.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022206527_hu_6358c5de2067400f.png 1024w"
+loading="lazy"
+alt="image-20250614022206527"
+class="gallery-image"
+data-flex-grow="243"
+data-flex-basis="584px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022215979.png"
+width="1369"
+height="654"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022215979_hu_13c50d7a58cf59b0.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022215979_hu_cfd70140f1589f40.png 1024w"
+loading="lazy"
+alt="image-20250614022215979"
+class="gallery-image"
+data-flex-grow="209"
+data-flex-basis="502px"
+&gt;&lt;/p&gt;
+&lt;h5 id="threshold-quantization"&gt;Threshold Quantization
+&lt;/h5&gt;&lt;p&gt;设置 tau，大于 tau 为 tau，小于 -tau 为 -tau，之间为 0&lt;/p&gt;
+&lt;p&gt;需要经验选择 tau 值，同样有累积误差的机制&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022458482.png"
+width="1168"
+height="535"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022458482_hu_4772a4f99a7d86d2.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022458482_hu_526326e0ef267f5a.png 1024w"
+loading="lazy"
+alt="image-20250614022458482"
+class="gallery-image"
+data-flex-grow="218"
+data-flex-basis="523px"
+&gt;&lt;/p&gt;
+&lt;h5 id="terngrad"&gt;TernGrad
+&lt;/h5&gt;&lt;p&gt;量化 g_i / max(g) 为 0, 1, -1 ，以概率来随机量化，期望一致，不需要累积误差。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022659938.png"
+width="1124"
+height="613"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022659938_hu_bce9817bfcff6245.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022659938_hu_2f40ce47452d16fa.png 1024w"
+loading="lazy"
+alt="image-20250614022659938"
+class="gallery-image"
+data-flex-grow="183"
+data-flex-basis="440px"
+&gt;&lt;/p&gt;
+&lt;h3 id="delayed-gradient-update-overcome-the-latency-bottleneck"&gt;Delayed gradient update: overcome the latency bottleneck
+&lt;/h3&gt;&lt;h4 id="bandwidth-vs-latency"&gt;Bandwidth vs. Latency
+&lt;/h4&gt;&lt;p&gt;带宽容易提升，剪枝量化、硬件提升；&lt;/p&gt;
+&lt;p&gt;延迟由物理限制，被光速限制&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022852163.png"
+width="1367"
+height="506"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022852163_hu_3bb4127c97dc7a1d.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022852163_hu_1fe97341a227314d.png 1024w"
+loading="lazy"
+alt="image-20250614022852163"
+class="gallery-image"
+data-flex-grow="270"
+data-flex-basis="648px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022909511.png"
+width="1451"
+height="568"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022909511_hu_4640f795858f9bd1.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614022909511_hu_6320affbd71d958a.png 1024w"
+loading="lazy"
+alt="image-20250614022909511"
+class="gallery-image"
+data-flex-grow="255"
+data-flex-basis="613px"
+&gt;&lt;/p&gt;
+&lt;p&gt;延迟高，同步延迟会变高。&lt;/p&gt;
+&lt;p&gt;Delayed Gradient Averaging&lt;/p&gt;
+&lt;p&gt;超过太多步是不行的。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614030644450.png"
+width="953"
+height="443"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614030644450_hu_2288e141cd40551d.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614030644450_hu_3c7109830e44853.png 1024w"
+loading="lazy"
+alt="image-20250614030644450"
+class="gallery-image"
+data-flex-grow="215"
+data-flex-basis="516px"
+&gt;&lt;/p&gt;
+&lt;p&gt;最新的减去当前的来补偿延迟，avg_g 已经有了自己节点的梯度。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614032017831.png"
+width="1111"
+height="551"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614032017831_hu_942944bcbb0c93e0.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614032017831_hu_dbf4c203be69330c.png 1024w"
+loading="lazy"
+alt="image-20250614032017831"
+class="gallery-image"
+data-flex-grow="201"
+data-flex-basis="483px"
+&gt;&lt;/p&gt;
+&lt;h2 id="lec21-on-device-training-and-transfer-learning"&gt;Lec21 On-Device Training and Transfer Learning
+&lt;/h2&gt;&lt;h3 id="deep-leakage-fram-gradients-gradient-is-not-safe-to-share"&gt;Deep leakage fram gradients, gradient is not safe to share
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Federated learning 联邦学习&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;FedAvg algorithm，只传送权重/梯度&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614132630692.png"
+width="1221"
+height="554"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614132630692_hu_b1e5d6461b4cf9f3.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614132630692_hu_6f22ce8fe997746a.png 1024w"
+loading="lazy"
+alt="image-20250614132630692"
+class="gallery-image"
+data-flex-grow="220"
+data-flex-basis="528px"
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Membership Inference，指出可以用梯度判断某个记录是否在批次中使用&lt;/li&gt;
+&lt;li&gt;Property Inference，指出可以用梯度判断有特定属性的样本是否在批次中&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Deep Leakage Attack&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614133052908.png"
+width="1097"
+height="603"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614133052908_hu_328c024376223aa6.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614133052908_hu_2949f90be1a8a1d3.png 1024w"
+loading="lazy"
+alt="image-20250614133052908"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="436px"
+&gt;&lt;/p&gt;
+&lt;p&gt;一张图片ok，一个批次多个图片，也是可以的，顺序可能不确定，但是内容可以&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;防御策略&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;增加 Gaussian / laplacian noise，过小没有用，过大破坏模型&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;梯度压缩，剪枝比例到 70% 基本不泄露，保持性能&lt;/p&gt;
+&lt;p&gt;只有很少的梯度泄露，复原不出来。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="memory-bottleneck-of-on-device-training"&gt;Memory bottleneck of on-device training
+&lt;/h3&gt;&lt;p&gt;训练的内存占用大，因为批次大、需要存储中间激活值&lt;/p&gt;
+&lt;p&gt;（checkpoint 来计算换空间）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Last 只微调最后一层？准确率下降很多&lt;/li&gt;
+&lt;li&gt;BN + Last&lt;/li&gt;
+&lt;li&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614134803215.png"
+width="1182"
+height="670"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614134803215_hu_e286425f22b4e7bd.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614134803215_hu_a20f4090eb0dfc7a.png 1024w"
+loading="lazy"
+alt="image-20250614134803215"
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="423px"
+&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;代价很大，效果不好&lt;/p&gt;
+&lt;h3 id="tiny-tansfer-learning-tinytl"&gt;Tiny tansfer learning (TinyTL)
+&lt;/h3&gt;&lt;p&gt;反向传播更新权重需要激活值，bias偏置不需要激活值&lt;/p&gt;
+&lt;p&gt;只微调偏置，Bias + Last&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614140601427.png"
+width="759"
+height="589"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614140601427_hu_f482238898fad1d.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614140601427_hu_f444c9813e043ca.png 1024w"
+loading="lazy"
+alt="image-20250614140601427"
+class="gallery-image"
+data-flex-grow="128"
+data-flex-basis="309px"
+&gt;&lt;/p&gt;
+&lt;p&gt;引入轻量分支&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614140753094.png"
+width="775"
+height="556"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614140753094_hu_1deaf0e469bd6c28.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614140753094_hu_a639449d8b91ed69.png 1024w"
+loading="lazy"
+alt="image-20250614140753094"
+class="gallery-image"
+data-flex-grow="139"
+data-flex-basis="334px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614140826258.png"
+width="1132"
+height="573"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614140826258_hu_692e285a95884417.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614140826258_hu_e705b6160a8355e5.png 1024w"
+loading="lazy"
+alt="image-20250614140826258"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="474px"
+&gt;&lt;/p&gt;
+&lt;p&gt;比剪枝激活值更有效&lt;/p&gt;
+&lt;h3 id="sparse-back-propagation-sparsebp"&gt;Sparse back-propagation (SparseBP)
+&lt;/h3&gt;&lt;p&gt;从生物学出发的方法。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141009296.png"
+width="1125"
+height="563"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141009296_hu_15d754af3e1b574a.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141009296_hu_f2119d7de2a19dfc.png 1024w"
+loading="lazy"
+alt="image-20250614141009296"
+class="gallery-image"
+data-flex-grow="199"
+data-flex-basis="479px"
+&gt;&lt;/p&gt;
+&lt;p&gt;只更新一部分层（深度深的高级特征）&lt;/p&gt;
+&lt;p&gt;只更新一层中的一部分参数&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141140713.png"
+width="1143"
+height="572"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141140713_hu_2b9e09a3a0ee3687.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141140713_hu_1d1c040630c990db.png 1024w"
+loading="lazy"
+alt="image-20250614141140713"
+class="gallery-image"
+data-flex-grow="199"
+data-flex-basis="479px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141154775.png"
+width="1039"
+height="597"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141154775_hu_248ad6f73c8a8bb9.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141154775_hu_8a4130dbb924cc99.png 1024w"
+loading="lazy"
+alt="image-20250614141154775"
+class="gallery-image"
+data-flex-grow="174"
+data-flex-basis="417px"
+&gt;&lt;/p&gt;
+&lt;p&gt;怎么选择？&lt;/p&gt;
+&lt;p&gt;起始分辨率高，后面通道数多&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141448171.png"
+width="1203"
+height="570"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141448171_hu_b99f12adb0dfd007.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141448171_hu_d4a8c29f9e4d4719.png 1024w"
+loading="lazy"
+alt="image-20250614141448171"
+class="gallery-image"
+data-flex-grow="211"
+data-flex-basis="506px"
+&gt;&lt;/p&gt;
+&lt;p&gt;contribution analysis 贡献分析&lt;/p&gt;
+&lt;p&gt;自动求解器，类似敏感度分析&lt;/p&gt;
+&lt;p&gt;只更新前面的层，acc 甚至变差。&lt;/p&gt;
+&lt;p&gt;发现重复的起伏，peak是点卷积，curve是深度卷积&lt;/p&gt;
+&lt;p&gt;更新比例。&lt;/p&gt;
+&lt;p&gt;用进化算法搜索。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141750320.png"
+width="1211"
+height="587"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141750320_hu_d52f34269720fefe.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614141750320_hu_c916b45384a44bee.png 1024w"
+loading="lazy"
+alt="image-20250614141750320"
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="495px"
+&gt;&lt;/p&gt;
+&lt;p&gt;SparseBP 的输出会更长？待研究。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614142713545.png"
+width="1206"
+height="587"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614142713545_hu_6f1cbc894b75ade.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614142713545_hu_f2a5cca2ef243cb1.png 1024w"
+loading="lazy"
+alt="image-20250614142713545"
+class="gallery-image"
+data-flex-grow="205"
+data-flex-basis="493px"
+&gt;&lt;/p&gt;
+&lt;h3 id="quantized-training-with-quantization-aware-scaling-qas"&gt;Quantized training with quantization aware scaling (QAS)
+&lt;/h3&gt;&lt;p&gt;在 int8 下，梯度值过小&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614143244669.png"
+width="1133"
+height="632"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614143244669_hu_e2bda51e1653d1c.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614143244669_hu_79cbc7cf5752b467.png 1024w"
+loading="lazy"
+alt="image-20250614143244669"
+class="gallery-image"
+data-flex-grow="179"
+data-flex-basis="430px"
+&gt;&lt;/p&gt;
+&lt;p&gt;修正缩放因子&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614143847560.png"
+width="1067"
+height="552"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614143847560_hu_af9551ebd47f5774.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614143847560_hu_f07a08ec16c1473a.png 1024w"
+loading="lazy"
+alt="image-20250614143847560"
+class="gallery-image"
+data-flex-grow="193"
+data-flex-basis="463px"
+&gt;&lt;/p&gt;
+&lt;h3 id="pockengine-system-support-for-sparse-back-propagation"&gt;PockEngine: system support for sparse back-propagation
+&lt;/h3&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614144507235.png"
+width="1001"
+height="573"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614144507235_hu_b5338a28ffee1a9d.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614144507235_hu_204a9f7a09eb3970.png 1024w"
+loading="lazy"
+alt="image-20250614144507235"
+class="gallery-image"
+data-flex-grow="174"
+data-flex-basis="419px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614144519082.png"
+width="970"
+height="560"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614144519082_hu_dee383ff135c8fb6.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614144519082_hu_46582d5442e6262f.png 1024w"
+loading="lazy"
+alt="image-20250614144519082"
+class="gallery-image"
+data-flex-grow="173"
+data-flex-basis="415px"
+&gt;&lt;/p&gt;
+&lt;p&gt;多种芯片，编译中，运行轻，训练优化。&lt;/p&gt;
+&lt;h2 id="lec22-quantum-machine-learning-1"&gt;Lec22 Quantum Machine Learning 1
+&lt;/h2&gt;&lt;p&gt;解码量子纠错代码&lt;/p&gt;
+&lt;p&gt;Noisy Intermediate-Scale Quantum (NISQ)&lt;/p&gt;
+&lt;h3 id="single-qubit-state-and-gates"&gt;Single qubit state and gates
+&lt;/h3&gt;&lt;h4 id="single-qubit-state"&gt;Single qubit state
+&lt;/h4&gt;&lt;p&gt;basic component =&amp;gt; Quantum Bit (Qubit)&lt;/p&gt;
+&lt;p&gt;state =&amp;gt; statevector&lt;/p&gt;
+&lt;p&gt;Bra-ket notation 狄拉克符号&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614151944103.png"
+width="1649"
+height="1026"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614151944103_hu_dd25d8d08932184e.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614151944103_hu_84041915a2d090e1.png 1024w"
+loading="lazy"
+alt="image-20250614151944103"
+class="gallery-image"
+data-flex-grow="160"
+data-flex-basis="385px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614152018133.png"
+width="1292"
+height="339"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614152018133_hu_63e0611035847d94.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614152018133_hu_1f5057980b11ebe2.png 1024w"
+loading="lazy"
+alt="image-20250614152018133"
+class="gallery-image"
+data-flex-grow="381"
+data-flex-basis="914px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Measurement&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614155838740.png"
+width="1164"
+height="699"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614155838740_hu_bbe48f13240050ab.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614155838740_hu_3e22d8bc7c56dc40.png 1024w"
+loading="lazy"
+alt="image-20250614155838740"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="399px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Bloch Sphere&lt;/strong&gt; 布洛赫球&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614161304846.png"
+width="1477"
+height="868"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614161304846_hu_c76ef274ede36861.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614161304846_hu_44ca0c3d16f48814.png 1024w"
+loading="lazy"
+alt="image-20250614161304846"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614161314120.png"
+width="2553"
+height="1107"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614161314120_hu_5fce267d376fd511.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614161314120_hu_21c5be2e0c0f458.png 1024w"
+loading="lazy"
+alt="image-20250614161314120"
+class="gallery-image"
+data-flex-grow="230"
+data-flex-basis="553px"
+&gt;&lt;/p&gt;
+&lt;p&gt;用布洛赫球去表示任意量子比特的状态&lt;/p&gt;
+&lt;h4 id="single-qubit-gates"&gt;Single Qubit Gates
+&lt;/h4&gt;&lt;p&gt;所有 Quantum gates 量子门 都是 &lt;strong&gt;reversible&lt;/strong&gt; 可逆的（保证能量是一致的）&lt;/p&gt;
+&lt;p&gt;最简单的量子门是恒等映射&lt;/p&gt;
+&lt;p&gt;可逆门可用矩阵、布洛赫球的旋转&lt;/p&gt;
+&lt;h5 id="pauli-gates"&gt;Pauli Gates
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;X Gate (Not Gate)&lt;/li&gt;
+&lt;li&gt;Y Gate&lt;/li&gt;
+&lt;li&gt;Z Gate，0 =&amp;gt; 0, 1 =&amp;gt; -1, 全局相位 phase，常规无法测量，所以也认为一致&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614162343499.png"
+width="2275"
+height="1234"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614162343499_hu_29583f4275b6234a.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614162343499_hu_f0e508a4a4646403.png 1024w"
+loading="lazy"
+alt="image-20250614162343499"
+class="gallery-image"
+data-flex-grow="184"
+data-flex-basis="442px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614162450413.png"
+width="1957"
+height="690"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614162450413_hu_353b8b0ada3b0b7c.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614162450413_hu_a6418387af0a0377.png 1024w"
+loading="lazy"
+alt="image-20250614162450413"
+class="gallery-image"
+data-flex-grow="283"
+data-flex-basis="680px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614162815210.png"
+width="2177"
+height="1017"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614162815210_hu_53da467a68d7450c.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614162815210_hu_813972b1d564ba8e.png 1024w"
+loading="lazy"
+alt="image-20250614162815210"
+class="gallery-image"
+data-flex-grow="214"
+data-flex-basis="513px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614162859531.png"
+width="1208"
+height="1111"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614162859531_hu_9eca65bb6f93ce87.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614162859531_hu_6e0c156bf3b162a4.png 1024w"
+loading="lazy"
+alt="image-20250614162859531"
+class="gallery-image"
+data-flex-grow="108"
+data-flex-basis="260px"
+&gt;&lt;/p&gt;
+&lt;h5 id="hadamard-gate"&gt;Hadamard Gate
+&lt;/h5&gt;&lt;p&gt;创建叠加态&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163314899.png"
+width="1715"
+height="758"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163314899_hu_283ab58aa44ef562.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163314899_hu_7f801f4a9137f4d2.png 1024w"
+loading="lazy"
+alt="image-20250614163314899"
+class="gallery-image"
+data-flex-grow="226"
+data-flex-basis="543px"
+&gt;&lt;/p&gt;
+&lt;h5 id="other-gates"&gt;Other Gates
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;Phase Gate&lt;/li&gt;
+&lt;li&gt;S Gate&lt;/li&gt;
+&lt;li&gt;S dagger Gate&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163355276.png"
+width="2038"
+height="792"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163355276_hu_7798c972f9b61006.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163355276_hu_bff7d08179e8e78e.png 1024w"
+loading="lazy"
+alt="image-20250614163355276"
+class="gallery-image"
+data-flex-grow="257"
+data-flex-basis="617px"
+&gt;&lt;/p&gt;
+&lt;h5 id="u-gate"&gt;U Gate
+&lt;/h5&gt;&lt;p&gt;可以表示所有，通用门&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163501587.png"
+width="2187"
+height="977"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163501587_hu_cf17d9592b31f557.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163501587_hu_2ef1e5d38080774d.png 1024w"
+loading="lazy"
+alt="image-20250614163501587"
+class="gallery-image"
+data-flex-grow="223"
+data-flex-basis="537px"
+&gt;&lt;/p&gt;
+&lt;h3 id="multiple-qubit-state-and-gates"&gt;Multiple-qubit state and gates
+&lt;/h3&gt;&lt;h4 id="multiple-qubit-state"&gt;Multiple-qubit state
+&lt;/h4&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163625648.png"
+width="1570"
+height="503"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163625648_hu_841b40b9660289d3.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163625648_hu_220f98e5c5af51e3.png 1024w"
+loading="lazy"
+alt="image-20250614163625648"
+class="gallery-image"
+data-flex-grow="312"
+data-flex-basis="749px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163657750.png"
+width="1986"
+height="899"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163657750_hu_3c5acd4722ef9ea2.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614163657750_hu_33258c54323b915e.png 1024w"
+loading="lazy"
+alt="image-20250614163657750"
+class="gallery-image"
+data-flex-grow="220"
+data-flex-basis="530px"
+&gt;&lt;/p&gt;
+&lt;h4 id="multiple-qubit-gates"&gt;Multiple-qubit gates
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;CNOT Gate&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614164219673.png"
+width="2430"
+height="885"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614164219673_hu_f39c7d4692689050.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614164219673_hu_6b1ba0dec140248b.png 1024w"
+loading="lazy"
+alt="image-20250614164219673"
+class="gallery-image"
+data-flex-grow="274"
+data-flex-basis="658px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614164713691.png"
+width="1605"
+height="1186"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614164713691_hu_d4ce106d9ee4f09e.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614164713691_hu_bc4d302a03ad0380.png 1024w"
+loading="lazy"
+alt="image-20250614164713691"
+class="gallery-image"
+data-flex-grow="135"
+data-flex-basis="324px"
+&gt;&lt;/p&gt;
+&lt;h3 id="quantum-circuit"&gt;quantum circuit
+&lt;/h3&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614165152849.png"
+width="1932"
+height="1146"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614165152849_hu_f4f5aa20384ed9c6.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614165152849_hu_b57f8491b6e11bb2.png 1024w"
+loading="lazy"
+alt="image-20250614165152849"
+class="gallery-image"
+data-flex-grow="168"
+data-flex-basis="404px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614165242605.png"
+width="1972"
+height="1115"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614165242605_hu_a809d5c4f20c8409.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614165242605_hu_5df4f0515ad07288.png 1024w"
+loading="lazy"
+alt="image-20250614165242605"
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614165405669.png"
+width="2437"
+height="896"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614165405669_hu_5b4e48fdca2aa068.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614165405669_hu_30138f6bd9f96ca.png 1024w"
+loading="lazy"
+alt="image-20250614165405669"
+class="gallery-image"
+data-flex-grow="271"
+data-flex-basis="652px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614165644261.png"
+width="2269"
+height="1056"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614165644261_hu_6fce716f25dd73dc.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614165644261_hu_7267238d3c3346fc.png 1024w"
+loading="lazy"
+alt="image-20250614165644261"
+class="gallery-image"
+data-flex-grow="214"
+data-flex-basis="515px"
+&gt;&lt;/p&gt;
+&lt;p&gt;数据编码/上传代价是现在的主要瓶颈。&lt;/p&gt;
+&lt;h3 id="the-nisq-era-and-compilation-problems"&gt;the NISQ era and compilation problems
+&lt;/h3&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614170857415.png"
+width="2148"
+height="350"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614170857415_hu_860c41ab590d64e5.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614170857415_hu_366c7a296811f707.png 1024w"
+loading="lazy"
+alt="image-20250614170857415"
+class="gallery-image"
+data-flex-grow="613"
+data-flex-basis="1472px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614170705556.png"
+width="1414"
+height="205"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614170705556_hu_5116d888174b1bca.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614170705556_hu_a59627445ed66766.png 1024w"
+loading="lazy"
+alt="image-20250614170705556"
+class="gallery-image"
+data-flex-grow="689"
+data-flex-basis="1655px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Single-qubit X error rate =&amp;gt; 1.718e-3&lt;/p&gt;
+&lt;p&gt;CNOT error rate =&amp;gt; 6.973e-2&lt;/p&gt;
+&lt;p&gt;不同量子比特的性能可能不同，误差率。&lt;/p&gt;
+&lt;p&gt;Sabre Qubit Mapping&lt;/p&gt;
+&lt;p&gt;看交换后能执行的门，启发式交换&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614172900090.png"
+width="2487"
+height="1313"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614172900090_hu_eb07847247d66a86.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614172900090_hu_60504c984c87a341.png 1024w"
+loading="lazy"
+alt="image-20250614172900090"
+class="gallery-image"
+data-flex-grow="189"
+data-flex-basis="454px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614172953543.png"
+width="2473"
+height="791"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614172953543_hu_9baf264039b80cd8.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614172953543_hu_c8551bffde8ff7a9.png 1024w"
+loading="lazy"
+alt="image-20250614172953543"
+class="gallery-image"
+data-flex-grow="312"
+data-flex-basis="750px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;QuantumNAS&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614173036947.png"
+width="2313"
+height="991"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614173036947_hu_97381e94e42697e8.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614173036947_hu_619fff6cc9af196d.png 1024w"
+loading="lazy"
+alt="image-20250614173036947"
+class="gallery-image"
+data-flex-grow="233"
+data-flex-basis="560px"
+&gt;&lt;/p&gt;
+&lt;h3 id="the-example-workflow-and-compiler-on-neutral-atom-quantum-computer"&gt;the example workflow and compiler on neutral atom quantum computer
+&lt;/h3&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614173159070.png"
+width="2129"
+height="1329"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614173159070_hu_cd6beb395e263fac.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614173159070_hu_b97073934485b825.png 1024w"
+loading="lazy"
+alt="image-20250614173159070"
+class="gallery-image"
+data-flex-grow="160"
+data-flex-basis="384px"
+&gt;&lt;/p&gt;
+&lt;p&gt;最大 k 割去优化编译&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614173537427.png"
+width="2424"
+height="1145"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614173537427_hu_7371898682497bae.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614173537427_hu_3a511f608888dcfc.png 1024w"
+loading="lazy"
+alt="image-20250614173537427"
+class="gallery-image"
+data-flex-grow="211"
+data-flex-basis="508px"
+&gt;&lt;/p&gt;
+&lt;h2 id="lec23-quantum-machine-learning-2"&gt;Lec23 Quantum Machine Learning 2
+&lt;/h2&gt;&lt;p&gt;&lt;a class="link" href="https://www.dropbox.com/scl/fi/wxpnpwkrl6pw7lb4n4vrg/Lec23-Quantum-ML-II.pdf?rlkey=21msd9zdilhry5pydlkvbn7n4&amp;amp;e=1&amp;amp;st=aoyc9pzv&amp;amp;dl=0" target="_blank" rel="noopener"
+&gt;Lec23-Quantum-ML-II.pdf&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;TBD.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614174243356.png"
+width="2159"
+height="1126"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614174243356_hu_55ecf486e0158fbb.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614174243356_hu_fc52d1d5faec2932.png 1024w"
+loading="lazy"
+alt="image-20250614174243356"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="460px"
+&gt;&lt;/p&gt;
+&lt;h3 id="parameterized-quantum-circuit-pqc"&gt;Parameterized Quantum Circuit (PQC)
+&lt;/h3&gt;&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614174538876.png"
+width="2276"
+height="1318"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614174538876_hu_93e85cb972818325.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614174538876_hu_c2a8a39b3ec8fb5d.png 1024w"
+loading="lazy"
+alt="image-20250614174538876"
+class="gallery-image"
+data-flex-grow="172"
+data-flex-basis="414px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614175013836.png"
+width="2108"
+height="1306"
+srcset="https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614175013836_hu_9a44d9bd794ff683.png 480w, https://livinfly.github.io/p/mit6.5940-tinyml-and-efficient-deep-learning-computing/note.assets/image-20250614175013836_hu_5cb80f51af00617a.png 1024w"
+loading="lazy"
+alt="image-20250614175013836"
+class="gallery-image"
+data-flex-grow="161"
+data-flex-basis="387px"
+&gt;&lt;/p&gt;
+&lt;p&gt;硬件效率&lt;/p&gt;
+&lt;h3 id="pqc-training"&gt;PQC Training
+&lt;/h3&gt;&lt;h3 id="quantum-classifiers"&gt;Quantum Classifiers
+&lt;/h3&gt;&lt;h3 id="noise-aware-on-chip-training-qoc-of-pqc"&gt;Noise Aware On-Chip Training (QOC) of PQC
+&lt;/h3&gt;&lt;h3 id="torchquantum-library-for-qml"&gt;TorchQuantum Library for QML
+&lt;/h3&gt;&lt;h3 id="robust-quantum-architecture-search"&gt;Robust Quantum Architecture Search
+&lt;/h3&gt;</description></item></channel></rss>

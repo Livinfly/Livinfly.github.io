@@ -1,0 +1,1246 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='Stanford CS149 (2023): Assignment 4 writeup.'><title>『学习笔记』CS149 (2023): Assignment 4 | Livinfly's Blog</title><link rel=canonical href=https://livinfly.github.io/p/cs149_2023_asst4_writeup/><link rel=stylesheet href=/scss/style.min.7b96b7b80dada1deccaa378dbac0dcc82da1c6e0722374b6ba5d8ad5b920363f.css><meta property='og:title' content="『学习笔记』CS149 (2023): Assignment 4"><meta property='og:description' content="Stanford CS149 (2023): Assignment 4 writeup."><meta property='og:url' content='https://livinfly.github.io/p/cs149_2023_asst4_writeup/'><meta property='og:site_name' content="Livinfly's Blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='学习笔记'><meta property='article:tag' content='CS149'><meta property='article:tag' content='并行计算'><meta property='article:published_time' content='2025-08-26T06:43:05+00:00'><meta property='article:modified_time' content='2025-09-06T14:35:51+08:00'><meta property='og:image' content='https://livinfly.github.io/p/cs149_2023_asst4_writeup/cover.jpeg'><meta name=twitter:site content="@Mengmm_JhaiL"><meta name=twitter:creator content="@Mengmm_JhaiL"><meta name=twitter:title content="『学习笔记』CS149 (2023): Assignment 4"><meta name=twitter:description content="Stanford CS149 (2023): Assignment 4 writeup."><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://livinfly.github.io/p/cs149_2023_asst4_writeup/cover.jpeg'><link rel="shortcut icon" href=/favicon.png><link rel=apple-touch-icon href=/favicon.png><script async src="https://www.googletagmanager.com/gtag/js?id=G-LKX43Y8KEL"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-LKX43Y8KEL")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_6155a7461c712b4f.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🤣</span></figure><div class=site-meta><h1 class=site-name><a href=/>Livinfly's Blog</a></h1><h2 class=site-description>想要留下点温暖的地方</h2></div></header><ol class=menu-social><li><a href=mailto:luojie3m@163.com target=_blank title=Email rel=me><svg class="icon icon-tabler icon-tabler-mail" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg></a></li><li><a href=https://github.com/Livinfly target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://twitter.com/Mengmm_JhaiL target=_blank title=Twitter rel=me><svg class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M22 4.01c-1 .49-1.98.689-3 .99-1.121-1.265-2.783-1.335-4.38-.737S11.977 6.323 12 8v1c-3.245.083-6.135-1.395-8-4 0 0-4.182 7.433 4 11-1.872 1.247-3.739 2.088-6 2 3.308 1.803 6.913 2.423 10.034 1.517 3.58-1.04 6.522-3.723 7.651-7.742a13.84 13.84.0 00.497-3.753C20.18 7.773 21.692 5.25 22 4.009z"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>友链</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#环境>环境</a></li><li><a href=#warm-up-accessing-tensors>Warm-Up: Accessing Tensors</a></li><li><a href=#part-1-a-simple-but-not-so-efficient-implementation-of-attention>Part 1: A Simple (But Not So Efficient) Implementation of Attention</a></li><li><a href=#part-2-blocked-matrix-multiply-and-unfused-softmax>Part 2: Blocked Matrix Multiply and Unfused Softmax</a></li><li><a href=#part-3-fused-attention>Part 3: Fused Attention</a></li><li><a href=#part-4--putting-it-all-together---flash-attention>Part 4 : Putting it all Together - Flash Attention</a></li><li><a href=#extra-credit-optimize-further>Extra Credit: Optimize Further</a></li><li><a href=#结语>结语</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/cs149_2023_asst4_writeup/><img src=/p/cs149_2023_asst4_writeup/cover_hu_da3a0786e2606653.jpeg srcset="/p/cs149_2023_asst4_writeup/cover_hu_da3a0786e2606653.jpeg 800w, /p/cs149_2023_asst4_writeup/cover_hu_a014407d891aeef7.jpeg 1600w" width=800 height=616 loading=lazy alt="Featured image of post 『学习笔记』CS149 (2023): Assignment 4"></a></div><div class=article-details><header class=article-category><a href=/categories/note/>笔记</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/cs149_2023_asst4_writeup/>『学习笔记』CS149 (2023): Assignment 4</a></h2><h3 class=article-subtitle>Stanford CS149 (2023): Assignment 4 writeup.</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2025-08-26T06:43:05Z>2025 年 8 月 26 日</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 11 分钟</time></div></footer></div></header><section class=article-content><h1 id=cs149-2023-assignment-4>CS149 (2023): Assignment 4</h1><blockquote><p>由于 2024 Assignment 4 需要服务器，转做 2023 的了。</p></blockquote><blockquote><p>封面来源：<a class=link href=https://x.com/hiyualice240/status/1959637650874458182 target=_blank rel=noopener>@hiyualice240</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p></blockquote><blockquote><p>相关文章：<a class=link href=https://blog.mizuki.fun/posts/832ed8a6.html target=_blank rel=noopener>CS149 Programming Assignment 4 - Chat149 - A Flash Attention Transformer DNN | MizukiCry's Blog</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p><p>原始实验材料仓库：<a class=link href=https://github.com/stanford-cs149/cs149gpt/tree/41e4875b50549f40aa399723dfe12de13e7da637 target=_blank rel=noopener>stanford-cs149/cs149gpt</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p><p>我的实现仓库：<a class=link href=https://github.com/Livinfly/15-418u15-618uCS149u target=_blank rel=noopener>Livinfly/15-418u15-618uCS149u</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p></blockquote><blockquote><p>任务推荐资料：</p><p>环境问题：</p><p><a class=link href=https://github.com/stanford-cs149/cs149gpt/issues/2 target=_blank rel=noopener>ImportError: cs149gpt/module_ref.so: undefined symbol · Issue #2 · stanford-cs149/cs149gpt</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p><p><a class=link href=https://github.com/BienBoy/cs149gpt/issues/1 target=_blank rel=noopener>我想要请教下此项目环境配置问题是如何解决的呢？ · Issue #1 · BienBoy/cs149gpt</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p><p>Transformer 的产生动机：</p><ul><li><a class=link href=https://gfxcourses.stanford.edu/cs149/fall23/lecture/dnneval/slide_52 target=_blank rel=noopener>Slide 52 of Lecture 10</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></li><li><a class=link href=https://ai.stackexchange.com/questions/21389/what-is-the-intuition-behind-the-attention-mechanism target=_blank rel=noopener>What is the intuition behind the attention mechanism?</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></li><li><a class=link href=https://builtin.com/artificial-intelligence/transformer-neural-network target=_blank rel=noopener>Transformer Neural Networks: A Step-by-Step Breakdown</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></li><li><a class=link href=https://towardsdatascience.com/transformers-141e32e69591 target=_blank rel=noopener>How Transformers Work</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></li></ul></blockquote><h2 id=环境>环境</h2><p>一开始想在 Mac 上做，但环境存在的不太行，转回 wsl2 了。</p><ul><li>OS: Windows11 - wsl2 (6.6.87.2-microsoft-standard-WSL2) - Ubuntu 22.04.5 LTS</li><li>CPU: AMD Ryzen 7 6800H (8 cores, 16 logical processors, AVX2 256-bit)</li><li>Python 3.10.12</li></ul><p>这个任务，<strong>using CPU only</strong>，不需要 GPU。</p><p>官方是服务器，没有给环境，需要自己配一下。</p><p>参考 <a class=link href=https://github.com/stanford-cs149/cs149gpt/issues/2 target=_blank rel=noopener>ImportError: cs149gpt/module_ref.so: undefined symbol · Issue #2 · stanford-cs149/cs149gpt</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg></sup></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>conda</span> <span class=n>create</span> <span class=o>-</span><span class=n>n</span> <span class=n>gpt149</span>
+</span></span><span class=line><span class=cl><span class=n>conda</span> <span class=n>activate</span> <span class=n>gpt149</span>
+</span></span><span class=line><span class=cl><span class=n>conda</span> <span class=n>install</span> <span class=n>pytorch</span><span class=o>==</span><span class=mf>2.1.2</span> <span class=n>torchvision</span><span class=o>==</span><span class=mf>0.16.2</span> <span class=n>torchaudio</span><span class=o>==</span><span class=mf>2.1.2</span> <span class=n>cpuonly</span> <span class=n>python</span><span class=o>=</span><span class=mf>3.10</span> <span class=n>numpy</span><span class=o>=</span><span class=mf>1.26</span> <span class=n>ninja</span> <span class=n>tiktoken</span> <span class=o>-</span><span class=n>c</span> <span class=n>pytorch</span> <span class=o>-</span><span class=n>c</span> <span class=n>conda</span><span class=o>-</span><span class=n>forge</span>
+</span></span><span class=line><span class=cl><span class=c1># 上面指定 numpy==1.26 但是如果不降到 numpy 1.x 应该只是警告，如下：</span>
+</span></span><span class=line><span class=cl><span class=s1>&#39;&#39;&#39;
+</span></span></span><span class=line><span class=cl><span class=s1>A module that was compiled using NumPy 1.x cannot be run in
+</span></span></span><span class=line><span class=cl><span class=s1>NumPy 2.2.6 as it may crash. To support both 1.x and 2.x
+</span></span></span><span class=line><span class=cl><span class=s1>versions of NumPy, modules must be compiled with NumPy 2.0.
+</span></span></span><span class=line><span class=cl><span class=s1>Some module may need to rebuild instead e.g. with &#39;pybind11&gt;=2.12&#39;.
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>If you are a user of the module, the easiest solution will be to
+</span></span></span><span class=line><span class=cl><span class=s1>downgrade to &#39;numpy&lt;2&#39; or try to upgrade the affected module.
+</span></span></span><span class=line><span class=cl><span class=s1>We expect that some modules will need time to support NumPy 2
+</span></span></span><span class=line><span class=cl><span class=s1>&#39;&#39;&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># requirements.txt</span>
+</span></span><span class=line><span class=cl><span class=n>torch</span><span class=o>==</span><span class=mf>2.1.2</span>
+</span></span><span class=line><span class=cl><span class=n>ninja</span>
+</span></span><span class=line><span class=cl><span class=c1># 如果要跑文字生成</span>
+</span></span><span class=line><span class=cl><span class=n>tiktoken</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=warm-up-accessing-tensors>Warm-Up: Accessing Tensors</h2><p>参照 <code>2D Accessor</code>，实现 <code>4D Accessor</code>，4D-tensor 转 1D vector 访问。</p><p>这里我直接模仿的写法没什么问题，加乘嵌套的写法 <code>tensor[((x * sizeX + y) * sizeY + z) * sizeZ + b]</code>，看 MizukiCry 的结果是会影响到编译器的优化。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// module.cpp
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>inline</span> <span class=kt>float</span> <span class=nf>fourDimRead</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>float</span><span class=o>&gt;</span> <span class=o>&amp;</span><span class=n>tensor</span><span class=p>,</span> <span class=kt>int</span> <span class=o>&amp;</span><span class=n>x</span><span class=p>,</span> <span class=kt>int</span> <span class=o>&amp;</span><span class=n>y</span><span class=p>,</span> <span class=kt>int</span> <span class=o>&amp;</span><span class=n>z</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                         <span class=kt>int</span> <span class=o>&amp;</span><span class=n>b</span><span class=p>,</span> <span class=k>const</span> <span class=kt>int</span> <span class=o>&amp;</span><span class=n>sizeX</span><span class=p>,</span> <span class=k>const</span> <span class=kt>int</span> <span class=o>&amp;</span><span class=n>sizeY</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                         <span class=k>const</span> <span class=kt>int</span> <span class=o>&amp;</span><span class=n>sizeZ</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>tensor</span><span class=p>[</span><span class=n>x</span> <span class=o>*</span> <span class=p>(</span><span class=n>sizeX</span> <span class=o>*</span> <span class=n>sizeY</span> <span class=o>*</span> <span class=n>sizeZ</span><span class=p>)</span> <span class=o>+</span> <span class=n>y</span> <span class=o>*</span> <span class=p>(</span><span class=n>sizeY</span> <span class=o>*</span> <span class=n>sizeZ</span><span class=p>)</span> <span class=o>+</span>
+</span></span><span class=line><span class=cl>                  <span class=n>z</span> <span class=o>*</span> <span class=p>(</span><span class=n>sizeZ</span><span class=p>)</span> <span class=o>+</span> <span class=n>b</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>inline</span> <span class=kt>void</span> <span class=nf>fourDimWrite</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>float</span><span class=o>&gt;</span> <span class=o>&amp;</span><span class=n>tensor</span><span class=p>,</span> <span class=kt>int</span> <span class=o>&amp;</span><span class=n>x</span><span class=p>,</span> <span class=kt>int</span> <span class=o>&amp;</span><span class=n>y</span><span class=p>,</span> <span class=kt>int</span> <span class=o>&amp;</span><span class=n>z</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                         <span class=kt>int</span> <span class=o>&amp;</span><span class=n>b</span><span class=p>,</span> <span class=k>const</span> <span class=kt>int</span> <span class=o>&amp;</span><span class=n>sizeX</span><span class=p>,</span> <span class=k>const</span> <span class=kt>int</span> <span class=o>&amp;</span><span class=n>sizeY</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                         <span class=k>const</span> <span class=kt>int</span> <span class=o>&amp;</span><span class=n>sizeZ</span><span class=p>,</span> <span class=kt>float</span> <span class=o>&amp;</span><span class=n>val</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>tensor</span><span class=p>[</span><span class=n>x</span> <span class=o>*</span> <span class=p>(</span><span class=n>sizeX</span> <span class=o>*</span> <span class=n>sizeY</span> <span class=o>*</span> <span class=n>sizeZ</span><span class=p>)</span> <span class=o>+</span> <span class=n>y</span> <span class=o>*</span> <span class=p>(</span><span class=n>sizeY</span> <span class=o>*</span> <span class=n>sizeZ</span><span class=p>)</span> <span class=o>+</span> <span class=n>z</span> <span class=o>*</span> <span class=p>(</span><span class=n>sizeZ</span><span class=p>)</span> <span class=o>+</span>
+</span></span><span class=line><span class=cl>           <span class=n>b</span><span class=p>]</span> <span class=o>=</span> <span class=n>val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>测试结果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># python3 gpt149.py 4Daccess</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Expected: 0.0008
+</span></span><span class=line><span class=cl>Result: 0.0008
+</span></span></code></pre></td></tr></table></div></div><h2 id=part-1-a-simple-but-not-so-efficient-implementation-of-attention>Part 1: A Simple (But Not So Efficient) Implementation of Attention</h2><p>简单实现 Attention 模块。</p><p>原注释中还给出了写入 0 的例子，难度很友好了。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// module.cpp myNaiveAttention()
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>// -------- YOUR CODE HERE  -------- //
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>b</span> <span class=o>&lt;</span> <span class=n>B</span><span class=p>;</span> <span class=n>b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>h</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>h</span> <span class=o>&lt;</span> <span class=n>H</span><span class=p>;</span> <span class=n>h</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>k</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>k</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=kt>float</span> <span class=n>QK_val</span> <span class=o>=</span> <span class=mf>0.0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>d</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>float</span> <span class=n>Q_val</span> <span class=o>=</span> <span class=n>fourDimRead</span><span class=p>(</span><span class=n>Q</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>float</span> <span class=n>K_val</span> <span class=o>=</span> <span class=n>fourDimRead</span><span class=p>(</span><span class=n>K</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>QK_val</span> <span class=o>+=</span> <span class=n>Q_val</span> <span class=o>*</span> <span class=n>K_val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=n>twoDimWrite</span><span class=p>(</span><span class=n>QK_t</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>QK_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kt>float</span> <span class=n>sum</span> <span class=o>=</span> <span class=mf>0.0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=kt>float</span> <span class=n>val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>QK_t</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=n>sum</span> <span class=o>+=</span> <span class=n>exp</span><span class=p>(</span><span class=n>val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=kt>float</span> <span class=n>val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>QK_t</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=n>val</span> <span class=o>=</span> <span class=n>exp</span><span class=p>(</span><span class=n>val</span><span class=p>)</span> <span class=o>/</span> <span class=n>sum</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=n>twoDimWrite</span><span class=p>(</span><span class=n>QK_t</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>k</span> <span class=o>&lt;</span> <span class=n>d</span><span class=p>;</span> <span class=n>k</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=kt>float</span> <span class=n>O_val</span> <span class=o>=</span> <span class=mf>0.0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>float</span> <span class=n>QK_val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>QK_t</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>float</span> <span class=n>V_val</span> <span class=o>=</span> <span class=n>fourDimRead</span><span class=p>(</span><span class=n>V</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>O_val</span> <span class=o>+=</span> <span class=n>QK_val</span> <span class=o>*</span> <span class=n>V_val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=n>fourDimWrite</span><span class=p>(</span><span class=n>O</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>O_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>测试结果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># python3 gpt149.py part1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running Part <span class=m>1</span> Test: Naive Unfused Attention
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-----RUNNING REFERENCE IMPLEMENTATION-----
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:14:12 3895:3895 ActivityProfilerController.cpp:312<span class=o>]</span> Completed Stage: Warm Up
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:14:12 3895:3895 ActivityProfilerController.cpp:318<span class=o>]</span> Completed Stage: Collection
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:14:12 3895:3895 ActivityProfilerController.cpp:322<span class=o>]</span> Completed Stage: Post Processing
+</span></span><span class=line><span class=cl>manual <span class=nv>attention</span> <span class=o>==</span> pytorch attention True
+</span></span><span class=line><span class=cl>Manual Execution Time:  0.2422347068786621
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                           Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU <span class=nb>time</span> avg       CPU Mem  Self CPU Mem    <span class=c1># of Calls</span>
+</span></span><span class=line><span class=cl>-------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                    aten::empty         0.04%     102.000us         0.04%     102.000us      34.000us       5.00 Mb       5.00 Mb  
+</span></span><span class=line><span class=cl>   <span class=m>3</span>
+</span></span><span class=line><span class=cl>    REFERENCE - NAIVE ATTENTION        98.58%     238.962ms        99.90%     242.154ms     242.154ms       4.50 Mb      -1.00 Mb  
+</span></span><span class=line><span class=cl>   <span class=m>1</span>
+</span></span><span class=line><span class=cl>                    aten::zeros         0.09%     207.000us         0.72%       1.740ms     870.000us       4.50 Mb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl>   <span class=m>2</span>
+</span></span><span class=line><span class=cl>                    aten::clone         0.12%     290.000us         0.49%       1.187ms     593.500us       1.00 Mb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl>   <span class=m>2</span>
+</span></span><span class=line><span class=cl>                model_inference         0.10%     247.000us       100.00%     242.401ms     242.401ms     512.00 Kb      -4.00 Mb  
+</span></span><span class=line><span class=cl>   <span class=m>1</span>
+</span></span><span class=line><span class=cl>                  aten::flatten         0.10%     231.000us         0.35%     840.000us     168.000us     512.00 Kb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl>   <span class=m>5</span>
+</span></span><span class=line><span class=cl>               aten::empty_like         0.02%      53.000us         0.03%      70.000us      70.000us     512.00 Kb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl>   <span class=m>1</span>
+</span></span><span class=line><span class=cl>            aten::empty_strided         0.02%      54.000us         0.02%      54.000us      54.000us     512.00 Kb     512.00 Kb  
+</span></span><span class=line><span class=cl>   <span class=m>1</span>
+</span></span><span class=line><span class=cl>                    aten::zero_         0.07%     166.000us         0.60%       1.448ms     724.000us           <span class=m>0</span> b           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl>   <span class=m>2</span>
+</span></span><span class=line><span class=cl>                    aten::fill_         0.53%       1.282ms         0.53%       1.282ms     641.000us           <span class=m>0</span> b           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl>   <span class=m>2</span>
+</span></span><span class=line><span class=cl>-------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>Self CPU <span class=nb>time</span> total: 242.401ms
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>REFERENCE - NAIVE ATTENTION statistics
+</span></span><span class=line><span class=cl>cpu time:  242.154ms
+</span></span><span class=line><span class=cl>mem usage:  <span class=m>4718592</span> bytes
+</span></span><span class=line><span class=cl>-----RUNNING STUDENT IMPLEMENTATION-----
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:14:18 3895:3895 ActivityProfilerController.cpp:312<span class=o>]</span> Completed Stage: Warm Up
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:14:19 3895:3895 ActivityProfilerController.cpp:318<span class=o>]</span> Completed Stage: Collection
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:14:19 3895:3895 ActivityProfilerController.cpp:322<span class=o>]</span> Completed Stage: Post Processing
+</span></span><span class=line><span class=cl>manual <span class=nv>attention</span> <span class=o>==</span> pytorch attention True
+</span></span><span class=line><span class=cl>Manual Execution Time:  0.23636484146118164
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-----------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                         Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU <span class=nb>time</span> avg       CPU Mem  Self CPU Mem    <span class=c1># of Calls</span>
+</span></span><span class=line><span class=cl>-----------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                  aten::empty         0.01%      31.000us         0.01%      31.000us      10.333us       5.00 Mb       5.00 Mb  
+</span></span><span class=line><span class=cl> <span class=m>3</span>
+</span></span><span class=line><span class=cl>    STUDENT - NAIVE ATTENTION        99.39%     234.968ms        99.96%     236.320ms     236.320ms       4.50 Mb      -1.00 Mb  
+</span></span><span class=line><span class=cl> <span class=m>1</span>
+</span></span><span class=line><span class=cl>                  aten::zeros         0.02%      36.000us         0.25%     581.000us     290.500us       4.50 Mb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl> <span class=m>2</span>
+</span></span><span class=line><span class=cl>                  aten::clone         0.02%      42.000us         0.30%     707.000us     353.500us       1.00 Mb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl> <span class=m>2</span>
+</span></span><span class=line><span class=cl>              model_inference         0.04%      93.000us       100.00%     236.413ms     236.413ms     512.00 Kb      -4.00 Mb  
+</span></span><span class=line><span class=cl> <span class=m>1</span>
+</span></span><span class=line><span class=cl>                aten::flatten         0.02%      37.000us         0.15%     359.000us      71.800us     512.00 Kb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl> <span class=m>5</span>
+</span></span><span class=line><span class=cl>             aten::empty_like         0.00%       6.000us         0.00%      11.000us      11.000us     512.00 Kb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl> <span class=m>1</span>
+</span></span><span class=line><span class=cl>          aten::empty_strided         0.01%      16.000us         0.01%      16.000us      16.000us     512.00 Kb     512.00 Kb  
+</span></span><span class=line><span class=cl> <span class=m>1</span>
+</span></span><span class=line><span class=cl>                  aten::zero_         0.01%      18.000us         0.22%     519.000us     259.500us           <span class=m>0</span> b           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl> <span class=m>2</span>
+</span></span><span class=line><span class=cl>                  aten::fill_         0.21%     501.000us         0.21%     501.000us     250.500us           <span class=m>0</span> b           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl> <span class=m>2</span>
+</span></span><span class=line><span class=cl>-----------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>Self CPU <span class=nb>time</span> total: 236.413ms
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>STUDENT - NAIVE ATTENTION statistics
+</span></span><span class=line><span class=cl>cpu time:  236.32ms
+</span></span><span class=line><span class=cl>mem usage:  <span class=m>4718592</span> bytes
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># python3 gpt149.py part1 -N &lt;val&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1># 随便再测了几个，没有问题</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=part-2-blocked-matrix-multiply-and-unfused-softmax>Part 2: Blocked Matrix Multiply and Unfused Softmax</h2><p>参照 <a class=link href=https://gfxcourses.stanford.edu/cs149/fall23/lecture/perfopt2/slide_43 target=_blank rel=noopener>lecture</a>
+<sup><svg aria-hidden="true" focusable="false" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"><path fill="currentColor" d="M18.8 85.1h56c2.2.0 4-1.8 4-4v-32h-8v28h-48v-48h28v-8h-32c-2.2.0-4 1.8-4 4v56C14.8 83.3 16.6 85.1 18.8 85.1z"/><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"/></svg>
+</sup>，分块优化 cache 的命中率。</p><p>先查询本机的 cacheline，为 64</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># Linux</span>
+</span></span><span class=line><span class=cl>cat /sys/devices/system/cpu/cpu1/cache/index0/coherency_line_size
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># MacOS（虽然本次实现不能用它来做）</span>
+</span></span><span class=line><span class=cl>sysctl hw.cachelinesize
+</span></span></code></pre></td></tr></table></div></div><ul><li><p>N 固定 1024 时，在本机上的最佳的 tile size 是多少？</p></li><li><p>Part 1, 2 的 DRAM 访问差别（缓存命中情况）</p><p>使用 Perf</p></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// module.cpp myUnfusedAttentionBlocked()
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>// -------- YOUR CODE HERE  -------- //
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>constexpr</span> <span class=kt>int</span> <span class=n>BLOCK_SIZE</span> <span class=o>=</span> <span class=mi>16</span><span class=p>;</span>  <span class=c1>// cacheline / sizeof(float)
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>b</span> <span class=o>&lt;</span> <span class=n>B</span><span class=p>;</span> <span class=n>b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>h</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>h</span> <span class=o>&lt;</span> <span class=n>H</span><span class=p>;</span> <span class=n>h</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i_b</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>i_b</span> <span class=o>+=</span> <span class=n>BLOCK_SIZE</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j_b</span> <span class=o>&lt;</span> <span class=n>d</span><span class=p>;</span> <span class=n>j_b</span> <span class=o>+=</span> <span class=n>BLOCK_SIZE</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>k_b</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>k_b</span> <span class=o>+=</span> <span class=n>BLOCK_SIZE</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>int</span> <span class=n>i_e</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>min</span><span class=p>(</span><span class=n>i_b</span> <span class=o>+</span> <span class=n>BLOCK_SIZE</span><span class=p>,</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>int</span> <span class=n>j_e</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>min</span><span class=p>(</span><span class=n>j_b</span> <span class=o>+</span> <span class=n>BLOCK_SIZE</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>int</span> <span class=n>k_e</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>min</span><span class=p>(</span><span class=n>k_b</span> <span class=o>+</span> <span class=n>BLOCK_SIZE</span><span class=p>,</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>i_b</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>i_e</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=n>k_b</span><span class=p>;</span> <span class=n>k</span> <span class=o>&lt;</span> <span class=n>k_e</span><span class=p>;</span> <span class=n>k</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                            <span class=kt>float</span> <span class=n>QK_val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>QK_t</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>j_b</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>j_e</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                                <span class=kt>float</span> <span class=n>Q_val</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>                                    <span class=n>fourDimRead</span><span class=p>(</span><span class=n>Q</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                                <span class=kt>float</span> <span class=n>K_val</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>                                    <span class=n>fourDimRead</span><span class=p>(</span><span class=n>K</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                                <span class=n>QK_val</span> <span class=o>+=</span> <span class=n>Q_val</span> <span class=o>*</span> <span class=n>K_val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                            <span class=p>}</span>
+</span></span><span class=line><span class=cl>                            <span class=n>twoDimWrite</span><span class=p>(</span><span class=n>QK_t</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>QK_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                        <span class=p>}</span>
+</span></span><span class=line><span class=cl>                    <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kt>float</span> <span class=n>sum</span> <span class=o>=</span> <span class=mf>0.0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=kt>float</span> <span class=n>val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>QK_t</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=n>sum</span> <span class=o>+=</span> <span class=n>exp</span><span class=p>(</span><span class=n>val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=kt>float</span> <span class=n>val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>QK_t</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=n>val</span> <span class=o>=</span> <span class=n>exp</span><span class=p>(</span><span class=n>val</span><span class=p>)</span> <span class=o>/</span> <span class=n>sum</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=n>twoDimWrite</span><span class=p>(</span><span class=n>QK_t</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i_b</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>i_b</span> <span class=o>+=</span> <span class=n>BLOCK_SIZE</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j_b</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>j_b</span> <span class=o>+=</span> <span class=n>BLOCK_SIZE</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>k_b</span> <span class=o>&lt;</span> <span class=n>d</span><span class=p>;</span> <span class=n>k_b</span> <span class=o>+=</span> <span class=n>BLOCK_SIZE</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>int</span> <span class=n>i_e</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>min</span><span class=p>(</span><span class=n>i_b</span> <span class=o>+</span> <span class=n>BLOCK_SIZE</span><span class=p>,</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>int</span> <span class=n>j_e</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>min</span><span class=p>(</span><span class=n>j_b</span> <span class=o>+</span> <span class=n>BLOCK_SIZE</span><span class=p>,</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>int</span> <span class=n>k_e</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>min</span><span class=p>(</span><span class=n>k_b</span> <span class=o>+</span> <span class=n>BLOCK_SIZE</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>i_b</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>i_e</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=n>k_b</span><span class=p>;</span> <span class=n>k</span> <span class=o>&lt;</span> <span class=n>k_e</span><span class=p>;</span> <span class=n>k</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                            <span class=kt>float</span> <span class=n>O_val</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>                                <span class=n>fourDimRead</span><span class=p>(</span><span class=n>O</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>j_b</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>j_e</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                                <span class=kt>float</span> <span class=n>QK_val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>QK_t</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>N</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                                <span class=kt>float</span> <span class=n>V_val</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>                                    <span class=n>fourDimRead</span><span class=p>(</span><span class=n>V</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                                <span class=n>O_val</span> <span class=o>+=</span> <span class=n>QK_val</span> <span class=o>*</span> <span class=n>V_val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                            <span class=p>}</span>
+</span></span><span class=line><span class=cl>                            <span class=n>fourDimWrite</span><span class=p>(</span><span class=n>O</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>O_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                        <span class=p>}</span>
+</span></span><span class=line><span class=cl>                    <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>测试结果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># python3 gpt149.py part2</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running Part <span class=m>2</span> Test: Unfused Attention with Blocked Matmul
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-----RUNNING REFERENCE IMPLEMENTATION-----
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:18:17 4350:4350 ActivityProfilerController.cpp:312<span class=o>]</span> Completed Stage: Warm Up
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:18:17 4350:4350 ActivityProfilerController.cpp:318<span class=o>]</span> Completed Stage: Collection
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:18:17 4350:4350 ActivityProfilerController.cpp:322<span class=o>]</span> Completed Stage: Post Processing
+</span></span><span class=line><span class=cl>manual <span class=nv>attention</span> <span class=o>==</span> pytorch attention True
+</span></span><span class=line><span class=cl>Manual Execution Time:  0.17670416831970215
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                                            Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU <span class=nb>time</span> avg       CPU Mem  Self CPU Mem    <span class=c1># of Calls</span>
+</span></span><span class=line><span class=cl>------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                                     aten::empty         0.06%     104.000us         0.06%     104.000us      34.667us       5.00 Mb       5.00 Mb             <span class=m>3</span>
+</span></span><span class=line><span class=cl>    REFERENCE - BLOCKED MATMUL + UNFUSED SOFTMAX        98.49%     174.098ms        99.94%     176.664ms     176.664ms       4.50 Mb      -1.00 Mb             <span class=m>1</span>
+</span></span><span class=line><span class=cl>                                     aten::zeros         0.05%      85.000us         0.85%       1.501ms     750.500us       4.50 Mb           <span class=m>0</span> b             <span class=m>2</span>
+</span></span><span class=line><span class=cl>                                     aten::clone         0.07%     124.000us         0.50%     886.000us     443.000us       1.00 Mb           <span class=m>0</span> b             <span class=m>2</span>
+</span></span><span class=line><span class=cl>                                 model_inference         0.06%     107.000us       100.00%     176.771ms     176.771ms     512.00 Kb      -4.00 Mb             <span class=m>1</span>
+</span></span><span class=line><span class=cl>                                   aten::flatten         0.09%     153.000us         0.33%     585.000us     117.000us     512.00 Kb           <span class=m>0</span> b             <span class=m>5</span>
+</span></span><span class=line><span class=cl>                                aten::empty_like         0.02%      31.000us         0.03%      49.000us      49.000us     512.00 Kb           <span class=m>0</span> b             <span class=m>1</span>
+</span></span><span class=line><span class=cl>                             aten::empty_strided         0.03%      50.000us         0.03%      50.000us      50.000us     512.00 Kb     512.00 Kb             <span class=m>1</span>
+</span></span><span class=line><span class=cl>                                     aten::zero_         0.05%      96.000us         0.75%       1.330ms     665.000us           <span class=m>0</span> b           <span class=m>0</span> b             <span class=m>2</span>
+</span></span><span class=line><span class=cl>                                     aten::fill_         0.70%       1.234ms         0.70%       1.234ms     617.000us           <span class=m>0</span> b           <span class=m>0</span> b             <span class=m>2</span>
+</span></span><span class=line><span class=cl>------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>Self CPU <span class=nb>time</span> total: 176.771ms
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>REFERENCE - BLOCKED MATMUL + UNFUSED SOFTMAX statistics
+</span></span><span class=line><span class=cl>cpu time:  176.664ms
+</span></span><span class=line><span class=cl>mem usage:  <span class=m>4718592</span> bytes
+</span></span><span class=line><span class=cl>-----RUNNING STUDENT IMPLEMENTATION-----
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:18:23 4350:4350 ActivityProfilerController.cpp:312<span class=o>]</span> Completed Stage: Warm Up
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:18:23 4350:4350 ActivityProfilerController.cpp:318<span class=o>]</span> Completed Stage: Collection
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:18:23 4350:4350 ActivityProfilerController.cpp:322<span class=o>]</span> Completed Stage: Post Processing
+</span></span><span class=line><span class=cl>manual <span class=nv>attention</span> <span class=o>==</span> pytorch attention True
+</span></span><span class=line><span class=cl>Manual Execution Time:  0.16107916831970215
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>----------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                                          Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU <span class=nb>time</span> avg       CPU Mem  Self CPU Mem    <span class=c1># of Calls</span>
+</span></span><span class=line><span class=cl>----------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                                   aten::empty         0.03%      54.000us         0.03%      54.000us      18.000us       5.00 Mb       5.00 Mb             <span class=m>3</span>
+</span></span><span class=line><span class=cl>    STUDENT - BLOCKED MATMUL + UNFUSED SOFTMAX        99.04%     159.579ms        99.94%     161.034ms     161.034ms       4.50 Mb      -1.00 Mb             <span class=m>1</span>
+</span></span><span class=line><span class=cl>                                   aten::zeros         0.01%      23.000us         0.61%     982.000us     491.000us       4.50 Mb   
+</span></span><span class=line><span class=cl>  <span class=m>0</span> b             <span class=m>2</span>
+</span></span><span class=line><span class=cl>                                   aten::clone         0.02%      36.000us         0.26%     423.000us     211.500us       1.00 Mb   
+</span></span><span class=line><span class=cl>  <span class=m>0</span> b             <span class=m>2</span>
+</span></span><span class=line><span class=cl>                               model_inference         0.06%      91.000us       100.00%     161.125ms     161.125ms     512.00 Kb      -4.00 Mb             <span class=m>1</span>
+</span></span><span class=line><span class=cl>                                 aten::flatten         0.02%      31.000us         0.12%     195.000us      39.000us     512.00 Kb   
+</span></span><span class=line><span class=cl>  <span class=m>0</span> b             <span class=m>5</span>
+</span></span><span class=line><span class=cl>                              aten::empty_like         0.00%       4.000us         0.00%       6.000us       6.000us     512.00 Kb   
+</span></span><span class=line><span class=cl>  <span class=m>0</span> b             <span class=m>1</span>
+</span></span><span class=line><span class=cl>                           aten::empty_strided         0.01%      15.000us         0.01%      15.000us      15.000us     512.00 Kb     512.00 Kb             <span class=m>1</span>
+</span></span><span class=line><span class=cl>                                   aten::zero_         0.01%      14.000us         0.56%     907.000us     453.500us           <span class=m>0</span> b   
+</span></span><span class=line><span class=cl>  <span class=m>0</span> b             <span class=m>2</span>
+</span></span><span class=line><span class=cl>                                   aten::fill_         0.55%     893.000us         0.55%     893.000us     446.500us           <span class=m>0</span> b   
+</span></span><span class=line><span class=cl>  <span class=m>0</span> b             <span class=m>2</span>
+</span></span><span class=line><span class=cl>----------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>Self CPU <span class=nb>time</span> total: 161.125ms
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>STUDENT - BLOCKED MATMUL + UNFUSED SOFTMAX statistics
+</span></span><span class=line><span class=cl>cpu time:  161.034ms
+</span></span><span class=line><span class=cl>mem usage:  <span class=m>4718592</span> bytes
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># python3 gpt149.py part2 -N &lt;val&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1># 随便再测了几个，没有问题</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=part-3-fused-attention>Part 3: Fused Attention</h2><p>由于 Q, K 矩阵乘、Softmax、注意力得分，遍历参数类似，但要重复三轮，并且整块占用，对 cache 表现和内存占用都不友好。</p><p>观察到 QK矩阵 的每一行之间的计算是独立的，我们考虑把矩阵乘和 Softmax 操作融合 fused 起来。</p><p>使用 OpenMP，来简单地实现并行，如 <code>#pragma omp parallel for collapse(2)</code>，<code>omp_get_thread_num()</code> 来使用必要的子数组。</p><ul><li>为什么 Part 3 的内存占用和 Part 1 & 2 相比骤降？</li><li>把 OpenMP 注释掉，比较 cpu 耗时，为什么融合让多线程利用更加轻松且充分了？</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// module.cpp myFusedAttention()
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>// -------- YOUR CODE HERE  -------- //
+</span></span></span><span class=line><span class=cl><span class=c1>// We give you a template of the first three loops for your convenience
+</span></span></span><span class=line><span class=cl><span class=c1>// loop over batch
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#pragma omp parallel for collapse(3)
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>b</span> <span class=o>&lt;</span> <span class=n>B</span><span class=p>;</span> <span class=n>b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// loop over heads
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>h</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>h</span> <span class=o>&lt;</span> <span class=n>H</span><span class=p>;</span> <span class=n>h</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// YRow is moved inside so each OpenMP thread gets a local copy.
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=n>at</span><span class=o>::</span><span class=n>Tensor</span> <span class=n>ORowTensor</span> <span class=o>=</span> <span class=n>temp</span><span class=p>.</span><span class=n>index</span><span class=p>({</span><span class=n>torch</span><span class=o>::</span><span class=n>indexing</span><span class=o>::</span><span class=n>Slice</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>omp_get_thread_num</span><span class=p>(),</span> <span class=n>torch</span><span class=o>::</span><span class=n>indexing</span><span class=o>::</span><span class=n>None</span><span class=p>)});</span>
+</span></span><span class=line><span class=cl>            <span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>float</span><span class=o>&gt;</span> <span class=n>ORow</span> <span class=o>=</span> <span class=n>formatTensor</span><span class=p>(</span><span class=n>ORowTensor</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// YOUR CODE HERE
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=kt>float</span> <span class=n>sum</span> <span class=o>=</span> <span class=mf>0.0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>k</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>k</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=kt>float</span> <span class=n>QK_val</span> <span class=o>=</span> <span class=mf>0.0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>d</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>float</span> <span class=n>Q_val</span> <span class=o>=</span> <span class=n>fourDimRead</span><span class=p>(</span><span class=n>Q</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>float</span> <span class=n>K_val</span> <span class=o>=</span> <span class=n>fourDimRead</span><span class=p>(</span><span class=n>K</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>QK_val</span> <span class=o>+=</span> <span class=n>Q_val</span> <span class=o>*</span> <span class=n>K_val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=n>ORow</span><span class=p>[</span><span class=n>k</span><span class=p>]</span> <span class=o>=</span> <span class=n>exp</span><span class=p>(</span><span class=n>QK_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=n>sum</span> <span class=o>+=</span> <span class=n>ORow</span><span class=p>[</span><span class=n>k</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>k</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>k</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>ORow</span><span class=p>[</span><span class=n>k</span><span class=p>]</span> <span class=o>/=</span> <span class=n>sum</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>k</span> <span class=o>&lt;</span> <span class=n>d</span><span class=p>;</span> <span class=n>k</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=kt>float</span> <span class=n>O_val</span> <span class=o>=</span> <span class=mf>0.0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>float</span> <span class=n>V_val</span> <span class=o>=</span> <span class=n>fourDimRead</span><span class=p>(</span><span class=n>V</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>O_val</span> <span class=o>+=</span> <span class=n>ORow</span><span class=p>[</span><span class=n>j</span><span class=p>]</span> <span class=o>*</span> <span class=n>V_val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=n>fourDimWrite</span><span class=p>(</span><span class=n>O</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>O_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>测试结果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># python3 gpt149.py part3</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running Part <span class=m>3</span> Test: Fused Attention
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-----RUNNING REFERENCE IMPLEMENTATION-----
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:21:16 4705:4705 ActivityProfilerController.cpp:312<span class=o>]</span> Completed Stage: Warm Up
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:21:16 4705:4705 ActivityProfilerController.cpp:318<span class=o>]</span> Completed Stage: Collection
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:21:16 4705:4705 ActivityProfilerController.cpp:322<span class=o>]</span> Completed Stage: Post Processing
+</span></span><span class=line><span class=cl>manual <span class=nv>attention</span> <span class=o>==</span> pytorch attention True
+</span></span><span class=line><span class=cl>Manual Execution Time:  0.05468630790710449
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                           Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU <span class=nb>time</span> avg       CPU Mem  Self CPU Mem    <span class=c1># of Calls</span>
+</span></span><span class=line><span class=cl>-------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                    aten::empty         0.16%      85.000us         0.16%      85.000us      28.333us       1.03 Mb       1.03 Mb  
+</span></span><span class=line><span class=cl>   <span class=m>3</span>
+</span></span><span class=line><span class=cl>                    aten::clone         0.12%      68.000us         1.69%     929.000us     464.500us       1.00 Mb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl>   <span class=m>2</span>
+</span></span><span class=line><span class=cl>    REFERENCE - FUSED ATTENTION        88.67%      48.607ms        99.63%      54.616ms      54.616ms     544.00 Kb      -1.00 Mb  
+</span></span><span class=line><span class=cl>   <span class=m>1</span>
+</span></span><span class=line><span class=cl>                    aten::zeros         0.16%      88.000us         1.04%     569.000us     284.500us     544.00 Kb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl>   <span class=m>2</span>
+</span></span><span class=line><span class=cl>                model_inference         0.37%     202.000us       100.00%      54.818ms      54.818ms     512.00 Kb     -32.00 Kb  
+</span></span><span class=line><span class=cl>   <span class=m>1</span>
+</span></span><span class=line><span class=cl>                  aten::flatten         1.88%       1.028ms         4.27%       2.340ms       4.535us     512.00 Kb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl> <span class=m>516</span>
+</span></span><span class=line><span class=cl>               aten::empty_like         0.12%      66.000us         0.17%      93.000us      93.000us     512.00 Kb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl>   <span class=m>1</span>
+</span></span><span class=line><span class=cl>            aten::empty_strided         0.06%      34.000us         0.06%      34.000us      34.000us     512.00 Kb     512.00 Kb  
+</span></span><span class=line><span class=cl>   <span class=m>1</span>
+</span></span><span class=line><span class=cl>                    aten::zero_         0.29%     161.000us         0.77%     423.000us     211.500us           <span class=m>0</span> b           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl>   <span class=m>2</span>
+</span></span><span class=line><span class=cl>                    aten::fill_         0.48%     262.000us         0.48%     262.000us     262.000us           <span class=m>0</span> b           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl>   <span class=m>1</span>
+</span></span><span class=line><span class=cl>-------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>Self CPU <span class=nb>time</span> total: 54.818ms
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>REFERENCE - FUSED ATTENTION statistics
+</span></span><span class=line><span class=cl>cpu time:  54.616ms
+</span></span><span class=line><span class=cl>mem usage:  <span class=m>557056</span> bytes
+</span></span><span class=line><span class=cl>-----RUNNING STUDENT IMPLEMENTATION-----
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:21:22 4705:4705 ActivityProfilerController.cpp:312<span class=o>]</span> Completed Stage: Warm Up
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:21:22 4705:4705 ActivityProfilerController.cpp:318<span class=o>]</span> Completed Stage: Collection
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 08:21:22 4705:4705 ActivityProfilerController.cpp:322<span class=o>]</span> Completed Stage: Post Processing
+</span></span><span class=line><span class=cl>manual <span class=nv>attention</span> <span class=o>==</span> pytorch attention True
+</span></span><span class=line><span class=cl>Manual Execution Time:  0.047617435455322266
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-----------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                         Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU <span class=nb>time</span> avg       CPU Mem  Self CPU Mem    <span class=c1># of Calls</span>
+</span></span><span class=line><span class=cl>-----------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                  aten::empty         0.06%      30.000us         0.06%      30.000us       7.500us       1.04 Mb       1.04 Mb  
+</span></span><span class=line><span class=cl> <span class=m>4</span>
+</span></span><span class=line><span class=cl>                  aten::clone         0.07%      34.000us         0.82%     391.000us     195.500us       1.00 Mb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl> <span class=m>2</span>
+</span></span><span class=line><span class=cl>                  aten::zeros         0.18%      88.000us         0.25%     118.000us      39.333us     548.00 Kb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl> <span class=m>3</span>
+</span></span><span class=line><span class=cl>    STUDENT - FUSED ATTENTION        92.52%      44.102ms        99.81%      47.580ms      47.580ms     544.00 Kb      -1.00 Mb  
+</span></span><span class=line><span class=cl> <span class=m>1</span>
+</span></span><span class=line><span class=cl>              model_inference         0.19%      89.000us       100.00%      47.669ms      47.669ms     512.00 Kb     -32.00 Kb  
+</span></span><span class=line><span class=cl> <span class=m>1</span>
+</span></span><span class=line><span class=cl>                aten::flatten         1.44%     688.000us         2.56%       1.221ms       2.362us     512.00 Kb           <span class=m>0</span> b           <span class=m>517</span>
+</span></span><span class=line><span class=cl>             aten::empty_like         0.01%       5.000us         0.02%      10.000us      10.000us     512.00 Kb           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl> <span class=m>1</span>
+</span></span><span class=line><span class=cl>          aten::empty_strided         0.03%      16.000us         0.03%      16.000us      16.000us     512.00 Kb     512.00 Kb  
+</span></span><span class=line><span class=cl> <span class=m>1</span>
+</span></span><span class=line><span class=cl>                  aten::zero_         0.03%      15.000us         0.13%      61.000us      20.333us           <span class=m>0</span> b           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl> <span class=m>3</span>
+</span></span><span class=line><span class=cl>                  aten::fill_         0.10%      46.000us         0.10%      46.000us      46.000us           <span class=m>0</span> b           <span class=m>0</span> b  
+</span></span><span class=line><span class=cl> <span class=m>1</span>
+</span></span><span class=line><span class=cl>-----------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>Self CPU <span class=nb>time</span> total: 47.669ms
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>STUDENT - FUSED ATTENTION statistics
+</span></span><span class=line><span class=cl>cpu time:  47.58ms
+</span></span><span class=line><span class=cl>mem usage:  <span class=m>557056</span> bytes
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># python3 gpt149.py part3 -N &lt;val&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1># 随便再测了几个，没有问题</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=part-4--putting-it-all-together---flash-attention>Part 4 : Putting it all Together - Flash Attention</h2><p>为了更好的融合分块与 Softmax，Flash Attnetion 诞生了。</p><p>对着伪代码实现即可，注意变量名不要打错，找了半天 QnQ。</p><p>B H 多轮，应该只有 l 是需要重新初始化的。（当然根据写法不同有不同）</p><p>实验只要求正确性，不过超过得也比较轻松。挺多可以做融合 fused 的地方，不过为了和伪代码对应，就没去做。</p><p>也就不去进一步优化了。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// module.cpp myFlashAttention()
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>// -------- YOUR CODE HERE  -------- //
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>const</span> <span class=kt>int</span> <span class=n>Tr</span> <span class=o>=</span> <span class=p>(</span><span class=n>N</span> <span class=o>+</span> <span class=n>Br</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> <span class=o>/</span> <span class=n>Br</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>const</span> <span class=kt>int</span> <span class=n>Tc</span> <span class=o>=</span> <span class=p>(</span><span class=n>N</span> <span class=o>+</span> <span class=n>Bc</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> <span class=o>/</span> <span class=n>Bc</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>b</span> <span class=o>&lt;</span> <span class=n>B</span><span class=p>;</span> <span class=n>b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>h</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>h</span> <span class=o>&lt;</span> <span class=n>H</span><span class=p>;</span> <span class=n>h</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 初始化 l
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>t</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>t</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>t</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>l</span><span class=p>[</span><span class=n>t</span><span class=p>]</span> <span class=o>=</span> <span class=mf>0.0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>Tc</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 读入 Kj, Vj
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=kt>int</span> <span class=n>j_e</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>min</span><span class=p>(</span><span class=n>Bc</span><span class=p>,</span> <span class=n>N</span> <span class=o>-</span> <span class=n>j</span> <span class=o>*</span> <span class=n>Bc</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j_b</span> <span class=o>&lt;</span> <span class=n>j_e</span><span class=p>;</span> <span class=n>j_b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=kt>int</span> <span class=n>idx</span> <span class=o>=</span> <span class=n>j</span> <span class=o>*</span> <span class=n>Bc</span> <span class=o>+</span> <span class=n>j_b</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>k</span> <span class=o>&lt;</span> <span class=n>d</span><span class=p>;</span> <span class=n>k</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>float</span> <span class=n>Kj_val</span> <span class=o>=</span> <span class=n>fourDimRead</span><span class=p>(</span><span class=n>K</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>idx</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>twoDimWrite</span><span class=p>(</span><span class=n>Kj</span><span class=p>,</span> <span class=n>j_b</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>Kj_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>float</span> <span class=n>Vj_val</span> <span class=o>=</span> <span class=n>fourDimRead</span><span class=p>(</span><span class=n>V</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>idx</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>twoDimWrite</span><span class=p>(</span><span class=n>Vj</span><span class=p>,</span> <span class=n>j_b</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>Vj_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>Tr</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=c1>// 读入 Qi, Oi, li
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=kt>int</span> <span class=n>i_e</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>min</span><span class=p>(</span><span class=n>Br</span><span class=p>,</span> <span class=n>N</span> <span class=o>-</span> <span class=n>i</span> <span class=o>*</span> <span class=n>Br</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i_b</span> <span class=o>&lt;</span> <span class=n>i_e</span><span class=p>;</span> <span class=n>i_b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>int</span> <span class=n>idx</span> <span class=o>=</span> <span class=n>i</span> <span class=o>*</span> <span class=n>Br</span> <span class=o>+</span> <span class=n>i_b</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>k</span> <span class=o>&lt;</span> <span class=n>d</span><span class=p>;</span> <span class=n>k</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=kt>float</span> <span class=n>Qi_val</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>                            <span class=n>fourDimRead</span><span class=p>(</span><span class=n>Q</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>idx</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                        <span class=kt>float</span> <span class=n>Oi_val</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>                            <span class=n>fourDimRead</span><span class=p>(</span><span class=n>O</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>idx</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                        <span class=n>twoDimWrite</span><span class=p>(</span><span class=n>Qi</span><span class=p>,</span> <span class=n>i_b</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>Qi_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                        <span class=n>twoDimWrite</span><span class=p>(</span><span class=n>Oi</span><span class=p>,</span> <span class=n>i_b</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>Oi_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=p>}</span>
+</span></span><span class=line><span class=cl>                    <span class=n>li</span><span class=p>[</span><span class=n>i_b</span><span class=p>]</span> <span class=o>=</span> <span class=n>l</span><span class=p>[</span><span class=n>idx</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// 计算 Sij
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i_b</span> <span class=o>&lt;</span> <span class=n>i_e</span><span class=p>;</span> <span class=n>i_b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j_b</span> <span class=o>&lt;</span> <span class=n>j_e</span><span class=p>;</span> <span class=n>j_b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=kt>float</span> <span class=n>Sij_val</span> <span class=o>=</span> <span class=mf>0.0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>k</span> <span class=o>&lt;</span> <span class=n>d</span><span class=p>;</span> <span class=n>k</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                            <span class=kt>float</span> <span class=n>Qi_val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>Qi</span><span class=p>,</span> <span class=n>i_b</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                            <span class=kt>float</span> <span class=n>Kj_val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>Kj</span><span class=p>,</span> <span class=n>j_b</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                            <span class=n>Sij_val</span> <span class=o>+=</span> <span class=n>Qi_val</span> <span class=o>*</span> <span class=n>Kj_val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=p>}</span>
+</span></span><span class=line><span class=cl>                        <span class=n>twoDimWrite</span><span class=p>(</span><span class=n>Sij</span><span class=p>,</span> <span class=n>i_b</span><span class=p>,</span> <span class=n>j_b</span><span class=p>,</span> <span class=n>Bc</span><span class=p>,</span> <span class=n>Sij_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// 计算 Pij
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i_b</span> <span class=o>&lt;</span> <span class=n>i_e</span><span class=p>;</span> <span class=n>i_b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j_b</span> <span class=o>&lt;</span> <span class=n>j_e</span><span class=p>;</span> <span class=n>j_b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=kt>float</span> <span class=n>Sij_val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>Sij</span><span class=p>,</span> <span class=n>i_b</span><span class=p>,</span> <span class=n>j_b</span><span class=p>,</span> <span class=n>Bc</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                        <span class=kt>float</span> <span class=n>Pij_val</span> <span class=o>=</span> <span class=n>exp</span><span class=p>(</span><span class=n>Sij_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                        <span class=n>twoDimWrite</span><span class=p>(</span><span class=n>Pij</span><span class=p>,</span> <span class=n>i_b</span><span class=p>,</span> <span class=n>j_b</span><span class=p>,</span> <span class=n>Bc</span><span class=p>,</span> <span class=n>Pij_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// 计算 lij
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i_b</span> <span class=o>&lt;</span> <span class=n>i_e</span><span class=p>;</span> <span class=n>i_b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>float</span> <span class=n>sum</span> <span class=o>=</span> <span class=mf>0.0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j_b</span> <span class=o>&lt;</span> <span class=n>j_e</span><span class=p>;</span> <span class=n>j_b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=kt>float</span> <span class=n>Pij_val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>Pij</span><span class=p>,</span> <span class=n>i_b</span><span class=p>,</span> <span class=n>j_b</span><span class=p>,</span> <span class=n>Bc</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                        <span class=n>sum</span> <span class=o>+=</span> <span class=n>Pij_val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=p>}</span>
+</span></span><span class=line><span class=cl>                    <span class=n>lij</span><span class=p>[</span><span class=n>i_b</span><span class=p>]</span> <span class=o>=</span> <span class=n>sum</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// 计算 lnew
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i_b</span> <span class=o>&lt;</span> <span class=n>i_e</span><span class=p>;</span> <span class=n>i_b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>lnew</span><span class=p>[</span><span class=n>i_b</span><span class=p>]</span> <span class=o>=</span> <span class=n>li</span><span class=p>[</span><span class=n>i_b</span><span class=p>]</span> <span class=o>+</span> <span class=n>lij</span><span class=p>[</span><span class=n>i_b</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// 计算 Oi
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i_b</span> <span class=o>&lt;</span> <span class=n>i_e</span><span class=p>;</span> <span class=n>i_b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>k</span> <span class=o>&lt;</span> <span class=n>d</span><span class=p>;</span> <span class=n>k</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=kt>float</span> <span class=n>PV_val</span> <span class=o>=</span> <span class=mf>0.0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j_b</span> <span class=o>&lt;</span> <span class=n>j_e</span><span class=p>;</span> <span class=n>j_b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                            <span class=kt>float</span> <span class=n>Pij_val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>Pij</span><span class=p>,</span> <span class=n>i_b</span><span class=p>,</span> <span class=n>j_b</span><span class=p>,</span> <span class=n>Bc</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                            <span class=kt>float</span> <span class=n>Vj_val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>Vj</span><span class=p>,</span> <span class=n>j_b</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                            <span class=n>PV_val</span> <span class=o>+=</span> <span class=n>Pij_val</span> <span class=o>*</span> <span class=n>Vj_val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=p>}</span>
+</span></span><span class=line><span class=cl>                        <span class=kt>float</span> <span class=n>Oi_val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>Oi</span><span class=p>,</span> <span class=n>i_b</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                        <span class=kt>float</span> <span class=n>Oi_val_new</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>                            <span class=p>(</span><span class=n>li</span><span class=p>[</span><span class=n>i_b</span><span class=p>]</span> <span class=o>*</span> <span class=n>Oi_val</span> <span class=o>+</span> <span class=n>PV_val</span><span class=p>)</span> <span class=o>/</span> <span class=n>lnew</span><span class=p>[</span><span class=n>i_b</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                        <span class=n>twoDimWrite</span><span class=p>(</span><span class=n>Oi</span><span class=p>,</span> <span class=n>i_b</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>Oi_val_new</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// 写回 Oi, lnew
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i_b</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i_b</span> <span class=o>&lt;</span> <span class=n>i_e</span><span class=p>;</span> <span class=n>i_b</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>int</span> <span class=n>idx</span> <span class=o>=</span> <span class=n>i</span> <span class=o>*</span> <span class=n>Br</span> <span class=o>+</span> <span class=n>i_b</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>k</span> <span class=o>&lt;</span> <span class=n>d</span><span class=p>;</span> <span class=n>k</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=kt>float</span> <span class=n>Oi_val</span> <span class=o>=</span> <span class=n>twoDimRead</span><span class=p>(</span><span class=n>Oi</span><span class=p>,</span> <span class=n>i_b</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>d</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                        <span class=n>fourDimWrite</span><span class=p>(</span><span class=n>O</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>h</span><span class=p>,</span> <span class=n>idx</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>H</span><span class=p>,</span> <span class=n>N</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>Oi_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=p>}</span>
+</span></span><span class=line><span class=cl>                    <span class=n>l</span><span class=p>[</span><span class=n>idx</span><span class=p>]</span> <span class=o>=</span> <span class=n>lnew</span><span class=p>[</span><span class=n>i_b</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>测试结果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># python3 gpt149.py part4</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Running Part <span class=m>4</span> Test: Flash Attention
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-----RUNNING REFERENCE IMPLEMENTATION-----
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 14:10:25 8891:8891 ActivityProfilerController.cpp:312<span class=o>]</span> Completed Stage: Warm Up
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 14:10:26 8891:8891 ActivityProfilerController.cpp:318<span class=o>]</span> Completed Stage: Collection
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 14:10:26 8891:8891 ActivityProfilerController.cpp:322<span class=o>]</span> Completed Stage: Post Processing
+</span></span><span class=line><span class=cl>manual <span class=nv>attention</span> <span class=o>==</span> pytorch attention True
+</span></span><span class=line><span class=cl>Manual Execution Time:  0.7275524139404297
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                           Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU <span class=nb>time</span> avg       CPU Mem  Self CPU Mem    <span class=c1># of Calls</span>
+</span></span><span class=line><span class=cl>-------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                    aten::zeros         0.01%     109.000us         0.34%       2.459ms     175.643us       9.16 Mb           <span class=m>0</span> b        
+</span></span><span class=line><span class=cl>  <span class=m>14</span>
+</span></span><span class=line><span class=cl>                    aten::empty         0.02%     110.000us         0.02%     110.000us       7.857us       9.13 Mb       9.13 Mb        
+</span></span><span class=line><span class=cl>  <span class=m>14</span>
+</span></span><span class=line><span class=cl>                model_inference         0.04%     274.000us       100.00%     727.590ms     727.590ms     512.00 Kb    -679.00 Kb        
+</span></span><span class=line><span class=cl>   <span class=m>1</span>
+</span></span><span class=line><span class=cl>    REFERENCE - FLASH ATTENTION        97.59%     710.021ms        99.89%     726.786ms     726.786ms     512.00 Kb      -8.00 Mb        
+</span></span><span class=line><span class=cl>   <span class=m>1</span>
+</span></span><span class=line><span class=cl>                    aten::zero_         0.21%       1.546ms         2.35%      17.065ms      46.122us      32.00 Kb      32.00 Kb        
+</span></span><span class=line><span class=cl> <span class=m>370</span>
+</span></span><span class=line><span class=cl>                    aten::fill_         2.13%      15.530ms         2.13%      15.530ms     116.767us           <span class=m>0</span> b           <span class=m>0</span> b        
+</span></span><span class=line><span class=cl> <span class=m>133</span>
+</span></span><span class=line><span class=cl>-------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>Self CPU <span class=nb>time</span> total: 727.590ms
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>REFERENCE - FLASH ATTENTION statistics
+</span></span><span class=line><span class=cl>cpu time:  726.786ms
+</span></span><span class=line><span class=cl>mem usage:  <span class=m>524288</span> bytes
+</span></span><span class=line><span class=cl>-----RUNNING STUDENT IMPLEMENTATION-----
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 14:10:31 8891:8891 ActivityProfilerController.cpp:312<span class=o>]</span> Completed Stage: Warm Up
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 14:10:32 8891:8891 ActivityProfilerController.cpp:318<span class=o>]</span> Completed Stage: Collection
+</span></span><span class=line><span class=cl>STAGE:2025-08-26 14:10:32 8891:8891 ActivityProfilerController.cpp:322<span class=o>]</span> Completed Stage: Post Processing
+</span></span><span class=line><span class=cl>manual <span class=nv>attention</span> <span class=o>==</span> pytorch attention True
+</span></span><span class=line><span class=cl>Manual Execution Time:  0.21417665481567383
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-----------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                         Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU <span class=nb>time</span> avg       CPU Mem  Self CPU Mem    <span class=c1># of Calls</span>
+</span></span><span class=line><span class=cl>-----------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>                  aten::empty         0.01%      30.000us         0.01%      30.000us       2.308us       1.63 Mb       1.63 Mb          
+</span></span><span class=line><span class=cl><span class=m>13</span>
+</span></span><span class=line><span class=cl>                  aten::zeros         0.02%      40.000us         0.08%     164.000us      13.667us       1.16 Mb      32.00 Kb          
+</span></span><span class=line><span class=cl><span class=m>12</span>
+</span></span><span class=line><span class=cl>                  aten::clone         0.03%      58.000us         0.27%     585.000us     292.500us       1.00 Mb           <span class=m>0</span> b          
+</span></span><span class=line><span class=cl> <span class=m>2</span>
+</span></span><span class=line><span class=cl>              model_inference         0.08%     179.000us       100.00%     214.232ms     214.232ms     512.00 Kb    -679.00 Kb          
+</span></span><span class=line><span class=cl> <span class=m>1</span>
+</span></span><span class=line><span class=cl>    STUDENT - FLASH ATTENTION        99.52%     213.207ms        99.85%     213.906ms     213.906ms     512.00 Kb      -1.00 Mb          
+</span></span><span class=line><span class=cl> <span class=m>1</span>
+</span></span><span class=line><span class=cl>                aten::flatten         0.03%      60.000us         0.18%     384.000us      25.600us     512.00 Kb           <span class=m>0</span> b          
+</span></span><span class=line><span class=cl><span class=m>15</span>
+</span></span><span class=line><span class=cl>             aten::empty_like         0.00%       4.000us         0.00%       6.000us       6.000us     512.00 Kb           <span class=m>0</span> b          
+</span></span><span class=line><span class=cl> <span class=m>1</span>
+</span></span><span class=line><span class=cl>          aten::empty_strided         0.01%      13.000us         0.01%      13.000us      13.000us     512.00 Kb     512.00 Kb          
+</span></span><span class=line><span class=cl> <span class=m>1</span>
+</span></span><span class=line><span class=cl>                  aten::zero_         0.02%      36.000us         0.04%      96.000us       8.000us           <span class=m>0</span> b           <span class=m>0</span> b          
+</span></span><span class=line><span class=cl><span class=m>12</span>
+</span></span><span class=line><span class=cl>                  aten::fill_         0.03%      74.000us         0.03%      74.000us      24.667us           <span class=m>0</span> b           <span class=m>0</span> b          
+</span></span><span class=line><span class=cl> <span class=m>3</span>
+</span></span><span class=line><span class=cl>-----------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------
+</span></span><span class=line><span class=cl>Self CPU <span class=nb>time</span> total: 214.232ms
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>STUDENT - FLASH ATTENTION statistics
+</span></span><span class=line><span class=cl>cpu time:  213.906ms
+</span></span><span class=line><span class=cl>mem usage:  <span class=m>524288</span> bytes
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># python3 gpt149.py part4 -N &lt;val&gt; -br &lt;val&gt; -bc &lt;val&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1># 随便再测了几个，没有问题（br bc 在合法范围)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=extra-credit-optimize-further>Extra Credit: Optimize Further</h2><p>用 ISPC 进一步优化上面每一个 Part。</p><p>感觉意义一般，也跑路了。</p><h2 id=结语>结语</h2><p>总的来说，这个是做下来目前感觉最简单的。</p></section><footer class=article-footer><section class=article-tags><a href=/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/>学习笔记</a>
+<a href=/tags/cs149/>CS149</a>
+<a href=/tags/%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97/>并行计算</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section><section class=article-lastmod><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<span>最后更新于 2025 年 9 月 6 日 14:35 CST</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/p/cs149_2024_asst5_writeup/><div class=article-image><img src=/p/cs149_2024_asst5_writeup/cover.6e334527582f43c21afa8b753f42b50c_hu_4c45e10e34ec4af0.jpeg width=250 height=150 loading=lazy alt="Featured image of post 『学习笔记』CS149 (2024): Assignment 5" data-key=CS149_2024_asst5_writeup data-hash="md5-bjNFJ1gvQ8Ia+ot1P0K1DA=="></div><div class=article-details><h2 class=article-title>『学习笔记』CS149 (2024): Assignment 5</h2></div></a></article><article class=has-image><a href=/p/cs149_2024_asst2_writeup/><div class=article-image><img src=/p/cs149_2024_asst2_writeup/cover.ed99683fe0aa2485b30fae87122488f3_hu_d95c17e058883c72.jpg width=250 height=150 loading=lazy alt="Featured image of post 『学习笔记』CS149 (2024): Assignment 2" data-key=CS149_2024_asst2_writeup data-hash="md5-7ZloP+CqJIWzD66HEiSI8w=="></div><div class=article-details><h2 class=article-title>『学习笔记』CS149 (2024): Assignment 2</h2></div></a></article><article class=has-image><a href=/p/cs149_2024_asst3_writeup/><div class=article-image><img src=/p/cs149_2024_asst3_writeup/cover.344cb5abcc4fda0b40fad57d018ed737_hu_b4d264c56e73b42e.jpeg width=250 height=150 loading=lazy alt="Featured image of post 『学习笔记』CS149 (2024): Assignment 3" data-key=CS149_2024_asst3_writeup data-hash="md5-NEy1q8xP2gtA+tV9AY7XNw=="></div><div class=article-details><h2 class=article-title>『学习笔记』CS149 (2024): Assignment 3</h2></div></a></article><article class=has-image><a href=/p/cs149_2024_asst1_writeup/><div class=article-image><img src=/p/cs149_2024_asst1_writeup/cover.7bf451ad35840d07dd26719063b8bb38_hu_da9fe0c3b76dc74b.jpg width=250 height=150 loading=lazy alt="Featured image of post 『学习笔记』CS149 (2024): Assignment 1" data-key=CS149_2024_asst1_writeup data-hash="md5-e/RRrTWEDQfdJnGQY7i7OA=="></div><div class=article-details><h2 class=article-title>『学习笔记』CS149 (2024): Assignment 1</h2></div></a></article><article class=has-image><a href=/p/cs149_2024_note/><div class=article-image><img src=/p/cs149_2024_note/cover.664e6dffed8260e16a7d442976d4323f_hu_9dada7ff6176f365.jpeg width=250 height=150 loading=lazy alt="Featured image of post 『学习笔记』CS149 (2024)" data-key=CS149_2024_note data-hash="md5-Zk5t/+2CYOFqfUQpdtQyPw=="></div><div class=article-details><h2 class=article-title>『学习笔记』CS149 (2024)</h2></div></a></article></div></div></aside><script src=https://giscus.app/client.js data-repo=Livinfly/Livinfly.github.io data-repo-id=R_kgDON6qCKA data-category=Announcements data-category-id=DIC_kwDON6qCKM4CnBxR data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=top data-theme=light data-lang=zh-CN data-loading crossorigin=anonymous async></script><script>function setGiscusTheme(e){let t=document.querySelector("iframe.giscus-frame");t&&t.contentWindow.postMessage({giscus:{setConfig:{theme:e}}},"https://giscus.app")}(function(){addEventListener("message",t=>{if(event.origin!=="https://giscus.app")return;e()}),window.addEventListener("onColorSchemeChange",e);function e(){setGiscusTheme(document.documentElement.dataset.scheme==="light"?"light":"dark")}})()</script><footer class=site-footer><section class=copyright>&copy;
+2022 -
+2025 Livinfly's Blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.32.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.c922af694cc257bf1ecc41c0dd7b0430f9114ec280ccf67cd2c6ad55f5316c4e.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

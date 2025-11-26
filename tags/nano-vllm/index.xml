@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Nano-VLLM on Livinfly's Blog</title><link>https://livinfly.github.io/tags/nano-vllm/</link><description>Recent content in Nano-VLLM on Livinfly's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 25 Nov 2025 19:45:15 +0800</lastBuildDate><atom:link href="https://livinfly.github.io/tags/nano-vllm/index.xml" rel="self" type="application/rss+xml"/><item><title>nano-vLLM 简单梳理</title><link>https://livinfly.github.io/p/nano_vllm_combing/</link><pubDate>Tue, 25 Nov 2025 11:27:18 +0000</pubDate><guid>https://livinfly.github.io/p/nano_vllm_combing/</guid><description>&lt;img src="https://livinfly.github.io/p/nano_vllm_combing/cover.jpg" alt="Featured image of post nano-vLLM 简单梳理" /&gt;&lt;blockquote&gt;
+&lt;p&gt;封面来源：&lt;a class="link" href="https://x.com/takeez3/status/1958149162303930704" target="_blank" rel="noopener"
+&gt;@takeez3&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;nano-vLLM 作为 Python 简洁实现的朴素 vLLM，对 vLLM 的主要结构能有一个简单的认识。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;项目代码简洁，除了少数几个地方变量可能需要琢磨下，其他地方阅读通畅，非常建议阅读源码！&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;仓库代码：&lt;a class="link" href="https://github.com/GeeeekExplorer/nano-vllm" target="_blank" rel="noopener"
+&gt;GeeeekExplorer/nano-vllm: Nano vLLM&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+我 fork 的带有少量英文注释的仓库代码：&lt;a class="link" href="https://github.com/Livinfly/nano-vllm/tree/private/mengmm" target="_blank" rel="noopener"
+&gt;Livinfly/nano-vllm at private/mengmm&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;p&gt;相关文章：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;附代码注释
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://zhuanlan.zhihu.com/p/1939065889937929048" target="_blank" rel="noopener"
+&gt;nano vllm Sequence 以及 BlockManager 解析 - 知乎&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://zhuanlan.zhihu.com/p/1940531910418862756" target="_blank" rel="noopener"
+&gt;nano vllm Scheduler、ModelRunner以及LLMEngine 解析 - 知乎&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://zhuanlan.zhihu.com/p/1925942233745585068" target="_blank" rel="noopener"
+&gt;nano vllm源码阅读——TP并行 - 知乎&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/nano_vllm_combing/assets/file-20251125192343897.png"
+width="1431"
+height="1579"
+srcset="https://livinfly.github.io/p/nano_vllm_combing/assets/file-20251125192343897_hu_4e1b77d5fc5264e3.png 480w, https://livinfly.github.io/p/nano_vllm_combing/assets/file-20251125192343897_hu_7578b1e1289946.png 1024w"
+loading="lazy"
+alt="nano-vLLM"
+class="gallery-image"
+data-flex-grow="90"
+data-flex-basis="217px"
+&gt;&lt;/p&gt;
+&lt;p&gt;目前 nano-vLLM 仅支持单机多卡 TP。&lt;/p&gt;
+&lt;p&gt;config 为了简洁，基本是硬编码。&lt;/p&gt;
+&lt;p&gt;下面将按照文件结构进行介绍，对照上图阅读。&lt;/p&gt;
+&lt;h2 id="entrypoint"&gt;entrypoint
+&lt;/h2&gt;&lt;p&gt;最初可以先看 &lt;code&gt;example.py&lt;/code&gt;、&lt;code&gt;bench.py&lt;/code&gt;，了解配置、参数流的传输路径。&lt;/p&gt;
+&lt;p&gt;经过形式上的 &lt;code&gt;llm.py&lt;/code&gt; 进入 engine。&lt;/p&gt;
+&lt;h2 id="engine"&gt;engine
+&lt;/h2&gt;&lt;h3 id="llm-engine"&gt;LLM Engine
+&lt;/h3&gt;&lt;p&gt;从 &lt;code&gt;__init__()&lt;/code&gt; 或者 &lt;code&gt;generate()&lt;/code&gt; 看起，下面为了介绍方便，从 &lt;code&gt;__init__()&lt;/code&gt; 开始介绍。&lt;/p&gt;
+&lt;p&gt;LLM Engine，具体由以下几部分组成，他们的初始化在 &lt;code&gt;__init()&lt;/code&gt; 中完成。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;config&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;模型、kv cache、分布式并行、调度等相关配置。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;multiprocessing&lt;/code&gt; 分布式配置
+&lt;ul&gt;
+&lt;li&gt;主要是启动了多个执行 &lt;code&gt;ModelRunner&lt;/code&gt; 的进程，后续用于做单机多卡的 TP。&lt;/li&gt;
+&lt;li&gt;基本逻辑见后续 &lt;code&gt;step()&lt;/code&gt; 中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Model Runner&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;模型运行的执行者。&lt;/li&gt;
+&lt;li&gt;主进程，拥有所有其他 GPU 的 &lt;code&gt;event&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;event&lt;/code&gt;，因为不是很懂分布式，可以简单理解成给主进程了个调用的方式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Tokenizer&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;分词器，用于 &lt;code&gt;text&lt;/code&gt; 文本和 &lt;code&gt;token_ids&lt;/code&gt; 词元编码的编解码，简单理解成人类的语言和大模型的语言相互翻译。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Scheduler&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;调度器，负责调度模型处理的请求。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;然后，我们看外界调用的接口 &lt;code&gt;generate()&lt;/code&gt;，收起忽略掉 &lt;code&gt;if use_tqdm:&lt;/code&gt; 的 debug 调试信息，核心逻辑如下。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;把新请求的 &lt;code&gt;prompt&lt;/code&gt; 请求加入调度器的队列。
+具体地，在正式加入调度器之前，会使用 &lt;code&gt;Tokenizer&lt;/code&gt; 进行编码，转变成适合模型处理的形式。&lt;/li&gt;
+&lt;li&gt;加入完毕，逐个 &lt;code&gt;step&lt;/code&gt; 处理出完成的结果 &lt;code&gt;output&lt;/code&gt;，增量更新整体的结果 &lt;code&gt;outputs&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;返回 &lt;code&gt;text&lt;/code&gt; 和 &lt;code&gt;token_ids&lt;/code&gt;，作为结果和方便调试的输出。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;接下来，我们看具体处理输出的函数 &lt;code&gt;step()&lt;/code&gt;。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;先用我们先前加入 &lt;code&gt;prompt&lt;/code&gt; 的 &lt;code&gt;Scheduler&lt;/code&gt; 进行 &lt;code&gt;schedule()&lt;/code&gt; 调度，得到本次 &lt;code&gt;step&lt;/code&gt; 需要处理的 &lt;code&gt;seqs&lt;/code&gt; 序列，即需要处理的请求；同时返回本次 &lt;code&gt;step&lt;/code&gt; 处理的序列的类型，是 prefill 还是 decode。&lt;/li&gt;
+&lt;li&gt;传入 &lt;code&gt;model_runner&lt;/code&gt;，&lt;code&gt;call&lt;/code&gt; 分布式调用 &lt;code&gt;run&lt;/code&gt;，模型处理出本次输出的 &lt;code&gt;token_ids&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Scheduler&lt;/code&gt; 把新生成的 &lt;code&gt;token_ids&lt;/code&gt; 加入 &lt;code&gt;seq&lt;/code&gt; 中，并且对 &lt;code&gt;seq&lt;/code&gt; 生成是否结束做出判断，同时进行对应的更新。&lt;/li&gt;
+&lt;li&gt;把生成结束的 &lt;code&gt;seq&lt;/code&gt; 返回为 &lt;code&gt;output&lt;/code&gt;，同时输出测试使用的 &lt;code&gt;num_tokens&lt;/code&gt; 表示处理了多少个 &lt;code&gt;token&lt;/code&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;至此，整个框架的主要结构、流程已经介绍完毕，接下来将是一些细节上的实现。&lt;/p&gt;
+&lt;h3 id="scheduler"&gt;scheduler
+&lt;/h3&gt;&lt;p&gt;我们由主要逻辑 &lt;code&gt;generate()&lt;/code&gt; 出发，首先了解 &lt;code&gt;scheduler&lt;/code&gt; 的实现细节。&lt;/p&gt;
+&lt;p&gt;首先从 &lt;code&gt;__init__&lt;/code&gt; 开始。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;涉及到一次能调度多少 &lt;code&gt;seqs&lt;/code&gt;、&lt;code&gt;tokens&lt;/code&gt; 的配置&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Block Manager&lt;/code&gt;，设置好 &lt;code&gt;num_kvcache_blocks&lt;/code&gt;、&lt;code&gt;kvcache_block_size&lt;/code&gt;，后续在调度过程中，判断 kv cache 是否够分配，分配、回收块的内存。
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;num_kvcache_blocks&lt;/code&gt; 在 &lt;code&gt;scheduler&lt;/code&gt; 初始化前的 &lt;code&gt;model_runner&lt;/code&gt; 初始化的时候确认的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;调度序列
+&lt;ul&gt;
+&lt;li&gt;waiting 等待调度序列&lt;/li&gt;
+&lt;li&gt;running 运行中序列（处理过，有 kv cache）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;核心逻辑 &lt;code&gt;schedule()&lt;/code&gt;。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;调度 prefill
+&lt;ul&gt;
+&lt;li&gt;对 &lt;code&gt;seq&lt;/code&gt; 进行 kv cache 分配的可行判断，分配。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;seq&lt;/code&gt; 状态的更新，&lt;code&gt;schedule&lt;/code&gt; 调度序列的更新。&lt;/li&gt;
+&lt;li&gt;如果存在 prefill 的 &lt;code&gt;seq&lt;/code&gt; 调度完，直接返回，prefill 优先，一次调度只调度一种计算类型的 &lt;code&gt;seq&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;调度 decode
+&lt;ul&gt;
+&lt;li&gt;显然只有 prefill 调度完了，或者放不下了，才会到 decode&lt;/li&gt;
+&lt;li&gt;对 running 的序列做进一步处理&lt;/li&gt;
+&lt;li&gt;判断是否可以 append，即 decode 后生成一个 token 的内存占用&lt;/li&gt;
+&lt;li&gt;不能就 &lt;code&gt;preempt()&lt;/code&gt; 抢占后续 running 中的 &lt;code&gt;seq&lt;/code&gt;，供自己使用
+&lt;ul&gt;
+&lt;li&gt;具体地，抢占就是把 &lt;code&gt;seq&lt;/code&gt; 放回 waiting 中，释放它的 kv cache。&lt;/li&gt;
+&lt;li&gt;如果没有能再抢占的序列了，还是不能满足它，则结束 decode 的调度。&lt;/li&gt;
+&lt;li&gt;特别地，如果此时没有一个 &lt;code&gt;seq&lt;/code&gt; 被调度，则报错。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;可以就正常分配内存。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;把新调度的 &lt;code&gt;seq&lt;/code&gt; 放到 &lt;code&gt;running&lt;/code&gt; 的最前面。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;scheduler 调度策略是原 vLLM v0 的默认策略，只支持一个 step prefill 或 decode。
+具体地，nano-vLLM 优先 prefill，抢占式调度。&lt;/p&gt;
+&lt;h3 id="block_manager"&gt;block_manager
+&lt;/h3&gt;&lt;p&gt;既然 &lt;code&gt;scheduler&lt;/code&gt; 中有提到 &lt;code&gt;block_manager&lt;/code&gt;，因为都是很硬的内存分配、共享块的代码，比较琐碎，简单带过。&lt;/p&gt;
+&lt;p&gt;为了能减少内存碎片，进行 share-prefix 前缀共享，&lt;code&gt;Block&lt;/code&gt; 涉及了 hash, ref_count。&lt;/p&gt;
+&lt;p&gt;具体的内存分配的话，就是先判断能不能，然后再具体分配；追加到最后的块里，还是新开辟一个块。&lt;/p&gt;
+&lt;h3 id="sequence"&gt;sequence
+&lt;/h3&gt;&lt;p&gt;琐碎，同样简单带过。&lt;/p&gt;
+&lt;p&gt;为了序列化、反序列化传输方便，只有必要的序列信息和与块相关的信息。&lt;/p&gt;
+&lt;h3 id="model_runner"&gt;model_runner
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;__init__()&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;模型载入&lt;/li&gt;
+&lt;li&gt;分布式的通信的配置
+&lt;ul&gt;
+&lt;li&gt;前面提到的 &lt;code&gt;call&lt;/code&gt; 调用 &lt;code&gt;run&lt;/code&gt; 的具体实现，就是主进程监听 &lt;code&gt;step()&lt;/code&gt; 的 &lt;code&gt;call&lt;/code&gt;，收到后广播给其余进程，具体是通过进程 Shared Memory 共享内存，来写、读的。&lt;/li&gt;
+&lt;li&gt;模型的 TP，在配置完 rank、world_size 后，在模型结构侧自动进行切分。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Sampler
+&lt;ul&gt;
+&lt;li&gt;最后模型输出概率的采样器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;warmup，找到模型运行的峰值内存等信息&lt;/li&gt;
+&lt;li&gt;allocate_kv_cache，根据 warmup 得到的内存信息，进行分配 kv cache。&lt;/li&gt;
+&lt;li&gt;cuda graph 相关设置（我目前只知道，会 padding）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;首先先来看下，&lt;code&gt;allocate_kv_cache()&lt;/code&gt;，逻辑简单。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;根据模型信息、本地内存信息、TP 信息，算出合理的 &lt;code&gt;config.num_kvcache_blocks&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;分配当前 rank 模型的 kv_cache，同时绑定到 / 被引用，每层 attention 的 k_cache, v_cache 中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;然后，我们看核心 &lt;code&gt;run()&lt;/code&gt;。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;prepare_(prefill / decode)&lt;/code&gt;，为 &lt;code&gt;run_model&lt;/code&gt; 准备上下文，&lt;code&gt;input_ids&lt;/code&gt; 新增 token 和 &lt;code&gt;position&lt;/code&gt; 位置编码，同时，&lt;code&gt;prepare_block_tables&lt;/code&gt; 在 Q 和 KV 没对齐的时候，block 长度对齐。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;prepare_sample&lt;/code&gt;，为每个 seqs 确定采样 temperature&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;run_model&lt;/code&gt;，运行模型，算出 logits&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sample&lt;/code&gt;，采样出 token_ids&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="layers"&gt;layers
+&lt;/h2&gt;&lt;p&gt;都是一些算子的实现，主要提以下几个：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;attention&lt;/code&gt;，k 和 v 在forward 时候，在进入 attention 算子计算前，进行存储。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;QKVParallelLinear&lt;/code&gt;，&lt;code&gt;ColumnParallelLinear&lt;/code&gt;，&lt;code&gt;RowParallelLinear&lt;/code&gt;，涉及 TP，Q / K / V/ O 的运算。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="models"&gt;models
+&lt;/h2&gt;&lt;p&gt;模型具体并行涉及 TP 相关知识，核心层在 &lt;code&gt;QKVParallelLinear&lt;/code&gt;，&lt;code&gt;RowParallelLinear&lt;/code&gt;，可以参考 &lt;a class="link" href="https://zhuanlan.zhihu.com/p/1925942233745585068" target="_blank" rel="noopener"
+&gt;nano vllm源码阅读——TP并行 - 知乎&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;p&gt;模型 loader 有些转化，看 &lt;code&gt;Qwen3ForCausalLM.packed_modules_mapping&lt;/code&gt; 和 &lt;code&gt;utils.loader&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;模型结构比较简单，到最后会回到我在 layers 中提到的几个核心算子。&lt;/p&gt;</description></item></channel></rss>

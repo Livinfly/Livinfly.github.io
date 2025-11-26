@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Rg/VarlenSeq on Livinfly's Blog</title><link>https://livinfly.github.io/tags/rg/varlenseq/</link><description>Recent content in Rg/VarlenSeq on Livinfly's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 26 Nov 2025 21:28:58 +0800</lastBuildDate><atom:link href="https://livinfly.github.io/tags/rg/varlenseq/index.xml" rel="self" type="application/rss+xml"/><item><title>『论文阅读』DCP: Addressing Input Dynamism in Long-Context Training via Dynamic Context Parallelism</title><link>https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/</link><pubDate>Wed, 26 Nov 2025 13:11:10 +0000</pubDate><guid>https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/</guid><description>&lt;img src="https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/cover.jpg" alt="Featured image of post 『论文阅读』DCP: Addressing Input Dynamism in Long-Context Training via Dynamic Context Parallelism" /&gt;&lt;blockquote&gt;
+&lt;p&gt;封面来源：&lt;a class="link" href="https://x.com/UMEDAYO_sekaume/status/1993233124218880125" target="_blank" rel="noopener"
+&gt;@UMEDAYO_sekaume&lt;/a&gt;
+&lt;sup&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound"&gt;
+&lt;path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"&gt;&lt;/path&gt;
+&lt;polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"&gt;&lt;/polygon&gt;
+&lt;/svg&gt;
+&lt;/sup&gt;
+&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;tags: #rg/ContextParallelism #rg/TrainingSystem #rg/VarlenSeq #rg/SparseUsed&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id="motivation"&gt;Motivation
+&lt;/h2&gt;&lt;p&gt;实际常见的 &lt;strong&gt;seq varlen&lt;/strong&gt;，&lt;strong&gt;token relationship&lt;/strong&gt; (sparse) 下，static 的 CP，效果不好。&lt;/p&gt;
+&lt;h2 id="background"&gt;Background
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;分块的 attention 计算&lt;/li&gt;
+&lt;li&gt;Context Parllelism，ulysses, SP, ring attention, ring attention (head-tail)，等 placement 的优化。&lt;/li&gt;
+&lt;li&gt;varlen，虽然内存、计算是均衡了，通信是冗余的，不管长短都要通信。可以 CP 长，DP 短，见下图。&lt;/li&gt;
+&lt;li&gt;token relationship，在多样任务下的多种的 mask，会把不下一个 / 其他 device 用不到的 kv block 给传输过去。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;有/无序列依赖的算子。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418669.png"
+width="1110"
+height="753"
+srcset="https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418669_hu_6d656a1c3dd3aff9.png 480w, https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418669_hu_1f995a77aff54b5d.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="147"
+data-flex-basis="353px"
+&gt;&lt;/p&gt;
+&lt;h2 id="method"&gt;Method
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;块表示。
+&lt;ul&gt;
+&lt;li&gt;根据 mask，把 data，分析作为单 head 的 Q, KV, C, O（C 指计算块） 的 &lt;strong&gt;block&lt;/strong&gt; 来分析，求解 memory 和 communication 的均衡解，即 placement。&lt;/li&gt;
+&lt;li&gt;Q, KV, C, O 块之间存在依赖。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;超图划分。
+&lt;ul&gt;
+&lt;li&gt;考虑到 inter- 通信效率不如 intra-，自然进行层级 placement。&lt;/li&gt;
+&lt;li&gt;根据这些计算、内存、通信等限制条件，汇总为总的&lt;strong&gt;计算不均衡容忍度&lt;/strong&gt;与&lt;strong&gt;内存不均衡容忍度&lt;/strong&gt;，把求解最优分配问题，转变为&lt;strong&gt;均衡 Hypergraph 超图划分问题&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;这是个 NP-hard 问题，使用高效的启发式求解器，PaToH, KaHyPar。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;计算通信调度。
+&lt;ul&gt;
+&lt;li&gt;因为块的计算顺序是无关的，顺序执行可能不能充分利用硬件性能，即不能够很好的 overlap 通信与计算，所以提出&lt;strong&gt;多划分执行调度&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;目标是，将计算块划分到 T 个阶段，最小化每个 device 上的最大计算 / 通信。&lt;/li&gt;
+&lt;li&gt;相当于是一个&lt;strong&gt;多维分配问题&lt;/strong&gt;的 NP-Complete 问题，使用贪心启发式的方法找到均衡的划分。&lt;/li&gt;
+&lt;li&gt;每个阶段计算的通信不超过 1 / T，从无需通信开始。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;执行器。
+&lt;ul&gt;
+&lt;li&gt;核心是&lt;strong&gt;块缓冲&lt;/strong&gt;和&lt;strong&gt;指令集&lt;/strong&gt;，包括块注意力（输入输出块分布可能不连续，所以魔改增加 offset，与 FlexAttn, FlashMask）、块规约、块拷贝、通信启动、通信等待。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;其他
+&lt;ul&gt;
+&lt;li&gt;plan 和 model execution 做 overlap，dataloader 预取数据。&lt;/li&gt;
+&lt;li&gt;与其他并行策略，可以 DCP 应占据 TP-CP-DP-PP 中（CP-DP）的分配顺序。
+&lt;img src="https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418639.png"
+width="1055"
+height="549"
+srcset="https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418639_hu_76de3869706d864d.png 480w, https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418639_hu_3ae0c97adfce711.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="192"
+data-flex-basis="461px"
+&gt;
+&lt;img src="https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418635.png"
+width="983"
+height="1436"
+srcset="https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418635_hu_34b605092051058a.png 480w, https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418635_hu_40eb084e757deea7.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="68"
+data-flex-basis="164px"
+&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="experiment"&gt;Experiment
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Mirco-benchmark (attention op)
+设置：在 4 个 AWS EC2 p4de.24xlarge（32张A100 GPU）上，使用 LongDataCollections 数据集，比较 DCP 与 RFA、LoongTrain、TransformerEngine。
+&lt;img src="https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418629.png"
+width="2072"
+height="996"
+srcset="https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418629_hu_b71167a1ca97c286.png 480w, https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418629_hu_db3a41d37ec2684.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="208"
+data-flex-basis="499px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;End-to-end eval
+设置：在 8 个 AWS EC2 p4de.24xlarge 实例（64 张 A100 GPU）上，使用 LongAlign 和 LongDataCollections 数据集，训练 8B 参数 GPT 模型，比较 DCP 与集成在 Megatron-LM 中的增强版 TransformerEngine。
+&lt;img src="https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418626.png"
+width="1959"
+height="948"
+srcset="https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418626_hu_4708664b5caaebc1.png 480w, https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418626_hu_d6a190fffe19180c.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="495px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;其他
+块大小与通信量、plan 时间、稀疏度的关系，计算不均衡容忍度与通信量。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src="https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418623.png"
+width="983"
+height="1477"
+srcset="https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418623_hu_b3678a9d72f0112a.png 480w, https://livinfly.github.io/p/paperrg_dcp_addressing_input_dynamism_in_long-context_training_via_dynamic_context_parallelism/assets/DCP_Addressing_Input_Dynamism_In_Long_Context_Training_via_Dynamic_Context_Parallelism/file-20251126211418623_hu_6105057055a79fba.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="66"
+data-flex-basis="159px"
+&gt;&lt;/p&gt;
+&lt;h2 id="future"&gt;Future
+&lt;/h2&gt;&lt;p&gt;做 training，plan 可以有效被 overlap；&lt;/p&gt;
+&lt;p&gt;如果做 serving，plan 取 1024 大小，需要 10s 不太可用；&lt;/p&gt;
+&lt;p&gt;先考虑 prefill，但比如如果我是提前为几种常见的 sparse 类型去做预处理，&lt;/p&gt;
+&lt;p&gt;或者找最类似的情况选 plan，注意 data 均匀（不影响非序列依赖算子的计算量），可能大概还行？&lt;/p&gt;
+&lt;p&gt;再考虑 decode，q = 1 的话，q block 实际没有了。&lt;/p&gt;</description></item></channel></rss>
