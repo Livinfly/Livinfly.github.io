@@ -13,6 +13,27 @@
     --academic-width: 1120px;
     --academic-sidebar-width: 220px;
     --academic-sidebar-collapsed-width: 44px;
+    --academic-sidebar-summary-inline-padding: 1.25rem;
+
+    /* Typography scale. Keep these values together so the hierarchy is easy to tune. */
+    --academic-font-size-body: 1.0625rem;
+    --academic-font-size-sidebar-id: 0.875rem;
+    --academic-font-size-sidebar-section: 0.7rem;
+    --academic-font-size-sidebar-language: 0.75rem;
+    --academic-font-size-sidebar-nav: 0.875rem;
+    --academic-font-size-sidebar-toc-h1: 0.85rem;
+    --academic-font-size-sidebar-toc-h2: 0.8rem;
+    --academic-font-size-sidebar-archive-year: 0.85rem;
+    --academic-font-size-sidebar-archive-month: 0.8rem;
+    --academic-font-size-sidebar-archive-entry: 0.8rem;
+    --academic-font-size-title-profile: clamp(2.1rem, 4.6vw, 3.4rem);
+    --academic-font-size-title-list: clamp(2rem, 4.2vw, 3.1rem);
+    --academic-font-size-title-article: clamp(1.875rem, 3.8vw, 2.9rem);
+    --academic-font-size-title-card: 1.375rem;
+    --academic-font-size-content-h1: 1.625rem;
+    --academic-font-size-content-h2: 1.25rem;
+    --academic-font-size-content-h3: 1.05rem;
+    --academic-font-size-content-h4: 1rem;
 }
 
 :root:lang(zh-CN) {
@@ -46,7 +67,7 @@ body {
     background: var(--academic-bg);
     color: var(--academic-text);
     font-family: var(--academic-serif);
-    font-size: 17px;
+    font-size: var(--academic-font-size-body);
     line-height: 1.66;
     text-rendering: optimizeLegibility;
 }
@@ -116,7 +137,7 @@ a:focus-visible {
     padding: 0.15rem 1.25rem 1rem 0;
     border-right: 1px solid var(--academic-line);
     font-family: var(--academic-sans);
-    font-size: 0.88rem;
+    font-size: var(--academic-font-size-sidebar-nav);
     line-height: 1.35;
 }
 
@@ -142,7 +163,7 @@ a:focus-visible {
     position: relative;
     display: flex;
     min-height: 2rem;
-    padding: 0 1.65rem;
+    padding: 0 var(--academic-sidebar-summary-inline-padding);
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
@@ -152,12 +173,15 @@ a:focus-visible {
 }
 
 .academic-sidebar__summary-label {
+    min-width: 0;
+    max-width: 100%;
     color: var(--academic-text);
     font-family: var(--academic-serif);
-    font-size: 0.98rem;
+    font-size: var(--academic-font-size-sidebar-id);
     font-weight: 600;
     letter-spacing: 0.015em;
     line-height: 1.2;
+    white-space: nowrap;
 }
 
 .academic-shell--sidebar-collapsed .academic-sidebar__summary {
@@ -252,6 +276,7 @@ a:focus-visible {
     padding: 0.34rem 0.5rem;
     border-left: 2px solid transparent;
     color: var(--academic-muted);
+    font-size: var(--academic-font-size-sidebar-nav);
     text-decoration: none;
 }
 
@@ -285,7 +310,7 @@ a:focus-visible {
     justify-content: center;
     border: 1px solid var(--academic-line);
     color: var(--academic-muted);
-    font-size: 0.72rem;
+    font-size: var(--academic-font-size-sidebar-language);
     line-height: 1.25;
     text-align: center;
     text-decoration: none;
@@ -314,7 +339,7 @@ a:focus-visible {
     gap: 0.55rem;
     margin: 0 0 0.75rem;
     color: var(--academic-text);
-    font-size: 0.7rem;
+    font-size: var(--academic-font-size-sidebar-section);
     font-weight: 800;
     letter-spacing: 0.11em;
     text-transform: uppercase;
@@ -387,12 +412,13 @@ html:lang(zh-CN) .academic-sidebar__label > span {
 
 .academic-archive-year > summary {
     color: var(--academic-text);
+    font-size: var(--academic-font-size-sidebar-archive-year);
     font-weight: 750;
 }
 
 .academic-archive-month > summary {
     color: var(--academic-muted);
-    font-size: 0.78rem;
+    font-size: var(--academic-font-size-sidebar-archive-month);
     font-weight: 650;
 }
 
@@ -438,7 +464,7 @@ html:lang(zh-CN) .academic-sidebar__label > span {
     display: block;
     padding: 0.25rem 0.4rem;
     color: var(--academic-muted);
-    font-size: 0.76rem;
+    font-size: var(--academic-font-size-sidebar-archive-entry);
     line-height: 1.35;
     overflow-wrap: anywhere;
     text-decoration: none;
@@ -483,11 +509,13 @@ html:lang(zh-CN) .academic-sidebar__label > span {
     padding: 0.2rem 0.4rem;
     border-left: 2px solid transparent;
     color: var(--academic-muted);
+    font-size: var(--academic-font-size-sidebar-toc-h2);
     text-decoration: none;
 }
 
 #TableOfContents > ul > li > a {
     color: var(--academic-text);
+    font-size: var(--academic-font-size-sidebar-toc-h1);
     font-weight: 650;
 }
 
@@ -550,7 +578,7 @@ html:lang(zh-CN) .academic-sidebar__label > span {
 
 .academic-header h1 {
     margin: 0;
-    font-size: clamp(2.35rem, 6vw, 3.9rem);
+    font-size: var(--academic-font-size-title-profile);
     font-weight: 500;
     letter-spacing: -0.045em;
     line-height: 0.98;
@@ -574,12 +602,12 @@ html:lang(zh-CN) .academic-sidebar__label > span {
 }
 
 .academic-header--compact h1 {
-    font-size: clamp(2.3rem, 5.5vw, 3.5rem);
+    font-size: var(--academic-font-size-title-list);
 }
 
 .academic-header--article h1 {
     max-width: 48rem;
-    font-size: clamp(2.05rem, 5vw, 3.25rem);
+    font-size: var(--academic-font-size-title-article);
     line-height: 1.05;
 }
 
@@ -605,7 +633,7 @@ html:lang(zh-CN) .academic-header h1 {
     margin: 3.6rem 0 1.15rem;
     padding-bottom: 0.42rem;
     border-bottom: 1px solid var(--academic-line);
-    font-size: 1.72rem;
+    font-size: var(--academic-font-size-content-h1);
     font-weight: 600;
     letter-spacing: -0.018em;
 }
@@ -616,19 +644,19 @@ html:lang(zh-CN) .academic-content h1 {
 
 .academic-content h2 {
     margin: 2.1rem 0 0.65rem;
-    font-size: 1.22rem;
+    font-size: var(--academic-font-size-content-h2);
     font-weight: 650;
 }
 
 .academic-content h3 {
     margin: 1.45rem 0 0.45rem;
-    font-size: 1.02rem;
+    font-size: var(--academic-font-size-content-h3);
     font-weight: 700;
 }
 
 .academic-content h4 {
     margin: 1.2rem 0 0.4rem;
-    font-size: 0.96rem;
+    font-size: var(--academic-font-size-content-h4);
     font-weight: 700;
 }
 
@@ -759,7 +787,7 @@ html:lang(zh-CN) .academic-content h1 {
 
 .academic-post-card h2 {
     margin: 0.38rem 0 0.65rem;
-    font-size: 1.42rem;
+    font-size: var(--academic-font-size-title-card);
     line-height: 1.25;
 }
 
@@ -862,6 +890,13 @@ html:lang(zh-CN) .academic-content h1 {
 }
 
 @media (max-width: 760px) {
+    :root {
+        --academic-font-size-title-profile: clamp(1.75rem, 4.6vw, 2.2rem);
+        --academic-font-size-title-list: clamp(1.85rem, 4.2vw, 2rem);
+        --academic-font-size-title-article: clamp(1.75rem, 4vw, 1.875rem);
+        --academic-font-size-title-card: clamp(1.25rem, 2.9vw, 1.375rem);
+    }
+
     .academic-shell {
         display: block;
         width: calc(100% - 2rem);
@@ -923,7 +958,7 @@ html:lang(zh-CN) .academic-content h1 {
         position: relative;
         width: 100%;
         min-height: 2rem;
-        padding: 0 1.65rem;
+        padding: 0 var(--academic-sidebar-summary-inline-padding);
         align-items: center;
         justify-content: center;
         border: 0;
@@ -985,10 +1020,6 @@ html:lang(zh-CN) .academic-content h1 {
     .academic-header--with-profile {
         grid-template-columns: minmax(0, 1fr) 4.75rem;
         gap: 0.75rem;
-    }
-
-    .academic-header--with-profile h1 {
-        font-size: clamp(2.2rem, 9.5vw, 2.45rem);
     }
 
     .academic-profile-image {

@@ -54,3 +54,19 @@ time comes from the language Markdown file's latest Git author date. Add an
 explicit `lastmod` only when that automatic value needs a deliberate override;
 before a new file's first commit, local builds fall back to its file-modified
 time.
+
+## Typography
+
+The Academic type scale is collected at the top of
+`assets/scss/academic/home.scss`. Each semantic level has its own CSS custom
+property: body text; sidebar identity, section labels, languages, navigation,
+H1/H2 table of contents, and archive levels; profile, list, article, and card
+titles; and content H1-H4 headings.
+
+For a longer bilingual name, adjust
+`--academic-font-size-sidebar-id` first. If the name still needs more room,
+increase `--academic-sidebar-width` or reduce
+`--academic-sidebar-summary-inline-padding`. The default identity size keeps a
+name such as `Jie Luo | 罗杰` on one line in the 220px sidebar. Profile, list,
+article, and card titles have separate responsive values in the mobile media
+query.
