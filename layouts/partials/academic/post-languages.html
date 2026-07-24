@@ -1,0 +1,19 @@
+{{- $visible := where .Parent.RegularPages "Params.academic_post" true -}}
+{{- $visible = where $visible "Params.hidden" "!=" true -}}
+{{- $englishPages := where $visible "Params.academic_lang" "en" -}}
+{{- $chinesePages := where $visible "Params.academic_lang" "zh-cn" -}}
+{{- if gt (len $englishPages) 1 -}}
+    {{- errorf "Academic bundle %q contains more than one English page" .Parent.Path -}}
+{{- end -}}
+{{- if gt (len $chinesePages) 1 -}}
+    {{- errorf "Academic bundle %q contains more than one Chinese page" .Parent.Path -}}
+{{- end -}}
+{{- $english := false -}}
+{{- $chinese := false -}}
+{{- with $englishPages -}}
+    {{- $english = index . 0 -}}
+{{- end -}}
+{{- with $chinesePages -}}
+    {{- $chinese = index . 0 -}}
+{{- end -}}
+{{- return (dict "en" $english "zh-cn" $chinese) -}}

@@ -1,0 +1,69 @@
+{{- $context := .Context -}}
+{{- $academic := .ContentPage -}}
+{{- $languagePages := .LanguagePages -}}
+{{- $language := default "en" $academic.Params.academic_lang -}}
+{{- $routes := partial "academic/routes.html" $language -}}
+{{- $strings := partial "academic/strings.html" $language -}}
+{{- $profileImage := false -}}
+{{- with $academic.Parent.Params.profile_image -}}
+    {{- $profileImage = $academic.Parent.Resources.GetMatch . -}}
+    {{- if not $profileImage -}}
+        {{- errorf "Profile image %q was not found in the academic home bundle" . -}}
+    {{- end -}}
+{{- end -}}
+<!doctype html>
+<html lang="{{ $strings.HtmlLang }}">
+    <head>
+        {{ partial "academic/head.html" (dict
+            "Context" $context
+            "Description" $academic.Description
+            "Language" $language
+            "LanguagePages" $languagePages
+            "Title" $academic.Title
+            "Type" "profile"
+        ) }}
+    </head>
+    <body>
+        <a class="skip-link" href="#content">{{ $strings.SkipToContent }}</a>
+
+        <div class="academic-shell">
+            {{ partial "academic/sidebar.html" (dict
+                "Context" $context
+                "ContentsPage" $academic
+                "Language" $language
+                "LanguagePages" $languagePages
+            ) }}
+
+            <main class="academic-main" id="content">
+                <header class="academic-header{{ if $profileImage }} academic-header--with-profile{{ end }}" id="top">
+                    <div class="academic-header__profile-copy">
+                        <p class="academic-header__eyebrow">{{ $strings.HomepageEyebrow }}</p>
+                        <h1>{{ $academic.Title }}</h1>
+                        {{ with $academic.Description }}
+                            <p class="academic-header__description">{{ . }}</p>
+                        {{ end }}
+                    </div>
+                    {{ with $profileImage }}
+                        <figure class="academic-profile-image">
+                            <img
+                                src="{{ .RelPermalink }}"
+                                width="{{ .Width }}"
+                                height="{{ .Height }}"
+                                decoding="async"
+                                alt="{{ default $academic.Title $academic.Params.profile_image_alt }}">
+                        </figure>
+                    {{ end }}
+                </header>
+
+                <article class="academic-content" lang="{{ $strings.HtmlLang }}">
+                    {{ $academic.Content }}
+                </article>
+
+                <footer class="academic-footer">
+                    <span>{{ $strings.LastUpdated }} <time datetime="{{ $academic.Lastmod.Format "2006-01-02T15:04:05Z07:00" }}">{{ partial "academic/format-date.html" (dict "Time" $academic.Lastmod "Language" $language "WithTime" true) }}</time></span>
+                    <a href="{{ $routes.Blog.RelPermalink }}">{{ $strings.AcademicBlog }}</a>
+                </footer>
+            </main>
+        </div>
+    </body>
+</html>

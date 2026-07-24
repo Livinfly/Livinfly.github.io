@@ -1,0 +1,13 @@
+{{- $blog := site.GetPage "/acad-blog" -}}
+{{- if not $blog -}}
+    {{- errorf "Academic blog route was not found" -}}
+{{- end -}}
+{{- $posts := partial "academic/feed-items.html" "en" -}}
+{{ partial "feeds/rss.xml" (dict
+    "Context" .
+    "Description" $blog.Description
+    "Language" "en"
+    "Link" $blog.Permalink
+    "Pages" $posts
+    "Title" (printf "%s · %s" $blog.Title site.Home.Title)
+) }}

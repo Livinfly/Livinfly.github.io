@@ -1,0 +1,61 @@
+{{- $context := .Context -}}
+{{- $languagePages := .LanguagePages -}}
+{{- $strings := partial "academic/strings.html" .Language -}}
+{{- $canonicalURL := $context.Permalink -}}
+{{- with .CanonicalURL -}}
+    {{- $canonicalURL = . -}}
+{{- end -}}
+{{- $englishURL := false -}}
+{{- $chineseURL := false -}}
+{{- with .LanguageURLs -}}
+    {{- $englishURL = index . "en" -}}
+    {{- $chineseURL = index . "zh-cn" -}}
+{{- else -}}
+    {{- with index $languagePages "en" -}}
+        {{- $englishURL = .Permalink -}}
+    {{- end -}}
+    {{- with index $languagePages "zh-cn" -}}
+        {{- $chineseURL = .Permalink -}}
+    {{- end -}}
+{{- end -}}
+{{- $style := resources.Get "scss/academic/home.scss" | toCSS (dict "targetPath" "css/academic-home.css") | minify | fingerprint -}}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="{{ .Description | plainify }}">
+<meta name="color-scheme" content="light dark">
+
+<title>{{ .Title }}</title>
+<link rel="canonical" href="{{ $canonicalURL }}">
+{{- with $englishURL }}
+<link rel="alternate" hreflang="en" href="{{ . }}">
+<link rel="alternate" hreflang="x-default" href="{{ . }}">
+{{- end }}
+{{- with $chineseURL }}
+<link rel="alternate" hreflang="zh-CN" href="{{ . }}">
+{{- end }}
+<link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
+{{- with site.Params.academic.favicon }}
+<link rel="icon" type="image/png" href="{{ . }}">
+<link rel="apple-touch-icon" href="{{ . }}">
+{{- else }}
+    {{- errorf "Academic favicon is not configured at params.academic.favicon" -}}
+{{- end }}
+<link rel="alternate" type="application/rss+xml" title="{{ $strings.EnglishFeed }} · {{ site.Home.Title }}" href="/index.xml">
+<link rel="alternate" type="application/rss+xml" title="{{ $strings.ChineseFeed }} · {{ site.Home.Title }}" href="/zh-cn/acad-blog/index.xml">
+{{- with .Paginator }}
+    {{- with .Prev }}
+<link rel="prev" href="{{ .URL }}">
+    {{- end }}
+    {{- with .Next }}
+<link rel="next" href="{{ .URL }}">
+    {{- end }}
+{{- end }}
+
+<meta property="og:type" content="{{ default "website" .Type }}">
+<meta property="og:title" content="{{ .Title }}">
+<meta property="og:description" content="{{ .Description | plainify }}">
+<meta property="og:url" content="{{ $canonicalURL }}">
+<meta property="og:locale" content="{{ if eq .Language "zh-cn" }}zh_CN{{ else }}en_US{{ end }}">
+{{ with .Image }}<meta property="og:image" content="{{ .Permalink }}">{{ end }}
+
+{{- template "_internal/google_analytics.html" $context -}}

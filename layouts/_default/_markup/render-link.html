@@ -3,7 +3,7 @@
     {{ end }}>{{ .Text | safeHTML }}</a> 
 {{ if and 
     (strings.HasPrefix .Destination "http")
-    (not (findRE "^<figure.*?>(.|\n)*?</firure>$" .Text))
+    (not (findRE "^<figure.*?>(.|\n)*?</figure>$" .Text))
 }}
 <sup>
     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="12" height="12" class="icon outbound">

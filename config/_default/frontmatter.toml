@@ -1,0 +1,4 @@
+# Keep original publication dates distinct from later modification dates.
+date = ["date"]
+publishDate = ["publishdate", "pubdate", "published", "date"]
+lastmod = ["lastmod", "modified", ":git", ":fileModTime", "date", "publishdate", "pubdate", "published"]

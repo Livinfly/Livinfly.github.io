@@ -1,2 +1,53 @@
 [[imports]]
 path = "github.com/CaiJimmy/hugo-theme-stack/v3"
+
+# Re-declare Stack's default component mounts because adding an import mount
+# replaces the imported module's defaults. Mount layouts twice so the original
+# file remains available under a private alias behind local overrides.
+[[imports.mounts]]
+source = "archetypes"
+target = "archetypes"
+
+[[imports.mounts]]
+source = "assets"
+target = "assets"
+
+[[imports.mounts]]
+source = "content"
+target = "content"
+
+[[imports.mounts]]
+source = "data"
+target = "data"
+
+[[imports.mounts]]
+source = "i18n"
+target = "i18n"
+
+[[imports.mounts]]
+source = "layouts"
+target = "layouts"
+
+[[imports.mounts]]
+source = "static"
+target = "static"
+
+[[imports.mounts]]
+source = "layouts/partials/sidebar/left.html"
+target = "layouts/partials/upstream-stack/sidebar-left.html"
+
+# Reuse Stack's homepage template unchanged for the Life Blog section.
+[[imports.mounts]]
+source = "layouts/index.html"
+target = "layouts/life-blog/list.html"
+
+# Keep academic content together on disk while mounting the academic blog as
+# its own top-level Hugo section and URL namespace.
+[[mounts]]
+source = "content"
+target = "content"
+excludeFiles = "academic/acad-blog/**"
+
+[[mounts]]
+source = "content/academic/acad-blog"
+target = "content/acad-blog"

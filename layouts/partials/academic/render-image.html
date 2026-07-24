@@ -1,0 +1,18 @@
+{{- $destination := .Destination -}}
+{{- $resource := false -}}
+{{- if not (or (strings.Contains $destination "://") (strings.HasPrefix $destination "/")) -}}
+    {{- $resource = .Page.Resources.GetMatch $destination -}}
+    {{- if not $resource -}}
+        {{- $resource = .Page.Parent.Resources.GetMatch $destination -}}
+    {{- end -}}
+    {{- with $resource -}}
+        {{- $destination = .RelPermalink -}}
+    {{- end -}}
+{{- end -}}
+<img
+    src="{{ $destination | safeURL }}"
+    {{ with $resource }}{{ if and (eq .ResourceType "image") (ne .MediaType.SubType "svg") }}width="{{ .Width }}" height="{{ .Height }}"{{ end }}{{ end }}
+    loading="lazy"
+    decoding="async"
+    alt="{{ .Text }}"
+    {{ with .Title }}title="{{ . }}"{{ end }}>

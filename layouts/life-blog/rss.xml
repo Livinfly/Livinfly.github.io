@@ -1,0 +1,11 @@
+{{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections -}}
+{{- $pages = where $pages "Params.hidden" "!=" true -}}
+{{- $pages = $pages.ByDate.Reverse -}}
+{{ partial "feeds/rss.xml" (dict
+    "Context" .
+    "Description" .Description
+    "Language" "zh-cn"
+    "Link" .Permalink
+    "Pages" $pages
+    "Title" (printf "%s · Livinfly" .Title)
+) }}

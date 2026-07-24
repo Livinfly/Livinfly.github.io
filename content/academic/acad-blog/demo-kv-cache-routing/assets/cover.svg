@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+  <title id="title">Connected cache and compute nodes</title>
+  <desc id="desc">A minimal blue network diagram used as a blog demo cover.</desc>
+  <rect width="1200" height="750" fill="#e9eef5"/>
+  <path d="M248 375h230M722 375h230M600 184v140M600 426v140" fill="none" stroke="#7f98b8" stroke-width="18" stroke-linecap="round"/>
+  <rect x="478" y="304" width="244" height="142" rx="20" fill="#315f9a"/>
+  <circle cx="200" cy="375" r="68" fill="#fbfbfa" stroke="#315f9a" stroke-width="16"/>
+  <circle cx="1000" cy="375" r="68" fill="#fbfbfa" stroke="#315f9a" stroke-width="16"/>
+  <circle cx="600" cy="135" r="58" fill="#fbfbfa" stroke="#607d9f" stroke-width="14"/>
+  <circle cx="600" cy="615" r="58" fill="#fbfbfa" stroke="#607d9f" stroke-width="14"/>
+</svg>

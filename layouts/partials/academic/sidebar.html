@@ -1,0 +1,231 @@
+{{- $context := .Context -}}
+{{- $contentsPage := .ContentsPage -}}
+{{- $archivePosts := .ArchivePosts -}}
+{{- $hasArchive := false -}}
+{{- with $archivePosts -}}
+    {{- $hasArchive = gt (len .) 0 -}}
+{{- end -}}
+{{- $language := .Language -}}
+{{- $languagePages := .LanguagePages -}}
+{{- $languageURLs := .LanguageURLs -}}
+{{- $routes := partial "academic/routes.html" $language -}}
+{{- $strings := partial "academic/strings.html" $language -}}
+{{- $currentPath := $context.RelPermalink -}}
+{{- $englishPage := index $languagePages "en" -}}
+{{- $chinesePage := index $languagePages "zh-cn" -}}
+{{- $englishURL := false -}}
+{{- $chineseURL := false -}}
+{{- with $languageURLs -}}
+    {{- $englishURL = index . "en" -}}
+    {{- $chineseURL = index . "zh-cn" -}}
+{{- else -}}
+    {{- with $englishPage -}}
+        {{- $englishURL = .RelPermalink -}}
+    {{- end -}}
+    {{- with $chinesePage -}}
+        {{- $chineseURL = .RelPermalink -}}
+    {{- end -}}
+{{- end -}}
+<aside class="academic-sidebar{{ if or $contentsPage $hasArchive }} academic-sidebar--with-scroll-region{{ end }}" aria-label="{{ $strings.Navigation }}">
+    <details class="academic-sidebar__disclosure" open data-academic-sidebar>
+        <summary class="academic-sidebar__summary" aria-label="{{ $strings.CollapseNavigation }}">
+            <span class="academic-sidebar__summary-label">{{ $routes.Home.Title }}</span>
+            <span class="academic-sidebar__indicator" aria-hidden="true">
+                <span class="academic-sidebar__indicator-open">‹</span>
+                <span class="academic-sidebar__indicator-closed">›</span>
+            </span>
+        </summary>
+
+        <div class="academic-sidebar__panel">
+            <div class="academic-sidebar__languages" role="group" aria-labelledby="academic-language-label">
+                <p class="academic-sidebar__label" id="academic-language-label"><span>{{ $strings.Language }}</span></p>
+                <div class="academic-sidebar__language-options">
+                    {{ with $englishURL }}
+                        <a href="{{ . }}" lang="en" hreflang="en" {{ if eq $language "en" }}aria-current="page"{{ end }}>English</a>
+                    {{ else }}
+                        <span class="academic-sidebar__language-unavailable" aria-disabled="true"><span lang="en">English</span> · {{ $strings.Unavailable }}</span>
+                    {{ end }}
+                    {{ with $chineseURL }}
+                        <a href="{{ . }}" lang="zh-CN" hreflang="zh-CN" {{ if eq $language "zh-cn" }}aria-current="page"{{ end }}>中文</a>
+                    {{ else }}
+                        <span class="academic-sidebar__language-unavailable" aria-disabled="true"><span lang="zh-CN">中文</span> · {{ $strings.Unavailable }}</span>
+                    {{ end }}
+                </div>
+            </div>
+
+            <div class="academic-sidebar__navigation-group">
+                <p class="academic-sidebar__label" id="academic-navigation-label"><span>{{ $strings.Navigation }}</span></p>
+                <nav class="academic-sidebar__destinations" aria-labelledby="academic-navigation-label">
+                    <a href="{{ $routes.Home.RelPermalink }}" {{ if eq $currentPath $routes.Home.RelPermalink }}aria-current="page"{{ end }}>{{ $strings.AcademicHome }}</a>
+                    <a href="{{ $routes.Blog.RelPermalink }}" {{ if strings.HasPrefix $currentPath $routes.Blog.RelPermalink }}aria-current="page"{{ end }}>{{ $strings.AcademicBlog }}</a>
+                </nav>
+
+                {{ with $contentsPage }}
+                    <div class="academic-sidebar__toc academic-sidebar__scroll-region">
+                        <p class="academic-sidebar__label" id="academic-on-this-page"><span>{{ $strings.OnThisPage }}</span></p>
+                        {{- $toc := .Fragments.ToHTML 1 2 false -}}
+                        {{- $toc = replace $toc `<nav id="TableOfContents">` `<nav id="TableOfContents" aria-labelledby="academic-on-this-page">` -}}
+                        {{ $toc | safeHTML }}
+                    </div>
+                {{ end }}
+
+                {{ if $hasArchive }}
+                    <div class="academic-sidebar__archive academic-sidebar__scroll-region">
+                        <p class="academic-sidebar__label" id="academic-archive-label"><span>{{ $strings.Archive }}</span></p>
+                        <nav class="academic-archive-tree" aria-labelledby="academic-archive-label">
+                            {{ range $yearIndex, $yearGroup := $archivePosts.GroupByPublishDate "2006" "desc" }}
+                                <details class="academic-archive-year" {{ if eq $yearIndex 0 }}open{{ end }}>
+                                    <summary>
+                                        <span>{{ $yearGroup.Key }}</span>
+                                        <span class="academic-archive-count">{{ len $yearGroup.Pages }}</span>
+                                    </summary>
+                                    <div class="academic-archive-months">
+                                        {{ range $monthIndex, $monthGroup := $yearGroup.Pages.GroupByPublishDate "01" "desc" }}
+                                            {{- $firstPost := index $monthGroup.Pages 0 -}}
+                                            {{- $monthLabel := $firstPost.PublishDate.Format "January" -}}
+                                            {{- if eq $language "zh-cn" -}}
+                                                {{- $monthLabel = printf "%s 月" ($firstPost.PublishDate.Format "1") -}}
+                                            {{- end -}}
+                                            <details class="academic-archive-month" {{ if and (eq $yearIndex 0) (eq $monthIndex 0) }}open{{ end }}>
+                                                <summary>
+                                                    <span>{{ $monthLabel }}</span>
+                                                    <span class="academic-archive-count">{{ len $monthGroup.Pages }}</span>
+                                                </summary>
+                                                <ol>
+                                                    {{ range $monthGroup.Pages }}
+                                                        {{- $postStrings := partial "academic/strings.html" .Params.academic_lang -}}
+                                                        <li><a href="{{ .RelPermalink }}" lang="{{ $postStrings.HtmlLang }}">{{ .Title }}</a></li>
+                                                    {{ end }}
+                                                </ol>
+                                            </details>
+                                        {{ end }}
+                                    </div>
+                                </details>
+                            {{ end }}
+                        </nav>
+                    </div>
+                {{ end }}
+            </div>
+        </div>
+    </details>
+
+    <script>
+        (() => {
+            const sidebar = document.querySelector("[data-academic-sidebar]");
+            const narrow = window.matchMedia("(max-width: 760px)");
+            const expandLabel = {{ $strings.ExpandNavigation | jsonify | safeJS }};
+            const collapseLabel = {{ $strings.CollapseNavigation | jsonify | safeJS }};
+
+            if (!sidebar) return;
+            if (narrow.matches) sidebar.open = false;
+
+            const shell = sidebar.closest(".academic-shell");
+            const summary = sidebar.querySelector(".academic-sidebar__summary");
+            const syncLayout = () => {
+                if (shell) shell.classList.toggle("academic-shell--sidebar-collapsed", !sidebar.open);
+                if (summary) summary.setAttribute("aria-label", sidebar.open ? collapseLabel : expandLabel);
+            };
+            sidebar.addEventListener("toggle", syncLayout);
+            syncLayout();
+
+            narrow.addEventListener("change", (event) => {
+                if (!event.matches) return;
+                const focusWillBeHidden = sidebar.contains(document.activeElement) && document.activeElement !== summary;
+                sidebar.open = false;
+                if (focusWillBeHidden) summary?.focus();
+            });
+
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape" && narrow.matches && sidebar.open) {
+                    sidebar.open = false;
+                    summary?.focus();
+                }
+            });
+
+            document.addEventListener("pointerdown", (event) => {
+                if (narrow.matches && sidebar.open && !sidebar.contains(event.target)) sidebar.open = false;
+            });
+
+            document.addEventListener("focusin", (event) => {
+                if (narrow.matches && sidebar.open && !sidebar.contains(event.target)) sidebar.open = false;
+            });
+
+            const initTableOfContents = () => {
+                const toc = sidebar.querySelector("#TableOfContents");
+                if (!toc) return;
+
+                const entries = Array.from(toc.querySelectorAll('a[href^="#"]'))
+                    .map((link) => {
+                        try {
+                            const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+                            return target ? { link, target } : null;
+                        } catch {
+                            return null;
+                        }
+                    })
+                    .filter(Boolean);
+                let activeLink = null;
+                let scrollFrame = 0;
+
+                const setActiveLink = (link) => {
+                    if (link === activeLink) return;
+                    entries.forEach((entry) => entry.link.removeAttribute("aria-current"));
+                    link?.setAttribute("aria-current", "location");
+                    activeLink = link;
+                };
+
+                const syncReadingPosition = () => {
+                    scrollFrame = 0;
+                    if (!entries.length) return;
+
+                    const headingOffset = parseFloat(getComputedStyle(entries[0].target).scrollMarginTop) || 0;
+                    const readingLine = Math.max(headingOffset, Math.min(window.innerHeight * 0.25, 180));
+                    let current = entries[0];
+                    for (const entry of entries) {
+                        if (entry.target.getBoundingClientRect().top > readingLine) break;
+                        current = entry;
+                    }
+
+                    const pageBottom = window.scrollY + window.innerHeight;
+                    const documentBottom = document.documentElement.scrollHeight;
+                    if (pageBottom >= documentBottom - 2) current = entries[entries.length - 1];
+                    setActiveLink(current.link);
+                };
+
+                const scheduleReadingPosition = () => {
+                    if (scrollFrame) return;
+                    scrollFrame = requestAnimationFrame(syncReadingPosition);
+                };
+
+                window.addEventListener("scroll", scheduleReadingPosition, { passive: true });
+                window.addEventListener("resize", scheduleReadingPosition);
+                window.addEventListener("hashchange", scheduleReadingPosition);
+                scheduleReadingPosition();
+
+                toc.addEventListener("click", (event) => {
+                    const link = event.target.closest("a");
+                    if (!narrow.matches || !link) return;
+
+                    sidebar.open = false;
+                    const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+                    if (!target) {
+                        summary?.focus();
+                        return;
+                    }
+
+                    if (!target.hasAttribute("tabindex")) {
+                        target.setAttribute("tabindex", "-1");
+                        target.addEventListener("blur", () => target.removeAttribute("tabindex"), { once: true });
+                    }
+                    requestAnimationFrame(() => target.focus({ preventScroll: true }));
+                });
+            };
+
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", initTableOfContents, { once: true });
+            } else {
+                initTableOfContents();
+            }
+        })();
+    </script>
+</aside>

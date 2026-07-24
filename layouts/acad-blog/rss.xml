@@ -1,0 +1,14 @@
+{{- $language := .Params.academic_lang -}}
+{{- if not (in (slice "en" "zh-cn") $language) -}}
+    {{- errorf "Academic feed page %q must define academic_lang" .Path -}}
+{{- end -}}
+{{- $strings := partial "academic/strings.html" $language -}}
+{{- $posts := partial "academic/feed-items.html" $language -}}
+{{ partial "feeds/rss.xml" (dict
+    "Context" .
+    "Description" .Description
+    "Language" $strings.HtmlLang
+    "Link" .Permalink
+    "Pages" $posts
+    "Title" (printf "%s · %s" .Title site.Home.Title)
+) }}

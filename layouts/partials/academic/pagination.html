@@ -1,0 +1,17 @@
+{{- $paginator := .Paginator -}}
+{{- if gt $paginator.TotalPages 1 -}}
+    {{- $strings := partial "academic/strings.html" .Language -}}
+    <nav class="academic-pagination" aria-label="{{ $strings.Pagination }}">
+        <div class="academic-pagination__edge">
+            {{- with $paginator.Prev -}}
+                <a href="{{ .URL }}" rel="prev">{{ $strings.PreviousPage }}</a>
+            {{- end -}}
+        </div>
+        <span class="academic-pagination__status">{{ printf $strings.PageStatus $paginator.PageNumber $paginator.TotalPages }}</span>
+        <div class="academic-pagination__edge academic-pagination__edge--next">
+            {{- with $paginator.Next -}}
+                <a href="{{ .URL }}" rel="next">{{ $strings.NextPage }}</a>
+            {{- end -}}
+        </div>
+    </nav>
+{{- end -}}

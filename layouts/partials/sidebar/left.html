@@ -1,0 +1,24 @@
+{{- $lifeBlog := site.GetPage "/life-blog" -}}
+{{- if not $lifeBlog -}}
+    {{- errorf "Life Blog route was not found" -}}
+{{- end -}}
+{{- $lifeBlogURL := $lifeBlog.RelPermalink -}}
+{{- $sidebar := partial "upstream-stack/sidebar-left.html" . -}}
+{{- $avatarLinkPattern := `(<figure class="site-avatar">\s*<a href=")[^"]*(">)` -}}
+{{- $titleLinkPattern := `(<h1 class="site-name"><a href=")[^"]*(">)` -}}
+{{- $avatarEnabled := false -}}
+{{- with site.Params.sidebar.avatar -}}
+    {{- $avatarEnabled = default true .enabled -}}
+{{- end -}}
+{{- $expectedAvatarLinks := cond $avatarEnabled 1 0 -}}
+{{- if ne (len (findRE $avatarLinkPattern $sidebar)) $expectedAvatarLinks -}}
+    {{- errorf "Stack sidebar markup changed: expected %d avatar links" $expectedAvatarLinks -}}
+{{- end -}}
+{{- if ne (len (findRE $titleLinkPattern $sidebar)) 1 -}}
+    {{- errorf "Stack sidebar markup changed: expected one site-title link" -}}
+{{- end -}}
+{{- if $avatarEnabled -}}
+    {{- $sidebar = replaceRE $avatarLinkPattern (printf `${1}%s${2}` $lifeBlogURL) $sidebar 1 -}}
+{{- end -}}
+{{- $sidebar = replaceRE $titleLinkPattern (printf `${1}%s${2}` $lifeBlogURL) $sidebar 1 -}}
+{{- $sidebar | safeHTML -}}

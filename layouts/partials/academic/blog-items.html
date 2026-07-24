@@ -1,0 +1,34 @@
+{{- $language := . -}}
+{{- if not (in (slice "en" "zh-cn") $language) -}}
+    {{- errorf "Unsupported academic language %q" $language -}}
+{{- end -}}
+{{- $fallbackLanguage := cond (eq $language "en") "zh-cn" "en" -}}
+{{- $root := site.GetPage "/acad-blog" -}}
+{{- $items := slice -}}
+{{- range where $root.Sections "Params.academic_bundle" true -}}
+    {{- $visible := where .RegularPages "Params.academic_post" true -}}
+    {{- $visible = where $visible "Params.hidden" "!=" true -}}
+    {{- $preferred := where $visible "Params.academic_lang" $language -}}
+    {{- $fallback := where $visible "Params.academic_lang" $fallbackLanguage -}}
+    {{- if gt (len $preferred) 1 -}}
+        {{- errorf "Academic bundle %q contains duplicate %s pages" .Path $language -}}
+    {{- end -}}
+    {{- if gt (len $fallback) 1 -}}
+        {{- errorf "Academic bundle %q contains duplicate %s pages" .Path $fallbackLanguage -}}
+    {{- end -}}
+    {{- $selected := false -}}
+    {{- with $preferred -}}
+        {{- $selected = index . 0 -}}
+    {{- else -}}
+        {{- with $fallback -}}
+            {{- $selected = index . 0 -}}
+        {{- end -}}
+    {{- end -}}
+    {{- with $selected -}}
+        {{- if .PublishDate.IsZero -}}
+            {{- errorf "Published academic post %q must define a publication date" .Path -}}
+        {{- end -}}
+        {{- $items = $items | append . -}}
+    {{- end -}}
+{{- end -}}
+{{- return (sort $items "PublishDate" "desc") -}}

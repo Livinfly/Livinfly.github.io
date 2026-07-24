@@ -1,11 +1,11 @@
 # Configure main menu and social menu
-#[[main]]
-#identifier = "home"
-#name = "Home"
-#url = "/"
-#[main.params]
-#icon = "home"
-#newtab = true
+[[main]]
+identifier = "home"
+name = "首页"
+url = "/life-blog/"
+weight = -3
+    [main.params]
+    icon = "home"
 
 [[social]]
 identifier = "github"

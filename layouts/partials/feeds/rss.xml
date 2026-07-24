@@ -1,0 +1,64 @@
+{{- $context := .Context -}}
+{{- $pages := .Pages -}}
+{{- $title := .Title -}}
+{{- $description := .Description -}}
+{{- $language := .Language -}}
+{{- $link := .Link -}}
+{{- $controlCharacters := `[\x00-\x08\x0B\x0C\x0E-\x1F]` -}}
+{{- $limit := site.Config.Services.RSS.Limit -}}
+{{- if ge $limit 1 -}}
+    {{- $pages = $pages | first $limit -}}
+{{- end -}}
+{{- $output := $context.OutputFormats.Get "RSS" -}}
+{{- if not $output -}}
+    {{- errorf "RSS output is not enabled for %q" $context.Path -}}
+{{- end -}}
+{{- printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>{{ $title }}</title>
+        <link>{{ $link }}</link>
+        <description>{{ $description }}</description>
+        <generator>Hugo -- gohugo.io</generator>
+        {{- with $language }}
+        <language>{{ . }}</language>
+        {{- end }}
+        <atom:link href="{{ $output.Permalink }}" rel="self" type="application/rss+xml" />
+        {{- if gt (len $pages) 0 }}
+            {{- with index $pages.ByLastmod.Reverse 0 }}
+                {{- if not .Lastmod.IsZero }}
+        <lastBuildDate>{{ .Lastmod.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>
+                {{- end }}
+            {{- end }}
+        {{- end }}
+        {{- range $pages }}
+            {{- $post := . -}}
+            {{- $published := .PublishDate -}}
+            {{- if $published.IsZero -}}
+                {{- $published = .Date -}}
+            {{- end -}}
+            {{- $rawContent := printf "%s" .Summary -}}
+            {{- if site.Params.rssFullContent -}}
+                {{- $rawContent = printf "%s" .Content -}}
+            {{- end -}}
+            {{- $rawContent = replaceRE $controlCharacters "" $rawContent -}}
+            {{- $content := safeHTML ($rawContent | html) -}}
+            {{- $cover := false -}}
+            {{- with .Params.image -}}
+                {{- $cover = $post.Resources.GetMatch . -}}
+                {{- if not $cover -}}
+                    {{- $cover = $post.Parent.Resources.GetMatch . -}}
+                {{- end -}}
+            {{- end }}
+        <item>
+            <title>{{ replaceRE $controlCharacters "" .Title }}</title>
+            <link>{{ .Permalink }}</link>
+            {{- if not $published.IsZero }}
+            <pubDate>{{ $published.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+            {{- end }}
+            <guid>{{ .Permalink }}</guid>
+            <description>{{- with $cover }}{{ "<" | html }}img src="{{ .Permalink }}" alt="Cover" {{ "/>" | html }}{{ end -}}{{ $content }}</description>
+        </item>
+        {{- end }}
+    </channel>
+</rss>

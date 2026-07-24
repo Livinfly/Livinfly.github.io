@@ -1,0 +1,13 @@
+{{- $academic := site.GetPage "/academic/home/en" -}}
+{{- $chinese := site.GetPage "/academic/home/zh-cn" -}}
+{{- if not $academic -}}
+    {{- errorf "English academic homepage not found at content/academic/home/en/index.md" -}}
+{{- end -}}
+{{- if not $chinese -}}
+    {{- errorf "Chinese academic homepage not found at content/academic/home/zh-cn/index.md" -}}
+{{- end -}}
+{{ partial "academic/home-page.html" (dict
+    "Context" .
+    "ContentPage" $academic
+    "LanguagePages" (dict "en" . "zh-cn" $chinese)
+) }}

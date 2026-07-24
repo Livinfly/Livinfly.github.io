@@ -1,0 +1,25 @@
+{{- $pageContext := . -}}
+{{- if .IsHome -}}
+    {{- $pageContext = site -}}
+{{- end -}}
+{{- $pages := slice -}}
+{{- if or .IsHome .IsSection -}}
+    {{- $pages = $pageContext.RegularPages -}}
+{{- else -}}
+    {{- $pages = $pageContext.Pages -}}
+{{- end -}}
+{{- $pages = where $pages "Params.hidden" "!=" true -}}
+{{- $title := site.Title -}}
+{{- $description := printf "Recent content on %s" site.Title -}}
+{{- if ne .Title site.Title -}}
+    {{- $title = printf "%s · %s" .Title site.Title -}}
+    {{- $description = printf "Recent content in %s on %s" .Title site.Title -}}
+{{- end -}}
+{{ partial "feeds/rss.xml" (dict
+    "Context" .
+    "Description" $description
+    "Language" site.LanguageCode
+    "Link" .Permalink
+    "Pages" $pages
+    "Title" $title
+) }}

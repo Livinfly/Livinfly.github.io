@@ -1,0 +1,134 @@
+{{- $context := . -}}
+{{- $language := default "en" .Params.academic_lang -}}
+{{- $routes := partial "academic/routes.html" $language -}}
+{{- $englishRoutes := partial "academic/routes.html" "en" -}}
+{{- $chineseRoutes := partial "academic/routes.html" "zh-cn" -}}
+{{- $languagePages := dict "en" $englishRoutes.Blog "zh-cn" $chineseRoutes.Blog -}}
+{{- $strings := partial "academic/strings.html" $language -}}
+{{- $posts := partial "academic/blog-items.html" $language -}}
+{{- $paginator := .Paginate $posts 10 -}}
+{{- $pageTitle := printf "%s · %s" .Title $routes.Home.Title -}}
+{{- if gt $paginator.PageNumber 1 -}}
+    {{- $pageTitle = printf "%s · %s · %s" .Title (printf $strings.PageNumber $paginator.PageNumber) $routes.Home.Title -}}
+{{- end -}}
+{{- $englishURL := $englishRoutes.Blog.Permalink -}}
+{{- $chineseURL := $chineseRoutes.Blog.Permalink -}}
+{{- if gt $paginator.PageNumber 1 -}}
+    {{- $englishURL = printf "%spage/%d/" $englishURL $paginator.PageNumber -}}
+    {{- $chineseURL = printf "%spage/%d/" $chineseURL $paginator.PageNumber -}}
+{{- end -}}
+{{- $languageURLs := dict "en" $englishURL "zh-cn" $chineseURL -}}
+<!doctype html>
+<html lang="{{ $strings.HtmlLang }}">
+    <head>
+        {{ partial "academic/head.html" (dict
+            "Context" .
+            "CanonicalURL" (absURL $paginator.URL)
+            "Description" .Description
+            "Language" $language
+            "LanguagePages" $languagePages
+            "LanguageURLs" $languageURLs
+            "Paginator" $paginator
+            "Title" $pageTitle
+            "Type" "website"
+        ) }}
+    </head>
+    <body>
+        <a class="skip-link" href="#content">{{ $strings.SkipToContent }}</a>
+
+        <div class="academic-shell">
+            {{ partial "academic/sidebar.html" (dict
+                "Context" .
+                "ArchivePosts" $posts
+                "Language" $language
+                "LanguagePages" $languagePages
+                "LanguageURLs" $languageURLs
+            ) }}
+
+            <main class="academic-main" id="content">
+                <header class="academic-header academic-header--compact">
+                    <p class="academic-header__eyebrow">{{ $strings.BlogEyebrow }}</p>
+                    <h1>{{ .Title }}</h1>
+                    {{ with .Description }}<p class="academic-header__description">{{ . }}</p>{{ end }}
+                </header>
+
+                <section class="academic-post-list" aria-label="{{ $strings.AcademicBlog }}">
+                    {{ range $paginator.Pages }}
+                        {{- $post := . -}}
+                        {{- $postLanguage := .Params.academic_lang -}}
+                        {{- $postStrings := partial "academic/strings.html" $postLanguage -}}
+                        {{- $abstract := .Description | plainify -}}
+                        {{- if not $abstract -}}
+                            {{- $abstract = .Summary | plainify | truncate 260 -}}
+                        {{- end -}}
+                        {{- $cover := false -}}
+                        {{- with .Params.image -}}
+                            {{- $cover = $post.Resources.GetMatch . -}}
+                            {{- if not $cover -}}
+                                {{- $cover = $post.Parent.Resources.GetMatch . -}}
+                            {{- end -}}
+                            {{- if not $cover -}}
+                                {{- warnf "Academic post %q declares image %q, but the page resource was not found" $post.Path . -}}
+                            {{- end -}}
+                        {{- end -}}
+                        {{- if and $cover (ne $cover.ResourceType "image") -}}
+                            {{- warnf "Academic post %q declares cover %q, but that resource is not an image" $post.Path $post.Params.image -}}
+                        {{- end -}}
+                        {{- $hasCover := and $cover (eq $cover.ResourceType "image") -}}
+                        {{- $translations := partial "academic/post-languages.html" . -}}
+                        {{- $hasEnglish := index $translations "en" -}}
+                        {{- $hasChinese := index $translations "zh-cn" -}}
+                        {{- $isMonolingual := not (and $hasEnglish $hasChinese) -}}
+
+                        <article class="academic-post-card{{ if $hasCover }} academic-post-card--with-cover{{ end }}">
+                            <div class="academic-post-card__body">
+                                <div class="academic-post-card__meta">
+                                    <time datetime="{{ .PublishDate.Format "2006-01-02T15:04:05Z07:00" }}">{{ partial "academic/format-date.html" (dict "Time" .PublishDate "Language" $language "WithTime" false) }}</time>
+                                    {{ if $isMonolingual }}
+                                        <span class="academic-post-card__language">{{ if eq $postLanguage "en" }}{{ $strings.EnglishOnly }}{{ else }}{{ $strings.ChineseOnly }}{{ end }}</span>
+                                    {{ end }}
+                                </div>
+                                <h2 lang="{{ $postStrings.HtmlLang }}"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+                                {{ with $abstract }}<p lang="{{ $postStrings.HtmlLang }}">{{ . }}</p>{{ end }}
+                            </div>
+
+                            {{ if $hasCover }}
+                                {{- $coverDisplay := $cover -}}
+                                {{- $coverRetina := false -}}
+                                {{- if in (slice "jpeg" "png" "webp") $cover.MediaType.SubType -}}
+                                    {{- $coverDisplay = $cover.Fill "480x300" -}}
+                                    {{- $coverRetina = $cover.Fill "960x600" -}}
+                                {{- end -}}
+                                <a class="academic-post-card__cover" href="{{ .RelPermalink }}" tabindex="-1" aria-hidden="true">
+                                    <img
+                                        src="{{ $coverDisplay.RelPermalink }}"
+                                        {{ with $coverRetina }}srcset="{{ $coverDisplay.RelPermalink }} 1x, {{ .RelPermalink }} 2x"{{ end }}
+                                        {{ if ne $coverDisplay.MediaType.SubType "svg" }}
+                                            width="{{ $coverDisplay.Width }}"
+                                            height="{{ $coverDisplay.Height }}"
+                                        {{ end }}
+                                        loading="lazy"
+                                        decoding="async"
+                                        lang="{{ $postStrings.HtmlLang }}"
+                                        alt="{{ default "" .Params.image_alt }}">
+                                </a>
+                            {{ end }}
+                        </article>
+                    {{ else }}
+                        <p class="academic-empty-state">{{ $strings.Empty }}</p>
+                    {{ end }}
+                </section>
+
+                {{ partial "academic/pagination.html" (dict
+                    "Language" $language
+                    "Paginator" $paginator
+                ) }}
+
+                <footer class="academic-footer">
+                    <span>{{ $strings.WritingBy }}</span>
+                    <a href="{{ $routes.Home.RelPermalink }}">{{ $strings.AcademicHome }}</a>
+                </footer>
+            </main>
+        </div>
+    </body>
+</html>

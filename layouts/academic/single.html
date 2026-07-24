@@ -1,0 +1,6 @@
+{{- $englishRoute := site.Home -}}
+{{ partial "academic/home-page.html" (dict
+    "Context" .
+    "ContentPage" .
+    "LanguagePages" (dict "en" $englishRoute "zh-cn" .)
+) }}

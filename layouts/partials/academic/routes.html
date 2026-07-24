@@ -1,0 +1,14 @@
+{{- $language := . -}}
+{{- $home := site.Home -}}
+{{- $blog := site.GetPage "/acad-blog" -}}
+{{- if eq $language "zh-cn" -}}
+    {{- $home = site.GetPage "/academic/home/zh-cn" -}}
+    {{- $blog = site.GetPage "/acad-blog/zh-cn" -}}
+{{- end -}}
+{{- if not $home -}}
+    {{- errorf "Academic home route for language %q was not found" $language -}}
+{{- end -}}
+{{- if not $blog -}}
+    {{- errorf "Academic blog route for language %q was not found" $language -}}
+{{- end -}}
+{{- return (dict "Home" $home "Blog" $blog) -}}

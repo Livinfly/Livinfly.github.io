@@ -1,0 +1,98 @@
+{{- $language := default "en" .Params.academic_lang -}}
+{{- $strings := partial "academic/strings.html" $language -}}
+{{- $routes := partial "academic/routes.html" $language -}}
+{{- $languagePages := partial "academic/post-languages.html" . -}}
+{{- $abstract := .Description | plainify -}}
+{{- if not $abstract -}}
+    {{- $abstract = .Summary | plainify | truncate 260 -}}
+{{- end -}}
+{{- $cover := false -}}
+{{- with .Params.image -}}
+    {{- $cover = $.Resources.GetMatch . -}}
+    {{- if not $cover -}}
+        {{- $cover = $.Parent.Resources.GetMatch . -}}
+    {{- end -}}
+    {{- if not $cover -}}
+        {{- warnf "Academic post %q declares image %q, but the page resource was not found" $.Path . -}}
+    {{- end -}}
+{{- end -}}
+{{- if .PublishDate.IsZero -}}
+    {{- errorf "Published academic post %q must define a publication date" .Path -}}
+{{- end -}}
+{{- if and $cover (ne $cover.ResourceType "image") -}}
+    {{- warnf "Academic post %q declares cover %q, but that resource is not an image" .Path .Params.image -}}
+{{- end -}}
+{{- $hasCover := and $cover (eq $cover.ResourceType "image") -}}
+{{- $lastmod := .Lastmod -}}
+{{- if $lastmod.IsZero -}}
+    {{- $lastmod = .PublishDate -}}
+{{- end -}}
+{{- $pageTitle := printf "%s · %s" .Title $strings.AcademicBlog -}}
+<!doctype html>
+<html lang="{{ $strings.HtmlLang }}">
+    <head>
+        {{ partial "academic/head.html" (dict
+            "Context" .
+            "Description" $abstract
+            "Image" (cond $hasCover $cover false)
+            "Language" $language
+            "LanguagePages" $languagePages
+            "Title" $pageTitle
+            "Type" "article"
+        ) }}
+    </head>
+    <body>
+        <a class="skip-link" href="#content">{{ $strings.SkipToContent }}</a>
+
+        <div class="academic-shell">
+            {{ partial "academic/sidebar.html" (dict
+                "Context" .
+                "ContentsPage" .
+                "Language" $language
+                "LanguagePages" $languagePages
+            ) }}
+
+            <main class="academic-main" id="content">
+                <header class="academic-header academic-header--article">
+                    <p class="academic-header__eyebrow">{{ $strings.ArticleEyebrow }}</p>
+                    <h1>{{ .Title }}</h1>
+                    <div class="academic-header__dates" aria-label="{{ $strings.Published }} / {{ $strings.Updated }}">
+                        <span>{{ $strings.Published }} <time datetime="{{ .PublishDate.Format "2006-01-02T15:04:05Z07:00" }}">{{ partial "academic/format-date.html" (dict "Time" .PublishDate "Language" $language "WithTime" true) }}</time></span>
+                        <span>{{ $strings.Updated }} <time datetime="{{ $lastmod.Format "2006-01-02T15:04:05Z07:00" }}">{{ partial "academic/format-date.html" (dict "Time" $lastmod "Language" $language "WithTime" true) }}</time></span>
+                    </div>
+                    {{ with $abstract }}<p class="academic-header__description">{{ . }}</p>{{ end }}
+                </header>
+
+                {{ if $hasCover }}
+                    {{- $coverDisplay := $cover -}}
+                    {{- if in (slice "jpeg" "png" "webp") $cover.MediaType.SubType -}}
+                        {{- $coverDisplay = $cover.Resize "1600x" -}}
+                    {{- end -}}
+                    <figure class="academic-article-cover">
+                        <img
+                            src="{{ $coverDisplay.RelPermalink }}"
+                            {{ if ne $coverDisplay.MediaType.SubType "svg" }}
+                                width="{{ $coverDisplay.Width }}"
+                                height="{{ $coverDisplay.Height }}"
+                            {{ end }}
+                            decoding="async"
+                            alt="{{ default "" .Params.image_alt }}">
+                    </figure>
+                {{ end }}
+
+                <article class="academic-content main-article" lang="{{ $strings.HtmlLang }}">
+                    {{ .Content }}
+                </article>
+
+                <footer class="academic-footer">
+                    <a href="{{ $routes.Blog.RelPermalink }}">{{ $strings.AllPosts }}</a>
+                    <a href="{{ $routes.Home.RelPermalink }}">{{ $strings.AcademicHome }}</a>
+                </footer>
+
+                {{ if or .Params.math site.Params.article.math }}
+                    {{ partialCached "article/components/math.html" . }}
+                {{ end }}
+            </main>
+        </div>
+    </body>
+</html>

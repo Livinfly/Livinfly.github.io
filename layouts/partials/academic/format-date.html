@@ -1,0 +1,13 @@
+{{- if eq .Language "zh-cn" -}}
+    {{- if .WithTime -}}
+        {{- .Time.Format "2006 年 1 月 2 日 15:04 MST" -}}
+    {{- else -}}
+        {{- .Time.Format "2006 年 1 月 2 日" -}}
+    {{- end -}}
+{{- else -}}
+    {{- if .WithTime -}}
+        {{- .Time.Format "January 2, 2006, 15:04 MST" -}}
+    {{- else -}}
+        {{- .Time.Format "January 2, 2006" -}}
+    {{- end -}}
+{{- end -}}
