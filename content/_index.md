@@ -1,4 +1,4 @@
 ---
 title: "Jie Luo | 罗杰"
-description: "Profile of Jie Luo."
+description: "Researcher, educator, and builder working on problems at the intersection of your fields."
 ---

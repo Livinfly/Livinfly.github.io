@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
-  <title id="title">Long context paths</title>
-  <desc id="desc">Concentric green paths used as a blog demo cover.</desc>
+  <title id="title">课程反思中的学习路径</title>
+  <desc id="desc">Three green learning paths converge around a central point in an abstract course reflection cover.</desc>
   <rect width="1200" height="750" fill="#edf1ec"/>
   <path d="M186 540c0-232 188-420 420-420s420 188 420 420" fill="none" stroke="#365f55" stroke-width="22" stroke-linecap="round"/>
   <path d="M310 540c0-164 133-297 297-297s297 133 297 297" fill="none" stroke="#6d9187" stroke-width="22" stroke-linecap="round"/>

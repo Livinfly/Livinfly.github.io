@@ -1,6 +1,6 @@
 ---
 title: "Blog"
-description: "Research notes on AI infrastructure, GPU systems, and efficient machine learning."
+description: "Research notes, reading reflections, conference reports, and reproducible workflows."
 type: acad-blog
 url: /acad-blog/
 academic_lang: en
@@ -11,7 +11,7 @@ cascade:
 ---
 
 <!--
-The Demo article bundles in this directory are intentionally rendered on the
+The example article bundles in this directory are intentionally rendered on the
 development branch so the list and single-page layouts can be reviewed. Replace
 or remove them before publishing real academic writing. In each post bundle:
 - `_index.md` owns shared metadata and resources.

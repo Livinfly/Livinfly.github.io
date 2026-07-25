@@ -1,6 +1,6 @@
 ---
 title: "Jie Luo | 罗杰"
-description: "TODO: A one-sentence profile focused on your current work and interests."
+description: "Researcher, educator, and builder working on problems at the intersection of your fields."
 profile_image_alt: "Profile image of Jie Luo"
 type: academic
 academic_lang: en
@@ -10,119 +10,153 @@ build:
   render: never
 ---
 
-> **Draft homepage.** Replace every `TODO` marker with verified information before publishing this branch.
+> **AcademicLine starter content.** Replace bracketed examples and remove sections
+> that do not describe your work before publishing.
 
-**TODO: Current role, degree program, affiliation, and expected graduation.**\
-TODO: City, country · [GitHub](https://github.com/Livinfly) · [Blog](/acad-blog/) · TODO: Email
+**[Position or degree program], [Department], [Institution]**\
+[City, Country] · `you@example.com` · `github.com/your-name` ·
+[Research Notes](/acad-blog/)
 
 <!--
 After adding assets/cv.pdf to the parent homepage bundle, place the following
-link in the line above: [CV](assets/cv.pdf)
+link in the line above: [CV](assets/cv.pdf). Shared papers, slides, photographs,
+and datasets can be organized under the same assets/ directory.
 -->
 
 # About
 
-TODO: Write a compact first-person introduction. State your current affiliation, broad technical focus, and the kinds of research or engineering problems you want to pursue. Keep this to one or two short paragraphs and avoid repeating the full CV.
+I am a [student / researcher / engineer] at [institution]. My work explores
+[broad field] with a particular interest in [specific questions]. I enjoy
+turning research ideas into systems, experiments, datasets, or tools that other
+people can inspect and build upon.
+
+Before publishing, replace this paragraph with a concise first-person
+introduction: your current affiliation, the problems you study, the methods you
+use, and the kinds of collaboration you welcome. Keep biographical detail in
+the CV instead of repeating it here.
 
 # Research Interests
 
-TODO: Describe the systems questions you care about and why they matter. Keep only topics that accurately represent your own work or near-term direction.
+## Research Area One
 
-## AI Infrastructure and ML Systems
+Explain the central question, why it matters, and the approach you use. A
+specific two- or three-sentence description is more informative than a list of
+broad keywords.
 
-TODO: Describe your interests in model training, inference, serving, scheduling, parallelism, memory management, or system co-design.
+## Research Area Two
 
-## GPU Kernels and Compiler Systems
+Describe a second, distinct direction and how it connects to your broader
+agenda. Remove this subsection if one focused statement represents your work
+more accurately.
 
-TODO: Describe your interests in kernel implementation, compiler and runtime abstractions, validation, or benchmarking.
+## Methods and Tools
 
-## Efficient LLM Inference
-
-TODO: Describe a concrete inference-efficiency problem you have worked on or want to investigate.
+Summarize the methods you regularly use—for example, qualitative studies,
+experiments, mathematical modeling, archival research, fieldwork, systems
+building, or data analysis.
 
 # News
 
-- **TODO: YYYY.MM** — TODO: A concise update with an optional link.
-- **TODO: YYYY.MM** — TODO: A concise update with an optional link.
+- **2026.01** — [Example] Presented “A Sample Talk” at [venue].
+- **2025.12** — [Example] Released the code and data for [project].
 
-<!-- Delete this section until there are useful updates; do not retain filler news. -->
+<!-- Keep only recent, useful updates. Delete this section if it would be empty. -->
 
-# Selected Work
+# Publications
 
-## TODO: Project or Research Work One
+## Journal Articles
 
-**Role:** TODO\
-**Topics:** TODO
+- **[Article title].** Your Name, Coauthor Name. *Journal Name*,
+  volume(issue), pages, year.
+  Paper: `assets/papers/article.pdf` · Code: `[project URL]` ·
+  Data: `[dataset DOI]`
 
-TODO: Explain the problem, your concrete responsibility, and the result or current status in three to five sentences. Clearly distinguish what you implemented, collaborated on, or only studied.
+## Conference Papers and Preprints
 
-### Scope and contribution
+- **[Paper title].** Your Name, Coauthor Name. *Conference Name*, year.
+  Preprint: `assets/papers/conference-paper.pdf` · Project: `[project URL]`
 
-TODO: Add technical detail here when useful. This third-level heading is visible in the page but intentionally excluded from the sidebar.
+Use a consistent citation style, preserve the author order, and link only
+artifacts that exist. If you do not have publications yet, replace this section
+with theses, posters, working papers, or selected writing rather than leaving
+empty placeholders.
 
-## TODO: Project or Research Work Two
+# Talks and Presentations
 
-**Role:** TODO\
-**Topics:** TODO
+## Invited Talks
 
-TODO: Explain the problem, your responsibility, and verifiable evidence. Add links only when the corresponding artifact exists.
+- **[Talk title].** [Host institution or seminar], [City or online],
+  Month Year. Slides: `assets/slides/invited-talk.pdf`
 
-## TODO: Project or Research Work Three
+## Conference Presentations
 
-**Role:** TODO\
-**Topics:** TODO
+- **[Presentation title].** [Conference], [City], Month Year.
+  Abstract: `assets/talks/presentation-abstract.pdf`
 
-TODO: Keep this slot only if the work adds a distinct systems capability or research direction.
+# Teaching
 
-# Publications and Writing
+## [Course Number: Course Title]
 
-## Publications and Preprints
+**[Instructor / Teaching Assistant / Guest Lecturer]** · [Term, Institution]
 
-TODO: Add publications or preprints using a consistent citation format. If there are none yet, remove this subsection instead of displaying “coming soon.”
+- Describe your responsibilities and the topics you taught.
+- Add a syllabus (`assets/teaching/course-syllabus.pdf`), notes, or assignments
+  only when you have permission to share them.
 
-<!--
-Example after adding a paper to assets/papers/:
-- **Paper title.** Authors. Venue or status, year. [Paper](assets/papers/paper.pdf) · [Code](https://github.com/TODO)
--->
+# Projects and Portfolio
 
-## Selected Technical Writing
+## [Project One]
 
-- **TODO: Article title.** TODO: One-line description and link.
-- **TODO: Article title.** TODO: One-line description and link.
+**Role:** [your role] · **Period:** [dates]\
+Repository: `[project URL]` · Documentation: `[documentation URL]`
+
+State the problem, your concrete contribution, and the outcome in three to five
+sentences. Distinguish what you personally implemented, what you did with
+collaborators, and what remains ongoing.
+
+### Evidence and artifacts
+
+This third-level heading appears in the document but is intentionally excluded
+from the sidebar. Use it for reproducibility notes, demonstrations, datasets, or
+other supporting material.
+
+## [Project Two]
+
+Describe a second project only when it demonstrates a meaningfully different
+question, method, or skill. Link to a longer entry in
+[Research Notes](/acad-blog/) when the implementation story needs more space.
 
 # Education
 
-## Xidian University
+## [University Name]
 
-**TODO: Degree and major** · TODO: Start date–expected graduation
+**[Degree] in [Field]** · [Start year]–[End year or expected]\
+[Thesis title], advised by [Advisor Name]
 
-- TODO: Research group, thesis, advisor, or selected coursework—include only what helps explain your direction.
-- TODO: Thesis or capstone title and status, if applicable.
+- Add a research group, minor, distinction, or selected coursework only if it
+  helps readers understand your background.
 
 # Experience
 
-## TODO: Organization or Lab — Role
+## [Organization or Laboratory] — [Role]
 
-**TODO: Location or remote** · TODO: Dates
+**[Location or remote]** · [Month Year]–[Month Year]
 
-- TODO: Scope of work and your responsibility.
-- TODO: One concrete, supportable outcome or artifact.
+- Summarize the scope of your work and your individual responsibility.
+- Include one concrete, supportable outcome or artifact.
 
 # Honors and Awards
 
-- **TODO: Year** — TODO: Award, granting organization, and level or scope.
+- **[Year]** — [Award], [granting organization], [scope or level].
 
-<!-- Remove this section if it is not useful yet. -->
+# Service and Leadership
 
-# Talks and Activities
-
-- **TODO: Date** — “TODO: Talk or activity title,” TODO: Venue.
-
-<!--
-This optional section can include talks, reading groups, open-source or community work, and teaching.
-For slides stored in this bundle, use: [Slides](assets/slides/talk.pdf)
--->
+- **Reviewer:** [journals, conferences, or workshops], [years].
+- **Organizer:** [seminar, workshop, reading group, or community], [years].
+- **Mentoring:** [brief description], [years].
 
 # Contact
 
-The best way to reach me is TODO: email address. TODO: Add one short sentence about the kinds of conversations or collaborations you welcome.
+The best way to reach me is `you@example.com`. I welcome conversations about
+[research topics], prospective collaborations, and opportunities to make this
+work useful beyond my immediate field.
