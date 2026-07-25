@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>博客 · Jie Luo | 罗杰</title><link>https://livinfly.github.io/zh-cn/acad-blog/</link><description>研究笔记、阅读思考、会议记录与可复现研究流程。</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><atom:link href="https://livinfly.github.io/zh-cn/acad-blog/index.xml" rel="self" type="application/rss+xml"/><lastBuildDate>Sat, 25 Jul 2026 13:31:19 +0800</lastBuildDate><item><title>示例：建立可复现的研究流程</title><link>https://livinfly.github.io/zh-cn/acad-blog/reproducible-research/</link><pubDate>Tue, 18 Mar 2025 09:00:00 +0800</pubDate><guid>https://livinfly.github.io/zh-cn/acad-blog/reproducible-research/</guid><description>&lt;img src="https://livinfly.github.io/acad-blog/reproducible-research/assets/cover.svg" alt="Cover" /&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;示例文章。&lt;/strong&gt; 请用你自己的研究方法、证据与产出替换下方的提示和说明。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id="research-question"&gt;研究问题
+&lt;/h1&gt;&lt;p&gt;首先提出一个范围明确、可被检验的问题，使其他研究者能够准确理解。说明研究对象、材料、语料或现象，并界定结论适用的范围。&lt;/p&gt;
+&lt;h2 id="define-the-scope"&gt;界定范围
+&lt;/h2&gt;&lt;p&gt;在收集或分析证据前，记录决定研究边界的关键选择：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;纳入与排除标准；&lt;/li&gt;
+&lt;li&gt;观察单位与抽样方式；&lt;/li&gt;
+&lt;li&gt;变量、分类体系或解释框架；&lt;/li&gt;
+&lt;li&gt;判断研究问题是否得到回答的标准。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="不进入侧栏的三级标题"&gt;不进入侧栏的三级标题
+&lt;/h3&gt;&lt;p&gt;三级标题仍会显示在正文中，但侧栏目录只收录一级和二级标题。&lt;/p&gt;
+&lt;h1 id="record-the-workflow"&gt;记录工作流程
+&lt;/h1&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;组成部分&lt;/th&gt;
+&lt;th&gt;需要记录的内容&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;输入&lt;/td&gt;
+&lt;td&gt;来源、标识符、版本与访问日期&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;流程&lt;/td&gt;
+&lt;td&gt;有序步骤、工具、参数与判断规则&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;环境&lt;/td&gt;
+&lt;td&gt;软件、设备及相关配置&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;产出&lt;/td&gt;
+&lt;td&gt;文件名、数据结构、图表与补充材料链接&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="preserve-inputs-and-provenance"&gt;保存输入与来源
+&lt;/h2&gt;&lt;p&gt;将原始输入与派生文件分开保存。每次转换都应说明来源以及生成过程。若输入无法公开，则说明具备授权的研究者如何获取资料，或如何构建具有同等作用的替代数据。&lt;/p&gt;
+&lt;h2 id="version-the-analysis"&gt;对分析过程进行版本管理
+&lt;/h2&gt;&lt;p&gt;为分析代码、笔记本、实验协议或编码指南保留明确版本。简短的命令或流程图应足以说明如何重新生成论文中的主要产出。&lt;/p&gt;
+&lt;h1 id="validate-the-result"&gt;验证结果
+&lt;/h1&gt;&lt;h2 id="add-independent-checks"&gt;加入独立检查
+&lt;/h2&gt;&lt;p&gt;根据学科选择恰当的检查方式，例如在干净环境中重新运行分析、由第二位编码者复核样本、校准仪器、比较不同模型设定，或将引文追溯到原始出处。&lt;/p&gt;
+&lt;h1 id="share-reusable-artifacts"&gt;共享可复用的研究产出
+&lt;/h1&gt;&lt;p&gt;只发布在伦理与法律层面允许共享的材料。简洁的 README 应说明目录结构、前置条件、复现步骤、预期结果、许可协议以及访问限制。&lt;/p&gt;
+&lt;h1 id="reflection"&gt;反思
+&lt;/h1&gt;&lt;p&gt;可复现并不意味着每项研究都必然得到完全相同的结果。它强调让从问题到证据的路径足够透明，使他人能够检查、重复并继续拓展。&lt;/p&gt;</description></item><item><title>示例：课程学习反思</title><link>https://livinfly.github.io/zh-cn/acad-blog/course-reflection/</link><pubDate>Thu, 09 Jan 2025 09:00:00 +0800</pubDate><guid>https://livinfly.github.io/zh-cn/acad-blog/course-reflection/</guid><description>&lt;img src="https://livinfly.github.io/acad-blog/course-reflection/assets/cover.zh-cn.svg" alt="Cover" /&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;示例文章。&lt;/strong&gt; 请根据实际课程替换下方提示，并在引用教材、讲义或课堂讨论时标明出处。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id="course-overview"&gt;课程概览
+&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;课程：&lt;/strong&gt; TODO：课程名称&lt;br&gt;
+&lt;strong&gt;时间：&lt;/strong&gt; TODO：学期或学习周期&lt;br&gt;
+&lt;strong&gt;材料：&lt;/strong&gt; TODO：课程主页、教学大纲与主要参考资料&lt;/p&gt;
+&lt;p&gt;简要说明选择这门课程的原因，以及它与当前学习或研究问题的关系。&lt;/p&gt;
+&lt;h1 id="learning-objectives"&gt;学习目标
+&lt;/h1&gt;&lt;p&gt;列出课程开始时希望获得的知识、方法或实践能力。目标应尽量具体，方便在课程结束后回顾。&lt;/p&gt;
+&lt;h2 id="core-concepts"&gt;核心概念
+&lt;/h2&gt;&lt;p&gt;选择两到三个关键概念，用自己的语言说明它们之间的关系，并为定义、定理、案例或史料提供准确来源。&lt;/p&gt;
+&lt;h1 id="learning-process"&gt;学习过程
+&lt;/h1&gt;&lt;h2 id="assignments-readings-and-discussion"&gt;作业、阅读与讨论
+&lt;/h2&gt;&lt;p&gt;可以按主题而非时间顺序整理材料：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;哪项作业最能检验对概念的理解；&lt;/li&gt;
+&lt;li&gt;哪篇阅读改变了原有看法；&lt;/li&gt;
+&lt;li&gt;哪次讨论暴露了定义或推理中的空缺；&lt;/li&gt;
+&lt;li&gt;哪种学习方法最有效，哪些方法需要调整。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="不进入侧栏的补充记录"&gt;不进入侧栏的补充记录
+&lt;/h3&gt;&lt;p&gt;三级标题适合保留具体例子或补充材料，同时不会增加侧栏目录的长度。&lt;/p&gt;
+&lt;h1 id="outcomes-and-reflection"&gt;收获与反思
+&lt;/h1&gt;&lt;h2 id="what-i-learned"&gt;已经掌握的内容
+&lt;/h2&gt;&lt;p&gt;结合具体任务说明目前能够解释、比较或完成什么，避免只用“了解了”概括学习成果。&lt;/p&gt;
+&lt;h2 id="open-questions"&gt;仍需厘清的问题
+&lt;/h2&gt;&lt;p&gt;记录尚未解决的问题，并区分概念理解不足、证据不足，以及需要更多实践才能判断的部分。&lt;/p&gt;
+&lt;h1 id="next-steps"&gt;下一步
+&lt;/h1&gt;&lt;ul&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 重读一项关键材料并补充引用；&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 将一个概念用于新的案例或小型项目；&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 整理可以公开共享的课程笔记；&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 在设定日期后再次检查学习目标。&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

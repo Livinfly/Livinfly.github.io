@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blog · Jie Luo | 罗杰</title><link>https://livinfly.github.io/acad-blog/</link><description>Research notes, reading reflections, conference reports, and reproducible workflows.</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://livinfly.github.io/index.xml" rel="self" type="application/rss+xml"/><lastBuildDate>Sat, 25 Jul 2026 13:31:19 +0800</lastBuildDate><item><title>Example: Building a Reproducible Research Workflow</title><link>https://livinfly.github.io/acad-blog/reproducible-research/</link><pubDate>Tue, 18 Mar 2025 09:00:00 +0800</pubDate><guid>https://livinfly.github.io/acad-blog/reproducible-research/</guid><description>&lt;img src="https://livinfly.github.io/acad-blog/reproducible-research/assets/cover.svg" alt="Cover" /&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Example article.&lt;/strong&gt; Replace the prompts and illustrative details below with the methods, evidence, and artifacts from your own project.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id="research-question"&gt;Research Question
+&lt;/h1&gt;&lt;p&gt;Begin with a question that is narrow enough to test and clear enough for another researcher to interpret. State the population, material, corpus, or phenomenon being studied, together with the scope of the claim.&lt;/p&gt;
+&lt;h2 id="define-the-scope"&gt;Define the Scope
+&lt;/h2&gt;&lt;p&gt;Record the decisions that shape the study before collecting or analysing evidence:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;inclusion and exclusion criteria;&lt;/li&gt;
+&lt;li&gt;units of observation and sampling decisions;&lt;/li&gt;
+&lt;li&gt;variables, categories, or interpretive framework;&lt;/li&gt;
+&lt;li&gt;criteria for deciding whether the question has been answered.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="detail-intentionally-omitted-from-the-sidebar"&gt;Detail intentionally omitted from the sidebar
+&lt;/h3&gt;&lt;p&gt;Third-level headings remain available in the article, while the sidebar lists only first- and second-level headings.&lt;/p&gt;
+&lt;h1 id="record-the-workflow"&gt;Record the Workflow
+&lt;/h1&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Component&lt;/th&gt;
+&lt;th&gt;What to record&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Inputs&lt;/td&gt;
+&lt;td&gt;Sources, identifiers, versions, and access dates&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Procedure&lt;/td&gt;
+&lt;td&gt;Ordered steps, instruments, parameters, and decision rules&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Environment&lt;/td&gt;
+&lt;td&gt;Software, equipment, and relevant configuration&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Outputs&lt;/td&gt;
+&lt;td&gt;File names, schemas, figures, and links to supporting material&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="preserve-inputs-and-provenance"&gt;Preserve Inputs and Provenance
+&lt;/h2&gt;&lt;p&gt;Keep original inputs separate from derived files. For every transformation, document its source and the procedure that produced it. When inputs cannot be shared, describe how an authorised researcher could obtain or reconstruct an equivalent dataset.&lt;/p&gt;
+&lt;h2 id="version-the-analysis"&gt;Version the Analysis
+&lt;/h2&gt;&lt;p&gt;Store analysis code, notebooks, protocols, or coding guides with explicit versions. A short command or workflow diagram should be sufficient to show how the published outputs are regenerated.&lt;/p&gt;
+&lt;h1 id="validate-the-result"&gt;Validate the Result
+&lt;/h1&gt;&lt;h2 id="add-independent-checks"&gt;Add Independent Checks
+&lt;/h2&gt;&lt;p&gt;Choose checks that match the discipline: rerun an analysis from a clean environment, review a sample with a second coder, calibrate an instrument, compare alternative specifications, or trace a quotation back to its source.&lt;/p&gt;
+&lt;h1 id="share-reusable-artifacts"&gt;Share Reusable Artifacts
+&lt;/h1&gt;&lt;p&gt;Publish only material that can be shared ethically and legally. A concise README should explain the directory structure, prerequisites, reproduction steps, expected outputs, licence, and any access restrictions.&lt;/p&gt;
+&lt;h1 id="reflection"&gt;Reflection
+&lt;/h1&gt;&lt;p&gt;Reproducibility is not a claim that every study will yield an identical result. It is a way to make the path from question to evidence visible enough for others to inspect, repeat, and extend.&lt;/p&gt;</description></item><item><title>Example: Notes from an Academic Conference</title><link>https://livinfly.github.io/acad-blog/conference-notes/</link><pubDate>Tue, 11 Feb 2025 09:00:00 +0800</pubDate><guid>https://livinfly.github.io/acad-blog/conference-notes/</guid><description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Example article.&lt;/strong&gt; Replace each prompt with your own notes and verify names, titles, quotations, and links against the conference programme.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id="event-overview"&gt;Event Overview
+&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;Event:&lt;/strong&gt; TODO: conference or workshop name&lt;br&gt;
+&lt;strong&gt;Place and date:&lt;/strong&gt; TODO: location, format, and dates&lt;br&gt;
+&lt;strong&gt;Programme:&lt;/strong&gt; TODO: link to the official programme&lt;/p&gt;
+&lt;p&gt;Use this opening to explain why the event was relevant to your research and which parts of the programme you attended.&lt;/p&gt;
+&lt;h1 id="recurring-themes"&gt;Recurring Themes
+&lt;/h1&gt;&lt;h2 id="theme-one"&gt;Theme One
+&lt;/h2&gt;&lt;p&gt;Summarise a question or method that appeared across several sessions. Distinguish the speakers&amp;rsquo; claims from your own interpretation, and link to published material where available.&lt;/p&gt;
+&lt;h2 id="theme-two"&gt;Theme Two
+&lt;/h2&gt;&lt;p&gt;Note where participants agreed, where definitions differed, and which evidence would help resolve the disagreement.&lt;/p&gt;
+&lt;h1 id="selected-sessions"&gt;Selected Sessions
+&lt;/h1&gt;&lt;h2 id="talk-or-panel-title"&gt;Talk or Panel Title
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Speaker or chair:&lt;/strong&gt; TODO&lt;br&gt;
+&lt;strong&gt;Session link:&lt;/strong&gt; TODO&lt;/p&gt;
+&lt;p&gt;Capture the central question, the approach, and the evidence presented. If the session reports unfinished work, mark preliminary findings as such.&lt;/p&gt;
+&lt;h3 id="questions-to-revisit"&gt;Questions to Revisit
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Which assumptions were left implicit?&lt;/li&gt;
+&lt;li&gt;Which sources or datasets should be read next?&lt;/li&gt;
+&lt;li&gt;Would a different disciplinary perspective change the interpretation?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="conversations-and-connections"&gt;Conversations and Connections
+&lt;/h1&gt;&lt;p&gt;Record only details that collaborators have agreed may be shared. For private conversations, keep a separate personal note rather than publishing names or contact information by default.&lt;/p&gt;
+&lt;h1 id="follow-up"&gt;Follow-up
+&lt;/h1&gt;&lt;ul&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; Read the cited papers or project pages.&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; Write to a speaker or participant if follow-up was invited.&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; Relate one conference theme to an active research question.&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; Revisit these notes after the proceedings are published.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>
