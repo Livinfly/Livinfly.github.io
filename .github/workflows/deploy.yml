@@ -53,7 +53,7 @@ jobs:
               run: ./scripts/generate-route-aliases.sh public
 
             - name: Upload generated site
-              if: github.event_name == 'push'
+              if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
               uses: actions/upload-artifact@v4
               with:
                   name: generated-site
