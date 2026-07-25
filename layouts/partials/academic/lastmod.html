@@ -1,0 +1,14 @@
+{{- $page := . -}}
+{{- $resolved := $page.PublishDate -}}
+
+{{- with $page.GitInfo -}}
+    {{- $resolved = .AuthorDate -}}
+{{- end -}}
+{{- with $page.Params.modified -}}
+    {{- $resolved = time.AsTime . -}}
+{{- end -}}
+{{- with $page.Params.lastmod -}}
+    {{- $resolved = time.AsTime . -}}
+{{- end -}}
+
+{{- return $resolved -}}

@@ -49,11 +49,54 @@ and would change the language ownership of the existing Life Blog URLs.
 The academic Markdown render hooks first check the language page and then its
 parent bundle. Hugo publishes one shared asset URL for both versions.
 
-Publication order comes from the article bundle's `date`. Page modification
-time comes from the language Markdown file's latest Git author date. Add an
-explicit `lastmod` only when that automatic value needs a deliberate override;
-before a new file's first commit, local builds fall back to its file-modified
-time.
+## Create an article bundle
+
+Use the repository script instead of copying an existing article:
+
+```bash
+scripts/new-academic-post.sh bilingual my-article
+scripts/new-academic-post.sh en-only my-english-note
+scripts/new-academic-post.sh zh-only my-chinese-note
+```
+
+It creates the parent metadata, language-specific URLs, one shared publication
+date, `assets/figures/`, `assets/attachments/`, and a generic shared
+`assets/cover.svg`. Replace the placeholder cover before publishing, or pass
+`--no-cover` when the article should not have one. Use `--date` to provide a
+specific RFC3339 publication time:
+
+```bash
+scripts/new-academic-post.sh bilingual my-article \
+  --date 2026-07-25T09:00:00+08:00
+```
+
+Every generated language page starts with `draft: true`. Preview it with
+`hugo server -D`, finish the content and metadata, then remove that field (or
+set it to `false`). The script validates the mode, slug, and date, builds the
+bundle in a temporary sibling directory, and atomically moves it into place.
+It refuses to overwrite an existing bundle.
+
+Run the deterministic scaffold checks with:
+
+```bash
+scripts/test-new-academic-post.sh
+```
+
+Publication order comes from the article bundle's `date`. If both translations
+exist, they must retain the same publication instant—even when one translation
+is hidden—because they represent one article in language-specific lists and
+feeds. Their modification times may differ.
+
+Academic modification time uses this precedence only:
+
+1. an explicit `lastmod` in that language page;
+2. an explicit `modified` when `lastmod` is absent;
+3. the latest Git author date for that file;
+4. its publication date.
+
+This avoids treating a local filesystem timestamp as a content update and does
+not change the Life Blog's Stack date behavior. Add an explicit `lastmod` only
+when the Git-derived value needs a deliberate editorial override.
 
 ## Typography
 

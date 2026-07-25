@@ -4,6 +4,7 @@
 {{- $language := default "en" $academic.Params.academic_lang -}}
 {{- $routes := partial "academic/routes.html" $language -}}
 {{- $strings := partial "academic/strings.html" $language -}}
+{{- $lastmod := partial "academic/lastmod.html" $academic -}}
 {{- $profileImage := false -}}
 {{- with $academic.Parent.Params.profile_image -}}
     {{- $profileImage = $academic.Parent.Resources.GetMatch . -}}
@@ -60,7 +61,7 @@
                 </article>
 
                 <footer class="academic-footer">
-                    <span>{{ $strings.LastUpdated }} <time datetime="{{ $academic.Lastmod.Format "2006-01-02T15:04:05Z07:00" }}">{{ partial "academic/format-date.html" (dict "Time" $academic.Lastmod "Language" $language "WithTime" true) }}</time></span>
+                    {{ if not $lastmod.IsZero }}<span>{{ $strings.LastUpdated }} <time datetime="{{ $lastmod.Format "2006-01-02T15:04:05Z07:00" }}">{{ partial "academic/format-date.html" (dict "Time" $lastmod "Language" $language "WithTime" true) }}</time></span>{{ end }}
                     <a href="{{ $routes.Blog.RelPermalink }}">{{ $strings.AcademicBlog }}</a>
                 </footer>
             </main>

@@ -5,6 +5,7 @@
 {{- $strings := partial "academic/strings.html" $language -}}
 {{- $posts := partial "academic/feed-items.html" $language -}}
 {{ partial "feeds/rss.xml" (dict
+    "Academic" true
     "Context" .
     "Description" .Description
     "Language" $strings.HtmlLang

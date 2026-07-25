@@ -4,6 +4,7 @@
 {{- end -}}
 {{- $posts := partial "academic/feed-items.html" "en" -}}
 {{ partial "feeds/rss.xml" (dict
+    "Academic" true
     "Context" .
     "Description" $blog.Description
     "Language" "en"

@@ -1,0 +1,47 @@
+{{- $bundle := . -}}
+{{- $supportedLanguages := slice "en" "zh-cn" -}}
+{{- $pages := where $bundle.RegularPages "Params.academic_post" true -}}
+{{- $english := slice -}}
+{{- $chinese := slice -}}
+
+{{- range $pages -}}
+    {{- $language := .Params.academic_lang -}}
+    {{- if not (in $supportedLanguages $language) -}}
+        {{- errorf "Academic post %q in bundle %q has unsupported or missing academic_lang %q" .Path $bundle.Path $language -}}
+    {{- end -}}
+    {{- if .PublishDate.IsZero -}}
+        {{- errorf "Academic post %q in bundle %q must define a publication date" .Path $bundle.Path -}}
+    {{- end -}}
+    {{- if eq $language "en" -}}
+        {{- $english = $english | append . -}}
+    {{- else if eq $language "zh-cn" -}}
+        {{- $chinese = $chinese | append . -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if gt (len $english) 1 -}}
+    {{- errorf "Academic bundle %q contains duplicate English pages, including hidden pages" $bundle.Path -}}
+{{- end -}}
+{{- if gt (len $chinese) 1 -}}
+    {{- errorf "Academic bundle %q contains duplicate Chinese pages, including hidden pages" $bundle.Path -}}
+{{- end -}}
+
+{{- $visibleEnglish := where $english "Params.hidden" "!=" true -}}
+{{- $visibleChinese := where $chinese "Params.hidden" "!=" true -}}
+{{- if and (eq (len $english) 1) (eq (len $chinese) 1) -}}
+    {{- $englishPage := index $english 0 -}}
+    {{- $chinesePage := index $chinese 0 -}}
+    {{- if ne $englishPage.PublishDate.Unix $chinesePage.PublishDate.Unix -}}
+        {{- errorf "Translations in academic bundle %q must share one publication date, including hidden translations: %q has %s, %q has %s" $bundle.Path $englishPage.Path ($englishPage.PublishDate.Format "2006-01-02T15:04:05Z07:00") $chinesePage.Path ($chinesePage.PublishDate.Format "2006-01-02T15:04:05Z07:00") -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $visible := where $pages "Params.hidden" "!=" true -}}
+{{- return (dict
+    "All" $pages
+    "English" $english
+    "Chinese" $chinese
+    "Visible" $visible
+    "VisibleEnglish" $visibleEnglish
+    "VisibleChinese" $visibleChinese
+) -}}

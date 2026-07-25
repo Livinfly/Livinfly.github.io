@@ -8,21 +8,9 @@
 {{- end -}}
 {{- $items := slice -}}
 {{- range where $root.Sections "Params.academic_bundle" true -}}
-    {{- $visible := where .RegularPages "Params.academic_post" true -}}
-    {{- $visible = where $visible "Params.hidden" "!=" true -}}
-    {{- $english := where $visible "Params.academic_lang" "en" -}}
-    {{- $chinese := where $visible "Params.academic_lang" "zh-cn" -}}
-    {{- if gt (len $english) 1 -}}
-        {{- errorf "Academic bundle %q contains duplicate English pages" .Path -}}
-    {{- end -}}
-    {{- if gt (len $chinese) 1 -}}
-        {{- errorf "Academic bundle %q contains duplicate Chinese pages" .Path -}}
-    {{- end -}}
-    {{- $selected := where $visible "Params.academic_lang" $mode -}}
+    {{- $bundlePages := partial "academic/bundle-pages.html" . -}}
+    {{- $selected := where $bundlePages.Visible "Params.academic_lang" $mode -}}
     {{- range $selected -}}
-        {{- if .PublishDate.IsZero -}}
-            {{- errorf "Published academic post %q must define a publication date" .Path -}}
-        {{- end -}}
         {{- $items = $items | append . -}}
     {{- end -}}
 {{- end -}}

@@ -1,0 +1,8 @@
+{{- $latest := time.AsTime "0001-01-01T00:00:00Z" -}}
+{{- range . -}}
+    {{- $candidate := partial "academic/lastmod.html" . -}}
+    {{- if $candidate.After $latest -}}
+        {{- $latest = $candidate -}}
+    {{- end -}}
+{{- end -}}
+{{- return $latest -}}

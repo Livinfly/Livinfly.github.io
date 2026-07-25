@@ -5,10 +5,14 @@
             {{- $lastmod := .Lastmod -}}
             {{- if .IsHome -}}
                 {{- with site.GetPage "/academic/home/en" -}}
-                    {{- $lastmod = .Lastmod -}}
+                    {{- $lastmod = partial "academic/lastmod.html" . -}}
                 {{- else -}}
                     {{- errorf "English academic homepage was not found while building sitemap" -}}
                 {{- end -}}
+            {{- else if .Params.academic_post -}}
+                {{- $lastmod = partial "academic/lastmod.html" . -}}
+            {{- else if eq .Type "academic" -}}
+                {{- $lastmod = partial "academic/lastmod.html" . -}}
             {{- else if eq .RelPermalink "/life-blog/" -}}
                 {{- $lifePages := where site.RegularPages "Type" "in" site.Params.mainSections -}}
                 {{- $lifePages = where $lifePages "Params.hidden" "!=" true -}}
@@ -18,12 +22,12 @@
             {{- else if eq .RelPermalink "/acad-blog/" -}}
                 {{- $posts := partial "academic/blog-items.html" "en" -}}
                 {{- if gt (len $posts) 0 -}}
-                    {{- $lastmod = (index $posts.ByLastmod.Reverse 0).Lastmod -}}
+                    {{- $lastmod = partial "academic/latest-lastmod.html" $posts -}}
                 {{- end -}}
             {{- else if eq .RelPermalink "/zh-cn/acad-blog/" -}}
                 {{- $posts := partial "academic/blog-items.html" "zh-cn" -}}
                 {{- if gt (len $posts) 0 -}}
-                    {{- $lastmod = (index $posts.ByLastmod.Reverse 0).Lastmod -}}
+                    {{- $lastmod = partial "academic/latest-lastmod.html" $posts -}}
                 {{- end -}}
             {{- end }}
     <url>

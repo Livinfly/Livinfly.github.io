@@ -8,6 +8,19 @@
     --academic-accent: #315f9a;
     --academic-accent-hover: #173f75;
     --academic-todo: #7a4b00;
+    --academic-code-bg: #f6f8fa;
+    --academic-code-text: #24292f;
+    --academic-code-comment: #6e7781;
+    --academic-code-keyword: #cf222e;
+    --academic-code-string: #0a3069;
+    --academic-code-number: #0550ae;
+    --academic-code-name: #8250df;
+    --academic-code-attribute: #953800;
+    --academic-code-highlight-bg: #ddf4ff;
+    --academic-code-inserted: #116329;
+    --academic-code-inserted-bg: #dafbe1;
+    --academic-code-deleted: #82071e;
+    --academic-code-deleted-bg: #ffebe9;
     --academic-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, "Songti SC", STSong, "Times New Roman", serif;
     --academic-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --academic-width: 1120px;
@@ -51,6 +64,19 @@
         --academic-accent: #89b4ea;
         --academic-accent-hover: #b8d5f5;
         --academic-todo: #e3b96d;
+        --academic-code-bg: #161b22;
+        --academic-code-text: #c9d1d9;
+        --academic-code-comment: #8b949e;
+        --academic-code-keyword: #ff7b72;
+        --academic-code-string: #a5d6ff;
+        --academic-code-number: #79c0ff;
+        --academic-code-name: #d2a8ff;
+        --academic-code-attribute: #ffa657;
+        --academic-code-highlight-bg: #1f2d3d;
+        --academic-code-inserted: #7ee787;
+        --academic-code-inserted-bg: #173a2a;
+        --academic-code-deleted: #ffa198;
+        --academic-code-deleted-bg: #4a2025;
     }
 }
 
@@ -704,7 +730,7 @@ html:lang(zh-CN) .academic-content h1 {
     padding: 1rem 1.1rem;
     overflow-x: auto;
     border: 1px solid var(--academic-line);
-    background: var(--academic-panel);
+    background: var(--academic-code-bg);
     font-size: 0.84rem;
     line-height: 1.55;
 }
@@ -713,6 +739,161 @@ html:lang(zh-CN) .academic-content h1 {
     padding: 0;
     border: 0;
     background: transparent;
+}
+
+/* Chroma emits token classes because markup.highlight.noClasses is false. */
+.academic-content .highlight {
+    max-width: 100%;
+    margin: 1.35rem 0;
+    overflow-x: auto;
+    border: 1px solid var(--academic-line);
+    background: var(--academic-code-bg);
+}
+
+.academic-content .highlight .chroma {
+    color: var(--academic-code-text);
+    background: var(--academic-code-bg);
+}
+
+.academic-content .highlight pre {
+    max-width: none;
+    margin: 0;
+    overflow: visible;
+    border: 0;
+    background: transparent;
+}
+
+.academic-content .highlight .lntable {
+    display: table;
+    width: 100%;
+    margin: 0;
+    overflow: visible;
+    border: 0;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.academic-content .highlight .lntd {
+    padding: 0;
+    border: 0;
+}
+
+.academic-content .highlight .lntd:first-child {
+    width: 1%;
+    border-right: 1px solid var(--academic-line);
+    user-select: none;
+}
+
+.academic-content .highlight .lntd:first-child pre {
+    padding-right: 0.7rem;
+    padding-left: 0.7rem;
+    text-align: right;
+}
+
+.academic-content .highlight .lntd + .lntd pre {
+    padding-left: 1rem;
+}
+
+.academic-content .chroma .line {
+    display: flex;
+    min-height: 1.55em;
+}
+
+.academic-content .chroma .ln,
+.academic-content .chroma .lnt {
+    color: var(--academic-code-comment);
+}
+
+.academic-content .chroma .hl {
+    background: var(--academic-code-highlight-bg);
+}
+
+.academic-content .chroma .c,
+.academic-content .chroma .ch,
+.academic-content .chroma .cm,
+.academic-content .chroma .c1,
+.academic-content .chroma .cs,
+.academic-content .chroma .cp,
+.academic-content .chroma .cpf {
+    color: var(--academic-code-comment);
+    font-style: italic;
+}
+
+.academic-content .chroma .k,
+.academic-content .chroma .kc,
+.academic-content .chroma .kd,
+.academic-content .chroma .kn,
+.academic-content .chroma .kp,
+.academic-content .chroma .kr,
+.academic-content .chroma .kt,
+.academic-content .chroma .o,
+.academic-content .chroma .ow {
+    color: var(--academic-code-keyword);
+}
+
+.academic-content .chroma .s,
+.academic-content .chroma .sa,
+.academic-content .chroma .sb,
+.academic-content .chroma .sc,
+.academic-content .chroma .dl,
+.academic-content .chroma .sd,
+.academic-content .chroma .s2,
+.academic-content .chroma .se,
+.academic-content .chroma .sh,
+.academic-content .chroma .si,
+.academic-content .chroma .sx,
+.academic-content .chroma .sr,
+.academic-content .chroma .s1,
+.academic-content .chroma .ss {
+    color: var(--academic-code-string);
+}
+
+.academic-content .chroma .m,
+.academic-content .chroma .mb,
+.academic-content .chroma .mf,
+.academic-content .chroma .mh,
+.academic-content .chroma .mi,
+.academic-content .chroma .il,
+.academic-content .chroma .mo {
+    color: var(--academic-code-number);
+}
+
+.academic-content .chroma .nc,
+.academic-content .chroma .nd,
+.academic-content .chroma .ne,
+.academic-content .chroma .nf,
+.academic-content .chroma .nl,
+.academic-content .chroma .nn {
+    color: var(--academic-code-name);
+}
+
+.academic-content .chroma .na,
+.academic-content .chroma .nb,
+.academic-content .chroma .nt,
+.academic-content .chroma .nv,
+.academic-content .chroma .vc,
+.academic-content .chroma .vg,
+.academic-content .chroma .vi,
+.academic-content .chroma .vm {
+    color: var(--academic-code-attribute);
+}
+
+.academic-content .chroma .gd {
+    color: var(--academic-code-deleted);
+    background: var(--academic-code-deleted-bg);
+}
+
+.academic-content .chroma .gi {
+    color: var(--academic-code-inserted);
+    background: var(--academic-code-inserted-bg);
+}
+
+.academic-content .chroma .ge {
+    font-style: italic;
+}
+
+.academic-content .chroma .gs {
+    font-weight: 700;
 }
 
 .academic-content table {
@@ -1066,6 +1247,19 @@ html:lang(zh-CN) .academic-content h1 {
         --academic-text: #000;
         --academic-muted: #444;
         --academic-line: #bbb;
+        --academic-code-bg: #f7f7f7;
+        --academic-code-text: #111;
+        --academic-code-comment: #555;
+        --academic-code-keyword: #8b0000;
+        --academic-code-string: #003d73;
+        --academic-code-number: #004c99;
+        --academic-code-name: #5b2c83;
+        --academic-code-attribute: #6f3500;
+        --academic-code-highlight-bg: #e8f2f8;
+        --academic-code-inserted: #205b2a;
+        --academic-code-inserted-bg: #edf7ee;
+        --academic-code-deleted: #7a2020;
+        --academic-code-deleted-bg: #faeeee;
     }
 
     .academic-shell {
