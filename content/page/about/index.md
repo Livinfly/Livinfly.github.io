@@ -67,7 +67,7 @@ menu:
 
 如果你觉得我写的东西对你有所帮助，可以考虑请我喝一杯奶茶🤪
 
-~~然而入口未开放~~，建议多一步到[Github 仓库](https://github.com/Livinfly/Livinfly.github.io/tree/master/content/page/about)的对应图片进行扫描，以防网站出现预料之外的情况。
+~~然而入口未开放~~，建议多一步到[Github 仓库](https://github.com/Livinfly/Livinfly.github.io/tree/main/content/page/about)的对应图片进行扫描，以防网站出现预料之外的情况。
 
 <img src="./zfb.jpg" width = "400" height = "400" alt="zfb" align=center />
 <img src="./vx.jpg" width = "400" height = "400" alt="vx" align=center />

@@ -2,9 +2,10 @@ name: Deploy to Github Pages
 
 on:
     push:
-        branches: [master]
+        branches: [main]
     pull_request:
-        branches: [master]
+        branches: [main]
+    workflow_dispatch:
 
 permissions:
     contents: read
@@ -61,7 +62,7 @@ jobs:
                   retention-days: 1
 
     deploy:
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
         needs: build
         runs-on: ubuntu-latest
 
