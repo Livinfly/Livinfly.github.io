@@ -14,8 +14,8 @@ build:
 > that do not describe your work before publishing.
 
 **[Position or degree program], [Department], [Institution]**\
-[City, Country] · `you@example.com` · `github.com/your-name` ·
-[Research Notes](/acad-blog/)
+[City, Country] · [GitHub: Livinfly](https://github.com/Livinfly) · [Research Notes](/acad-blog/)\
+[luojie3m@gmail.com](mailto:luojie3m@gmail.com) · [luojie26@stu.pku.edu.cn](mailto:luojie26@stu.pku.edu.cn)
 
 <!--
 After adding assets/cv.pdf to the parent homepage bundle, place the following
@@ -157,6 +157,7 @@ question, method, or skill. Link to a longer entry in
 
 # Contact
 
-The best way to reach me is `you@example.com`. I welcome conversations about
-[research topics], prospective collaborations, and opportunities to make this
-work useful beyond my immediate field.
+The best ways to reach me are [luojie3m@gmail.com](mailto:luojie3m@gmail.com)
+and [luojie26@stu.pku.edu.cn](mailto:luojie26@stu.pku.edu.cn). I welcome
+conversations about [research topics], prospective collaborations, and
+opportunities to make this work useful beyond my immediate field.

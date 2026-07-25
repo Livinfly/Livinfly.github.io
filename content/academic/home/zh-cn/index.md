@@ -15,8 +15,8 @@ build:
 > 描述你工作的栏目。
 
 **[职位或学位项目]，[院系]，[机构]**\
-[城市、国家] · `you@example.com` · `github.com/your-name` ·
-[研究笔记](/zh-cn/acad-blog/)
+[城市、国家] · [GitHub：Livinfly](https://github.com/Livinfly) · [研究笔记](/zh-cn/acad-blog/)\
+[luojie3m@gmail.com](mailto:luojie3m@gmail.com) · [luojie26@stu.pku.edu.cn](mailto:luojie26@stu.pku.edu.cn)
 
 <!--
 将简历放入父级主页 bundle 的 assets/cv.pdf 后，可在上方加入
@@ -145,5 +145,6 @@ build:
 
 # 联系方式
 
-联系我的最佳方式是 `you@example.com`。欢迎交流[研究主题]、潜在合作，
-以及如何让这些工作在更广泛的场景中发挥作用。
+可以通过 [luojie3m@gmail.com](mailto:luojie3m@gmail.com) 或
+[luojie26@stu.pku.edu.cn](mailto:luojie26@stu.pku.edu.cn) 联系我。
+欢迎交流[研究主题]、潜在合作，以及如何让这些工作在更广泛的场景中发挥作用。
